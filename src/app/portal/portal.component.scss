@@ -1,0 +1,150 @@
+:host {
+
+  .portal-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background-color: var(--gray-50);
+  }
+
+  .sidebar-content-itens {
+    border-radius: 10px;
+    margin: 4px;
+    width: 100%;
+    height: 99%;
+    overflow: auto;
+  }
+
+  .sidebar-content {
+    margin: 10px;
+    margin-top: 1%;
+    width: 22%;
+    height: calc(89vh - 2%);
+    border-radius: 10px;
+    display: flex;
+    transition: transform 0.3s ease-in-out;
+  }
+
+  .sidebar-content.hidden {
+    transform: translateX(-100%);
+  }
+
+  .router-outlet-content {
+    border-radius: 10px;
+    margin: 16px;
+    margin-top: 0.3%;
+    width: calc(100% - 32px);
+    height: calc(99% - 16px);
+    overflow: auto;
+    background: var(--surface-card);
+    border: 1px solid rgba(0, 0, 0, 0.125);
+  }
+
+  .main-content {
+    margin: 10px;
+    margin-top: 3%;
+    background-color: var(--gray-50);
+    width: 99%;
+    height: calc(92vh - 2%);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: row;
+    position: relative;
+  }
+
+  .footer-link {
+    text-align: center;
+    width: 100%;
+    height: 1%;
+    color: var(--text-color);
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: xx-small;
+    letter-spacing: 0.9px;
+    position: absolute;
+    padding: 0;
+    bottom: 0;
+    left: 0;
+    text-decoration: none;
+  
+    &:hover {
+      color: var(--primary-color); 
+      text-decoration: none;
+    }
+  }
+
+  @media (max-width: 1024px) {
+    .logo-menu {
+      width: 150px;
+    }
+
+    .sidenav-control {
+      width: 5vw;
+    }
+
+    .sidebar-toggle-btn {
+      width: 5vw;
+    }
+
+    .main-content {
+      margin: 8px;
+      margin-top: 2%;
+      height: calc(90vh - 5%);
+      width: 100%;
+    }
+
+    .router-outlet-content {
+      margin: 8px;
+      margin-top: 1%;
+      width: calc(100% - 16px);
+      height: calc(98% - 8px);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .logo-menu {
+      width: 120px;
+    }
+
+    .sidenav-control {
+      width: 8vw;
+    }
+
+    .sidebar-toggle-btn {
+      width: 8vw;
+    }
+
+    .main-content {
+      margin: 5px;
+      height: calc(85vh - 5%);
+    }
+
+    .router-outlet-content {
+      margin: 8px;
+      height: calc(95% - 8px);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .logo-menu {
+      width: 100px;
+    }
+
+    .sidenav-control {
+      width: 12vw;
+    }
+
+    .sidebar-toggle-btn {
+      width: 12vw;
+    }
+
+    .main-content {
+      margin: 2px;
+      height: calc(80vh - 5%);
+    }
+
+    .router-outlet-content {
+      margin: 4px;
+      height: calc(90% - 4px);
+    }
+  }
+}

@@ -1,0 +1,94 @@
+<app-title-header title="Clientes e Fornecedores"></app-title-header>
+
+<div class="filters">
+    <p-accordion class="p-accordion-custom-header">
+        <p-accordionTab>
+            <ng-template pTemplate="header">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <span>{{ getFiltrosHeader() }}</span>
+                    
+                    @if (getActiveFilters().length > 0) {
+                        <ng-container>
+                            @for (filter of getActiveFilters(); track filter) {
+                                <p-tag 
+                                    [value]="filter.label + ': ' + filter.value" 
+                                    severity="contrast"
+                                    styleClass="mr-1">
+                                </p-tag>
+                            }
+                        </ng-container>
+                    }
+                </div>
+            </ng-template>
+            <div class="itens-filters">
+                <p-floatLabel>
+                    <input pInputText id="nome" [(ngModel)]="filtros.nome" name="nome" />
+                    <label for="nome">Nome Cliente/Fornecedor</label>
+                </p-floatLabel>
+
+                <p-floatLabel>
+                    <p-dropdown id="tipo" appendTo="body" [options]="clienteFornecedorOptions"
+                        [(ngModel)]="filtros.tipo" name="tipo">
+                    </p-dropdown>
+                    <label for="tipo">Tipo</label>
+                </p-floatLabel>
+
+                <p-floatLabel>
+                    <p-calendar id="periodoContratacao" selectionMode="range"     
+                        [minDate]="minDate" 
+                        [maxDate]="maxDate" 
+                        [showTime]="false" [(ngModel)]="filtros.periodoContratacao" name="periodoContratacao" dateFormat="dd/mm/yy">
+                    </p-calendar>
+                    <label for="periodoContratacao">Período de Contratação</label>
+                </p-floatLabel>
+            
+                <p-floatLabel>
+                    <p-dropdown id="status" appendTo="body"  [options]="statusOptions" 
+                        [(ngModel)]="filtros.status" name="status">
+                    </p-dropdown>
+                    <label for="status">Status</label>
+                </p-floatLabel>
+            </div>
+
+            <div class="actions">
+                <button pButton [outlined]="true" [raised]="true" severity="warning" label="Limpar"
+                    icon="pi pi-times" (click)="limparFiltros()">
+                </button>
+                <button pButton [outlined]="true" [raised]="true" severity="success" label="Filtrar"
+                    icon="pi pi-filter" (click)="filtrar()">
+                </button>
+            </div>
+        </p-accordionTab>
+    </p-accordion>
+</div>
+
+<div class="tables">
+    <p-table [value]="clientesFornecedores" [paginator]="true" [lazy]="true" [showCurrentPageReport]="true" [rows]="rows" [resizableColumns]="true" [totalRecords]="totalRecords" [rowsPerPageOptions]="rowsPerPage"
+        styleClass="p-datatable-striped p-datatable-gridlines" (onPage)="handlePageChange($event)" (onLazyLoad)="loadTableData($event)" dataKey="id">
+        <ng-template pTemplate="caption">
+            <div style="display: flex; justify-content: flex-end; align-items: center;">
+                <div class="actions">
+                    <button pButton [outlined]="true" [raised]="true" severity="success" label="Exportar"
+                        icon="pi pi-file-export">
+                    </button>
+                </div>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+            <tr>
+                <th id="login">Nome</th>
+                <th id="tipo">Tipo</th>
+                <th id="periodoContratacao">Período de Contratação</th>
+                <th id="status">Status</th>
+                </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-clienteFornecedor>
+            <tr>
+                <td>{{ clienteFornecedor.nome }}</td>
+                <td>{{ clienteFornecedor.tipo }}</td>
+                <td>{{ clienteFornecedor.periodoContratacao }}</td>
+                <td>{{ clienteFornecedor.status }}</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>

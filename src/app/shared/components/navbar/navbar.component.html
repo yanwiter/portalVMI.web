@@ -1,0 +1,31 @@
+<div class="navbar">
+  @if(isSidebarAllowed()){
+    <div class="navbar-controlSidebar">
+      @if(isSidebarOpen) {
+        <button class="icon-button" (click)="toggleSidenav()" (keydown)="onKeydown($event)">
+          <i class="pi pi-times" style="font-size: 1.3rem"></i>
+        </button>
+      } @else {
+        <button class="icon-button" (click)="toggleSidenav()" (keydown)="onKeydown($event)">
+          <i class="pi pi-list" style="font-size: 1.3rem"></i>
+        </button>
+      }
+    </div>
+  } @else {
+    <div class="navbar-controlSidebar"></div>
+  }
+
+  <div class="navbar-right">
+    <p-chip [label]="userName()" icon="pi pi-user" />
+    <div class="config">
+      <div>
+        <p-confirmPopup></p-confirmPopup>
+      </div>
+      <button class="icon-button-logout" (click)="confirmLogout($event)" (keydown)="onKeydown($event)">
+        <i class="pi pi-sign-out"></i>
+      </button>
+    </div>
+
+  </div>
+</div>
+

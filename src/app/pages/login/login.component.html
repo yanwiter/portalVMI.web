@@ -1,0 +1,59 @@
+<div class="full-screen">
+  <div class="container">
+    <div class="login-card">
+      <img src="../../../assets/vmi-medica-logo.svg" 
+           alt="VMI Médica" 
+           class="logo">
+      
+      <form (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <input type="email" 
+                [(ngModel)]="email" 
+                name="email" 
+                placeholder="E-mail" 
+                required>
+        </div>
+        
+        <div class="form-group">
+          <div class="form-group" style="position: relative;">
+            <input pInputText id="senha" name="senha" required 
+              [(ngModel)]="password" 
+              placeholder="Senha" 
+              [type]="mostrarSenha ? 'text' : 'password'"
+              style="padding-right: 40px;" />
+            
+            <button type="button" pButton 
+              [icon]="mostrarSenha ? 'pi pi-eye-slash' : 'pi pi-eye'" 
+              (click)="mostrarSenha = !mostrarSenha"
+              class="p-button-text p-button-plain"
+              style="position: absolute; right: 5px; top: 40%; transform: translateY(-50%);">
+            </button>
+          </div>
+        </div>
+        
+        <div class="forgot-password">
+          <a (click)="esqueciSenha()" style="cursor: pointer;">Esqueci minha senha</a>
+        </div>
+        
+        <div class="checkbox-group">
+          <label>
+            <input type="radio" 
+                  [(ngModel)]="userType" 
+                  name="userType" 
+                  value="colaborador"> 
+            Colaborador
+          </label>
+          <label>
+            <input type="radio" 
+                  [(ngModel)]="userType" 
+                  name="userType" 
+                  value="fornecedor"> 
+            Fornecedor
+          </label>
+        </div>
+        
+        <button type="submit" class="btn-primary">Entrar</button>
+      </form>
+    </div>
+  </div>
+</div>

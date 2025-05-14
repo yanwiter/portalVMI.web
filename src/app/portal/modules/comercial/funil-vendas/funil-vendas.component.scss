@@ -1,0 +1,81 @@
+.sales-funnel-container {
+  font-family: 'Arial', sans-serif;
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  .header {
+    display: flex;
+    justify-content: flex-end;
+    align-items: left;
+    margin-bottom: 20px;
+
+    .p-inputtext {
+      width: 250px;
+    }
+  }
+
+  .funnel-stages {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    gap: 15px;
+
+    .funnel-stage {
+      flex: 1;
+      text-align: center;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+      h3 {
+        margin-top: 0;
+        color: #333;
+        font-size: 16px;
+      }
+
+      p {
+        margin: 5px 0;
+        color: #666;
+
+        &.amount {
+          font-weight: bold;
+          color: #2196F3;
+          font-size: 18px;
+        }
+      }
+    }
+  }
+
+  .company-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+
+    .company-item {
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+      .company-info {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+
+        .company-name {
+          margin: 0;
+          color: #333;
+          word-break: break-word;
+          overflow-wrap: break-word;
+        }
+
+        .amount {
+          font-weight: bold;
+          color: #4CAF50;
+          margin: 0;
+          align-self: flex-end;
+        }
+      }
+    }
+  }
+}

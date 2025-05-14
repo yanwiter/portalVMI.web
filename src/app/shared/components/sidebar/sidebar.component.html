@@ -1,0 +1,53 @@
+@if(isSidebarVisible){
+<div styleClass="custom-sidebar">
+    <div class="sidebar-header">
+        <a [routerLink]="['/portal']">
+            <img src="../../../assets/vmi-medica-logo.svg" class="logo-menu" alt="logo" />
+        </a>
+        <h6 class="sub-title mt-2">Portal VMI</h6>
+    </div>
+
+    <!-- activeIndex para controlar os tabs -->
+    <p-accordion [(activeIndex)]="activeIndex">
+        @for (menu of menus; track $index) {
+        <ng-container>
+            <p-accordionTab>
+                <ng-template pTemplate="header">
+                    <i [class]="menu.icon"></i> {{ menu.title }}
+                </ng-template>
+                <ul class="p-menu-list">
+                    @for (item of menu.items; track $index) {
+                    <li class="menu-item">
+                        @if (!item.hasSubmenu) {
+                        <a pButton pRipple [label]="item.label" [routerLink]="item.routerLink" [state]="{ bypassGuard: true }"
+                            class="p-menuitem-link"></a>
+                        }@else {
+                        <a pButton pRipple (click)="toggleSubmenu(item)" class="p-menuitem-link">
+                            <div class="menu-item-label-container">
+                                <b>{{item.label}}</b>
+                                <span class="pi"
+                                    [ngClass]="{ 'pi-angle-up': item.isSubmenuVisible, 'pi-angle-down': !item.isSubmenuVisible}">
+                                </span>
+                            </div>
+                        </a>
+                        @if (item.isSubmenuVisible) {
+                        <ul class="p-menu-list submenu">
+                            @for (subItem of item.submenuItems; track $index) {
+                            <li class="submenu-item">
+                                <a pButton pRipple [label]="subItem.label" [routerLink]="subItem.routerLink"
+                                    [state]="{ bypassGuard: true }" class="p-menuitem-link"></a>
+                            </li>
+                            }
+                        </ul>
+                        }
+                    }
+                    </li>
+                }
+                </ul>
+            </p-accordionTab>
+            <p></p>
+        </ng-container>
+        }
+    </p-accordion>
+</div>
+}

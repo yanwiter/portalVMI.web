@@ -1,0 +1,27 @@
+<app-title-header title="Funil de Vendas"></app-title-header>
+
+<div class="sales-funnel-container">
+    <div class="header">
+      <span class="p-input-icon-left">
+        <i class="pi pi-search"></i>
+        <input pInputText type="text" placeholder="Buscar" />
+      </span>
+    </div>
+  
+    <div class="funnel-stages">
+      <div *ngFor="let stage of stages" class="funnel-stage p-card">
+        <h3>{{ stage.name }}</h3>
+        <p>{{ stage.count }} Negócios</p>
+        <p class="amount">{{ formatCurrency(stage.amount) }}</p>
+      </div>
+    </div>
+  
+    <div class="company-list">
+      <div *ngFor="let company of companies" class="company-item p-card">
+        <div class="company-info">
+          <p company-name>{{ company.name }}</p>
+          <p class="amount">{{ formatCurrency(company.amount) }}</p>
+        </div>
+      </div>
+    </div>
+  </div>

@@ -1,0 +1,70 @@
+<div class="full-screen">
+    <div class="container">
+      <div class="login-card">
+        <img src="../../../assets/vmi-medica-logo.svg" alt="VMI Médica" class="logo">
+  
+        <form (ngSubmit)="onSubmit()">
+          <h3>{{ obrigatorio ? 'Alteração de Senha Obrigatória' : 'Redefinir Senha' }}</h3>
+          
+          <div class="form-group">
+            <div class="form-group" style="position: relative;">
+                <p-floatLabel>
+                    <input pInputText 
+                    [(ngModel)]="password" 
+                    name="password"
+                    required
+                    [type]="mostrarSenha ? 'text' : 'password'"
+                    placeholder="{{ obrigatorio ? 'Nova Senha' : 'Senha' }}"
+                    style="padding-right: 40px;"/>
+            
+                    <button type="button" pButton 
+                        [icon]="mostrarSenha ? 'pi pi-eye-slash' : 'pi pi-eye'" 
+                        (click)="mostrarSenha = !mostrarSenha"
+                        class="p-button-text p-button-plain"
+                        style="position: absolute; right: 5px; top: 40%; transform: translateY(-50%);">
+                    </button>
+                    <label for="">{{ obrigatorio ? 'Nova Senha' : 'Senha' }}</label>
+                </p-floatLabel>
+            </div>
+          </div>
+  
+          <div class="form-group">
+            <div class="form-group" style="position: relative;">
+                <p-floatLabel>
+                    <input pInputText 
+                        [(ngModel)]="passwordRepeat" 
+                        name="passwordRepeat" 
+                        required
+                        [type]="mostrarSenha ? 'text' : 'password'"
+                        placeholder="Confirmar Senha"
+                        style="padding-right: 40px;"/>
+              
+                    <button type="button" pButton 
+                      [icon]="mostrarSenha ? 'pi pi-eye-slash' : 'pi pi-eye'" 
+                      (click)="mostrarSenha = !mostrarSenha"
+                      class="p-button-text p-button-plain"
+                      style="position: absolute; right: 5px; top: 40%; transform: translateY(-50%);">
+                    </button>
+              <label for="">Confirmar Senha</label>
+            </p-floatLabel>
+          </div>
+        </div>
+
+          @if(password){
+            <small class="p-error">
+              A senha deve conter:
+              <span [class.text-success]="temMinimoCaracteres()">✓ 8 caracteres</span>,
+              <span [class.text-success]="temMaiuscula()">✓ 1 maiúscula</span>,
+              <span [class.text-success]="temMinuscula()">✓ 1 minúscula</span>,
+              <span [class.text-success]="temNumero()">✓ 1 número</span>
+            </small>
+          }
+  
+          <button type="submit" class="btn-primary">
+            {{ obrigatorio ? 'Alterar Senha' : 'Redefinir Senha' }}
+          </button>
+  
+        </form>
+      </div>
+    </div>
+  </div>

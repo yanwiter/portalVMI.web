@@ -1,0 +1,19 @@
+
+<div class="portal-content">
+  <app-navbar class="navbar"></app-navbar>
+  <div class="main-content">
+    @if(isSidebarAllowed() && isSidebarVisible){
+    <div class="sidebar-content" [class.hidden]="!isSidebarVisible">
+      <div class="sidebar-content-itens">
+        <app-sidebar [isSidebarVisible]="isSidebarVisible"></app-sidebar>
+      </div>
+    </div>
+    }
+    <div class="router-outlet-content">
+      <router-outlet></router-outlet>
+    </div>
+    <a href="https://www.ketra.com.br" target="_blank" class="footer-link">
+      <span>Desenvolvido por Ketra soluções inteligentes / {{ currentYear }}</span>
+    </a>
+  </div>
+</div>

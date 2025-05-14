@@ -1,0 +1,153 @@
+<app-title-header title="Dashboard"></app-title-header>
+
+    <div class="dashboard-content">
+        <div class="overview-cards">
+            <p-card class="stat-card">
+                <div class="stat-content">
+                    <i class="pi pi-chart-bar stat-icon"></i>
+                    <div>
+                        <h3>1,245</h3>
+                        <p>Processos hoje</p>
+                    </div>
+                </div>
+            </p-card>
+
+            <p-card class="stat-card">
+                <div class="stat-content">
+                    <i class="pi pi-check-circle stat-icon"></i>
+                    <div>
+                        <h3>924</h3>
+                        <p>Concluídos</p>
+                    </div>
+                </div>
+            </p-card>
+
+            <p-card class="stat-card">
+                <div class="stat-content">
+                    <i class="pi pi-exclamation-triangle stat-icon"></i>
+                    <div>
+                        <h3>56</h3>
+                        <p>Alertas</p>
+                    </div>
+                </div>
+            </p-card>
+
+            <p-card class="stat-card">
+                <div class="stat-content">
+                    <i class="pi pi-users stat-icon"></i>
+                    <div>
+                        <h3>42</h3>
+                        <p>Clientes / Fornecedores ativos</p>
+                    </div>
+                </div>
+            </p-card>
+        </div>
+
+        <div class="charts-grid">
+            <div class="chart-row">
+                <div class="chart-container">
+                    <p-card>
+                        <div class="chart-placeholder">
+                            <div class="chart-header">
+                                <h4>Produção Planejada x Realizada</h4>
+                                <div class="chart-controls">
+                                    <p-calendar [(ngModel)]="barChartDateRange" selectionMode="range"
+                                        [readonlyInput]="true" [showIcon]="true" dateFormat="dd/mm/yy"
+                                        placeholder="Selecione o período"
+                                        (ngModelChange)="updateBarChart()"></p-calendar>
+                                </div>
+                            </div>
+                            <p-chart type="bar" [data]="data" [options]="chartOptionsForBar" width="100%"
+                                height="350px"></p-chart>
+                        </div>
+                    </p-card>
+
+                </div>
+
+                <div class="chart-container">
+                    <p-card>
+                        <div class="chart-placeholder">
+                            <div class="chart-header">
+                                <h4>Porte de Clientes</h4>
+                                <div class="chart-controls">
+                                    <p-calendar [(ngModel)]="barChartDateRange" selectionMode="range"
+                                        [readonlyInput]="true" [showIcon]="true" dateFormat="dd/mm/yy"
+                                        placeholder="Selecione o período"
+                                        (ngModelChange)="updateBarChart()"></p-calendar>
+                                </div>
+                            </div>
+                            <p-chart type="doughnut" [data]="productionData" [options]="chartOptions" width="100%"
+                                height="350px"></p-chart>
+                        </div>
+                    </p-card>
+                </div>
+            </div>
+
+            <div class="chart-row">
+                <div class="chart-container">
+                    <p-card>
+                        <div class="chart-placeholder">
+                            <div class="chart-header">
+                                <h4>Ordem de Produção</h4>
+                                <div class="chart-controls">
+                                    <p-calendar [(ngModel)]="barChartDateRange" selectionMode="range"
+                                        [readonlyInput]="true" [showIcon]="true" dateFormat="dd/mm/yy"
+                                        placeholder="Selecione o período"
+                                        (ngModelChange)="updateBarChart()"></p-calendar>
+                                </div>
+                            </div>
+                            <p-chart type="pie" [data]="orderData" [options]="chartOptions" width="100%"
+                                height="350px"></p-chart>
+                        </div>
+                    </p-card>
+                </div>
+
+                <div class="chart-container">
+                    <p-card>
+                        <div style="min-height: 400px;">
+                        <div class="chart-placeholder">
+                            <h4>Equipamentos</h4>
+                            <div class="progress-grid">
+                                <div class="progress-item">
+                                    <div class="progress-info">
+                                        <span class="percent-value">43%</span>
+                                        <p-progressBar [value]="43" [showValue]="false"
+                                            class="custom-progress progress-1"></p-progressBar>
+                                    </div>
+                                    <span class="equipamento-name">Arcos cirúrgicos</span>
+                                </div>
+
+                                <div class="progress-item">
+                                    <div class="progress-info">
+                                        <span class="percent-value">92%</span>
+                                        <p-progressBar [value]="92" [showValue]="false"
+                                            class="custom-progress progress-2"></p-progressBar>
+                                    </div>
+                                    <span class="equipamento-name">Mamógrafos</span>
+                                </div>
+
+                                <div class="progress-item">
+                                    <div class="progress-info">
+                                        <span class="percent-value">65%</span>
+                                        <p-progressBar [value]="65" [showValue]="false"
+                                            class="custom-progress progress-3"></p-progressBar>
+                                    </div>
+                                    <span class="equipamento-name">Raio-x Fixos</span>
+                                </div>
+
+                                <div class="progress-item">
+                                    <div class="progress-info">
+                                        <span class="percent-value">51%</span>
+                                        <p-progressBar [value]="51" [showValue]="false"
+                                            class="custom-progress progress-4"></p-progressBar>
+                                    </div>
+                                    <span class="equipamento-name">Ressonância Magnética</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </p-card>
+                </div>
+            </div>
+        </div>
+    </div>
