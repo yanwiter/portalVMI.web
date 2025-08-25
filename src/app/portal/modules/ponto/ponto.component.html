@@ -1,0 +1,28 @@
+<div class="ponto-container">
+  <app-title-header title="Controle de Ponto"></app-title-header>
+  
+  <div class="ponto-content">
+    <p-tabView>
+      <p-tabPanel header="Registro de Ponto" leftIcon="pi pi-clock">
+        <router-outlet></router-outlet>
+      </p-tabPanel>
+      
+      <p-tabPanel header="Funcionários" leftIcon="pi pi-users">
+        <!-- <app-funcionarios></app-funcionarios> -->
+        <span style="color: #888">Acesse o menu Cadastro &gt; Funcionários para gerenciar funcionários.</span>
+      </p-tabPanel>
+      
+      <p-tabPanel header="Relatórios" leftIcon="pi pi-chart-bar">
+        <app-relatorios-ponto></app-relatorios-ponto>
+      </p-tabPanel>
+      
+      <p-tabPanel header="Horários de Trabalho" leftIcon="pi pi-calendar">
+        <app-horarios-trabalho></app-horarios-trabalho>
+      </p-tabPanel>
+      
+      <p-tabPanel header="Configurações" leftIcon="pi pi-cog">
+        <app-configuracao-ponto></app-configuracao-ponto>
+      </p-tabPanel>
+    </p-tabView>
+  </div>
+</div> 

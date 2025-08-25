@@ -7,7 +7,6 @@ import { SharedModule } from '../../../shared/modules/shared.module';
 import { TesteProdutosComponent } from './teste-produtos/teste-produtos.component';
 import { HistoricoProdutosComponent } from './historico-produtos/historico-produtos.component';
 
-
 @NgModule({
   declarations: [
     HistoricoProdutosComponent,

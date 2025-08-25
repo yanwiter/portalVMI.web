@@ -1,0 +1,3196 @@
+// Variáveis CSS para tema claro (padrão)
+:root {
+  --primary-bg: #ffffff;
+  --secondary-bg: #f8f9fa;
+  --tertiary-bg: #e9ecef;
+  --primary-text: #212529;
+  --secondary-text: #6c757d;
+  --border-color: #dee2e6;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --hover-bg: #f1f3f4;
+  --card-bg: #ffffff;
+  --sidebar-bg: #2c3e50;
+  --sidebar-text: #ffffff;
+  --header-bg: #1a2530;
+  --header-text: #ffffff;
+}
+
+// Tema escuro
+.theme-dark {
+  --primary-bg: #1a1a1a;
+  --secondary-bg: #2d2d2d;
+  --tertiary-bg: #404040;
+  --primary-text: #ffffff;
+  --secondary-text: #b0b0b0;
+  --border-color: #404040;
+  --shadow-color: rgba(0, 0, 0, 0.3);
+  --hover-bg: #3a3a3a;
+  --card-bg: #2d2d2d;
+  --sidebar-bg: #1a1a1a;
+  --sidebar-text: #ffffff;
+  --header-bg: #0d0d0d;
+  --header-text: #ffffff;
+
+  // Override do PrimeNG para tema escuro
+  --surface-ground: #1a1a1a;
+  --surface-section: #2d2d2d;
+  --surface-card: #2d2d2d;
+  --surface-overlay: #404040;
+  --surface-border: #404040;
+  --surface-hover: #3a3a3a;
+  --text-color: #ffffff;
+  --text-color-secondary: #b0b0b0;
+  --primary-color: #4f46e5;
+  --primary-color-text: #ffffff;
+  --highlight-bg: #4f46e5;
+  --highlight-text-color: #ffffff;
+  --surface-0: #1a1a1a;
+  --surface-50: #2d2d2d;
+  --surface-100: #404040;
+  --surface-200: #525252;
+  --surface-300: #737373;
+  --surface-400: #a3a3a3;
+  --surface-500: #d4d4d4;
+  --surface-600: #e5e5e5;
+  --surface-700: #f5f5f5;
+  --surface-800: #fafafa;
+  --surface-900: #ffffff;
+  --gray-50: #2d2d2d;
+  --gray-100: #404040;
+  --gray-200: #525252;
+  --gray-300: #737373;
+  --gray-400: #a3a3a3;
+  --gray-500: #d4d4d4;
+  --gray-600: #e5e5e5;
+  --gray-700: #f5f5f5;
+  --gray-800: #fafafa;
+  --gray-900: #ffffff;
+
+  // Correções específicas para tabelas no tema escuro
+  .p-datatable {
+    .p-datatable-header {
+      background-color: var(--surface-card) !important;
+      color: var(--text-color) !important;
+      border-color: var(--surface-border) !important;
+    }
+
+    .p-datatable-footer {
+      background-color: var(--surface-card) !important;
+      color: var(--text-color) !important;
+      border-color: var(--surface-border) !important;
+    }
+
+    .p-datatable-thead > tr > th {
+      background-color: var(--surface-card) !important;
+      color: var(--text-color) !important;
+      border-color: var(--surface-border) !important;
+    }
+
+    .p-datatable-tfoot > tr > td {
+      background-color: var(--surface-card) !important;
+      color: var(--text-color) !important;
+      border-color: var(--surface-border) !important;
+    }
+
+    .p-datatable-tbody > tr {
+      background-color: var(--surface-card) !important;
+      color: var(--text-color) !important;
+
+      &:hover {
+        background-color: var(--surface-hover) !important;
+      }
+    }
+  }
+
+    .p-datatable-tbody > tr > td {
+      border-color: var(--surface-border) !important;
+    }
+
+    .p-sortable-column {
+      background-color: var(--surface-card) !important;
+      color: var(--text-color) !important;
+
+      &:hover {
+        background-color: var(--surface-hover) !important;
+      }
+
+      &.p-highlight {
+        background-color: var(--surface-card) !important;
+        color: var(--text-color) !important;
+      }
+    }
+
+    .p-sortable-column-icon {
+      color: var(--text-color-secondary) !important;
+    }
+
+    .p-sortable-column:hover .p-sortable-column-icon {
+      color: var(--text-color) !important;
+    }
+
+    .p-sortable-column.p-highlight .p-sortable-column-icon {
+      color: var(--text-color) !important;
+    }
+  }
+
+  .p-datatable.p-datatable-striped .p-datatable-tbody > tr:nth-child(even) {
+    background-color: var(--surface-hover) !important;
+  }
+
+  .p-datatable.p-datatable-striped .p-datatable-tbody > tr:nth-child(even).p-highlight {
+    background-color: var(--primary-color) !important;
+    color: var(--primary-color-text) !important;
+  }
+
+  .p-datatable.p-datatable-hoverable-rows .p-datatable-tbody > tr:not(.p-highlight):hover {
+    background-color: var(--surface-hover) !important;
+    color: var(--text-color) !important;
+  }
+
+  .p-datatable .p-datatable-tbody > tr.p-highlight {
+    background-color: var(--primary-color) !important;
+    color: var(--primary-color-text) !important;
+  }
+
+  .p-paginator {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+    border-color: var(--surface-border) !important;
+  }
+
+  .p-paginator .p-paginator-first,
+  .p-paginator .p-paginator-prev,
+  .p-paginator .p-paginator-next,
+  .p-paginator .p-paginator-last {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+    border-color: var(--surface-border) !important;
+  }
+
+  .p-paginator .p-paginator-first:hover,
+  .p-paginator .p-paginator-prev:hover,
+  .p-paginator .p-paginator-next:hover,
+  .p-paginator .p-paginator-last:hover {
+    background-color: var(--surface-hover) !important;
+    color: var(--text-color) !important;
+  }
+
+  .p-paginator .p-paginator-pages .p-paginator-page {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+    border-color: var(--surface-border) !important;
+  }
+
+  .p-paginator .p-paginator-pages .p-paginator-page:hover {
+    background-color: var(--surface-hover) !important;
+    color: var(--text-color) !important;
+  }
+
+  .p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
+    background-color: var(--primary-color) !important;
+    color: var(--primary-color-text) !important;
+  }
+
+  .p-paginator .p-paginator-pages .p-paginator-page.p-highlight:hover {
+    background-color: var(--primary-color) !important;
+    color: var(--primary-color-text) !important;
+  }
+
+  .p-paginator .p-dropdown {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+    border-color: var(--surface-border) !important;
+  }
+
+  .p-paginator .p-dropdown .p-dropdown-label {
+    color: var(--text-color) !important;
+  }
+
+  .p-paginator .p-dropdown .p-dropdown-trigger {
+    color: var(--text-color-secondary) !important;
+  }
+
+  .p-paginator .p-dropdown-panel {
+    background-color: var(--surface-card) !important;
+    border-color: var(--surface-border) !important;
+  }
+
+  .p-paginator .p-dropdown-panel .p-dropdown-item {
+    color: var(--text-color) !important;
+  }
+
+  .p-paginator .p-dropdown-panel .p-dropdown-item:hover {
+    background-color: var(--surface-hover) !important;
+  }
+
+  .p-paginator .p-dropdown-panel .p-dropdown-item.p-highlight {
+    background-color: var(--primary-color) !important;
+    color: var(--primary-color-text) !important;
+  }
+
+  .p-paginator .p-paginator-current {
+    color: var(--text-color) !important;
+  }
+
+  .p-paginator .p-paginator-total {
+    color: var(--text-color) !important;
+  }
+
+  .p-paginator .p-paginator-page-count {
+    color: var(--text-color) !important;
+  }
+
+  .p-paginator .p-paginator-page-count .p-dropdown {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+    border-color: var(--surface-border) !important;
+  }
+
+  .p-paginator .p-paginator-page-count .p-dropdown .p-dropdown-label {
+    color: var(--text-color) !important;
+  }
+
+  .p-paginator .p-paginator-page-count .p-dropdown .p-dropdown-trigger {
+    color: var(--text-color-secondary) !important;
+  }
+
+  .p-datatable .p-paginator {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+    border-color: var(--surface-border) !important;
+  }
+
+  .p-datatable .p-paginator .p-paginator-element {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+    border-color: var(--surface-border) !important;
+  }
+
+  .p-datatable .p-paginator .p-paginator-element:hover {
+    background-color: var(--surface-hover) !important;
+    color: var(--text-color) !important;
+  }
+
+  .p-datatable .p-paginator .p-paginator-element.p-highlight {
+    background-color: var(--primary-color) !important;
+    color: var(--primary-color-text) !important;
+  }
+
+  .p-datatable .p-paginator .p-paginator-element:focus {
+    background-color: var(--surface-hover) !important;
+    color: var(--text-color) !important;
+  }
+
+  .p-datatable .p-paginator .p-paginator-element:focus.p-highlight {
+    background-color: var(--primary-color) !important;
+    color: var(--primary-color-text) !important;
+  }
+
+  .p-float-label {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+  }
+
+  .p-float-label > label {
+    color: var(--text-color-secondary) !important;
+  }
+
+  .p-float-label input:focus ~ label,
+  .p-float-label input.p-filled ~ label,
+  .p-float-label textarea:focus ~ label,
+  .p-float-label textarea.p-filled ~ label {
+    color: var(--primary-color) !important;
+  }
+
+  .p-float-label .p-inputtext {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+    border-color: var(--surface-border) !important;
+  }
+
+  .p-float-label .p-inputtext:enabled:focus {
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2) !important;
+  }
+
+  .p-dialog {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+    border-color: var(--surface-border) !important;
+  }
+
+  .p-dialog .p-dialog-header {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+    border-color: var(--surface-border) !important;
+  }
+
+  .p-dialog .p-dialog-header .p-dialog-title {
+    color: var(--text-color) !important;
+  }
+
+  .p-dialog .p-dialog-header .p-dialog-header-icon {
+    color: var(--text-color-secondary) !important;
+  }
+
+  .p-dialog .p-dialog-header .p-dialog-header-icon:hover {
+    color: var(--text-color) !important;
+    background-color: var(--surface-hover) !important;
+  }
+
+  .p-dialog .p-dialog-content {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+    border-color: var(--surface-border) !important;
+  }
+
+  .p-dialog .p-dialog-footer {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+    border-color: var(--surface-border) !important;
+  }
+
+  .p-dialog-mask {
+    background-color: rgba(0, 0, 0, 0.4) !important;
+  }
+
+  .p-dialog.p-dialog-draggable .p-dialog-header {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+  }
+
+  .p-dialog.p-dialog-maximizable .p-dialog-header {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+  }
+
+  .p-dialog-mask .p-dialog {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+  }
+
+  .p-dialog-mask .p-dialog .p-dialog-header {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+  }
+
+  .p-dialog-mask .p-dialog .p-dialog-content {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+  }
+
+  .p-dialog-mask .p-dialog .p-dialog-footer {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+  }
+
+  .p-overlaypanel {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+    border-color: var(--surface-border) !important;
+  }
+
+  .p-overlaypanel .p-overlaypanel-content {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+  }
+
+  .p-sidebar {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+    border-color: var(--surface-border) !important;
+  }
+
+  .p-sidebar .p-sidebar-header {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+  }
+
+  .p-sidebar .p-sidebar-content {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+  }
+
+  .p-tooltip {
+    background-color: var(--surface-overlay) !important;
+    color: var(--text-color) !important;
+    border-color: var(--surface-border) !important;
+  }
+
+  .p-tooltip .p-tooltip-text {
+    color: var(--text-color) !important;
+  }
+
+  .p-tooltip .p-tooltip-arrow {
+    border-color: var(--surface-border) !important;
+  }
+
+  .p-tabview {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+  }
+
+  .p-tabview .p-tabview-nav {
+    background-color: var(--surface-card) !important;
+    border-color: var(--surface-border) !important;
+  }
+
+  .p-tabview .p-tabview-nav li .p-tabview-nav-link {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+    border-color: var(--surface-border) !important;
+  }
+
+  .p-tabview .p-tabview-nav li .p-tabview-nav-link:hover {
+    background-color: var(--surface-hover) !important;
+    color: var(--text-color) !important;
+  }
+
+  .p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link {
+    background-color: var(--primary-color) !important;
+    color: var(--primary-color-text) !important;
+    border-color: var(--primary-color) !important;
+  }
+
+  .p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link:hover {
+    background-color: var(--primary-color) !important;
+    color: var(--primary-color-text) !important;
+  }
+
+  .p-tabview .p-tabview-panels {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+    border-color: var(--surface-border) !important;
+  }
+
+  .p-tabview .p-tabview-panel {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+  }
+
+  .field {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+  }
+
+  .field.grid {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+  }
+
+  .field-grid {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+  }
+
+  .field-grid--sm {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+  }
+
+  .grid {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+  }
+
+  .col {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+  }
+
+  .col-12,
+  .col-11,
+  .col-10,
+  .col-9,
+  .col-8,
+  .col-7,
+  .col-6,
+  .col-5,
+  .col-4,
+  .col-3,
+  .col-2,
+  .col-1 {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+  }
+
+  .p-panel {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+    border-color: var(--surface-border) !important;
+  }
+
+  .p-panel .p-panel-header {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+    border-color: var(--surface-border) !important;
+  }
+
+  .p-panel .p-panel-title {
+    color: var(--text-color) !important;
+  }
+
+  .p-panel .p-panel-content {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+    border-color: var(--surface-border) !important;
+  }
+
+  .p-accordion {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+  }
+
+  .p-accordion .p-accordion-header .p-accordion-header-link {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+    border-color: var(--surface-border) !important;
+  }
+
+  .p-accordion .p-accordion-header .p-accordion-header-link:hover {
+    background-color: var(--surface-hover) !important;
+    color: var(--text-color) !important;
+  }
+
+  .p-accordion .p-accordion-header.p-highlight .p-accordion-header-link {
+    background-color: var(--primary-color) !important;
+    color: var(--primary-color-text) !important;
+  }
+
+  .p-accordion .p-accordion-content {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+    border-color: var(--surface-border) !important;
+  }
+
+  .p-card {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+    border-color: var(--surface-border) !important;
+  }
+
+  .p-card .p-card-header {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+  }
+
+  .p-card .p-card-title {
+    color: var(--text-color) !important;
+  }
+
+  .p-card .p-card-content {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+  }
+
+  .p-card .p-card-footer {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+  }
+
+  // Correções específicas para o DatePicker/Calendar no tema escuro
+  .p-datepicker {
+    background-color: var(--surface-overlay) !important;
+    border-color: var(--surface-border) !important;
+    color: var(--text-color) !important;
+    
+    .p-datepicker-header {
+      background-color: var(--surface-section) !important;
+      border-bottom-color: var(--surface-border) !important;
+      
+      .p-datepicker-title {
+        .p-datepicker-year,
+        .p-datepicker-month {
+          color: var(--text-color) !important;
+          
+          &:hover {
+            background-color: var(--surface-hover) !important;
+          }
+        }
+      }
+      
+      .p-datepicker-prev,
+      .p-datepicker-next {
+        color: var(--text-color) !important;
+        
+        &:hover {
+          background-color: var(--surface-hover) !important;
+        }
+      }
+    }
+    
+    .p-datepicker-calendar {
+      background-color: var(--surface-overlay) !important;
+      
+      thead th {
+        background-color: var(--surface-section) !important;
+        color: var(--text-color-secondary) !important;
+        border-color: var(--surface-border) !important;
+      }
+      
+      tbody td {
+        .p-ripple {
+          color: var(--text-color) !important;
+          
+          &:hover {
+            background-color: var(--surface-hover) !important;
+          }
+          
+          &.p-highlight {
+            background-color: var(--primary-color) !important;
+            color: var(--primary-color-text) !important;
+          }
+          
+          &.p-today {
+            background-color: var(--highlight-bg) !important;
+            color: var(--highlight-text-color) !important;
+          }
+        }
+        
+        &.p-datepicker-other-month {
+          .p-ripple {
+            color: var(--text-color-secondary) !important;
+          }
+        }
+      }
+    }
+  }
+  
+  // Overlay do DatePicker
+  .p-datepicker-panel {
+    background-color: var(--surface-overlay) !important;
+    border-color: var(--surface-border) !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+  }
+
+  // Regras específicas para p-float-label no tema escuro
+  .p-float-label > label {
+    color: var(--text-color-secondary) !important;
+  }
+
+  .p-float-label input:focus ~ label,
+  .p-float-label input.p-filled ~ label,
+  .p-float-label textarea:focus ~ label,
+  .p-float-label textarea.p-filled ~ label {
+    color: var(--primary-color) !important;
+  }
+
+  // Regras mais específicas para garantir que as labels sejam visíveis
+  span.p-float-label > label {
+    color: var(--text-color-secondary) !important;
+  }
+
+  span.p-float-label input:focus ~ label,
+  span.p-float-label input.p-filled ~ label,
+  span.p-float-label textarea:focus ~ label,
+  span.p-float-label textarea.p-filled ~ label {
+    color: var(--primary-color) !important;
+  }
+
+  // Regras para qualquer elemento com p-float-label
+  *[class*="p-float-label"] > label {
+    color: var(--text-color-secondary) !important;
+  }
+
+  *[class*="p-float-label"] input:focus ~ label,
+  *[class*="p-float-label"] input.p-filled ~ label,
+  *[class*="p-float-label"] textarea:focus ~ label,
+  *[class*="p-float-label"] textarea.p-filled ~ label {
+    color: var(--primary-color) !important;
+  }
+
+  // Regras com maior especificidade para garantir que funcionem
+  .theme-dark .p-float-label > label {
+    color: var(--text-color-secondary) !important;
+  }
+
+  .theme-dark .p-float-label input:focus ~ label,
+  .theme-dark .p-float-label input.p-filled ~ label,
+  .theme-dark .p-float-label textarea:focus ~ label,
+  .theme-dark .p-float-label textarea.p-filled ~ label {
+    color: var(--primary-color) !important;
+  }
+
+// Tema claro
+.theme-light {
+  --primary-bg: #ffffff;
+  --secondary-bg: #f8f9fa;
+  --tertiary-bg: #e9ecef;
+  --primary-text: #212529;
+  --secondary-text: #6c757d;
+  --border-color: #dee2e6;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --hover-bg: #f1f3f4;
+  --card-bg: #ffffff;
+  --sidebar-bg: #2c3e50;
+  --sidebar-text: #ffffff;
+  --header-bg: #1a2530;
+  --header-text: #ffffff;
+  --surface-ground: #f8f9fa;
+  --surface-section: #ffffff;
+  --surface-card: #ffffff;
+  --surface-overlay: #ffffff;
+  --surface-border: #dee2e6;
+  --surface-hover: #f8f9fa;
+  --text-color: #212529;
+  --text-color-secondary: #6c757d;
+  --primary-color: #3b82f6;
+  --primary-color-text: #ffffff;
+  --surface-0: #ffffff;
+  --surface-50: #f8f9fa;
+  --surface-100: #f1f3f4;
+  --surface-200: #e9ecef;
+  --surface-300: #dee2e6;
+  --surface-400: #ced4da;
+  --surface-500: #adb5bd;
+  --surface-600: #6c757d;
+  --surface-700: #495057;
+  --surface-800: #343a40;
+  --surface-900: #212529;
+  --gray-50: #f8f9fa;
+  --gray-100: #f1f3f4;
+  --gray-200: #e9ecef;
+  --gray-300: #dee2e6;
+  --gray-400: #ced4da;
+  --gray-500: #adb5bd;
+  --gray-600: #6c757d;
+  --gray-700: #495057;
+  --gray-800: #343a40;
+  --gray-900: #212529;
+
+  .p-datatable {
+    .p-datatable-header {
+      background-color: var(--surface-card) !important;
+      color: var(--text-color) !important;
+      border-color: var(--surface-border) !important;
+    }
+
+    .p-datatable-footer {
+      background-color: var(--surface-card) !important;
+      color: var(--text-color) !important;
+      border-color: var(--surface-border) !important;
+    }
+
+    .p-datatable-thead > tr > th {
+      background-color: var(--surface-card) !important;
+      color: var(--text-color) !important;
+      border-color: var(--surface-border) !important;
+    }
+
+    .p-datatable-tfoot > tr > td {
+      background-color: var(--surface-card) !important;
+      color: var(--text-color) !important;
+      border-color: var(--surface-border) !important;
+    }
+
+    .p-datatable-tbody > tr {
+      background-color: var(--surface-card) !important;
+      color: var(--text-color) !important;
+
+      &:hover {
+        background-color: var(--surface-hover) !important;
+      }
+    }
+
+    .p-datatable-tbody > tr > td {
+      border-color: var(--surface-border) !important;
+    }
+
+    .p-sortable-column {
+      background-color: var(--surface-card) !important;
+      color: var(--text-color) !important;
+
+      &:hover {
+        background-color: var(--surface-hover) !important;
+      }
+
+      &.p-highlight {
+        background-color: var(--surface-card) !important;
+        color: var(--text-color) !important;
+      }
+    }
+
+    .p-sortable-column-icon {
+      color: var(--text-color-secondary) !important;
+    }
+
+    .p-sortable-column:hover .p-sortable-column-icon {
+      color: var(--text-color) !important;
+    }
+
+    .p-sortable-column.p-highlight .p-sortable-column-icon {
+      color: var(--text-color) !important;
+    }
+  }
+
+  .p-datatable.p-datatable-striped .p-datatable-tbody > tr:nth-child(even) {
+    background-color: var(--surface-hover) !important;
+  }
+
+  .p-datatable.p-datatable-striped .p-datatable-tbody > tr:nth-child(even).p-highlight {
+    background-color: var(--primary-color) !important;
+    color: var(--primary-color-text) !important;
+  }
+
+  .p-datatable.p-datatable-hoverable-rows .p-datatable-tbody > tr:not(.p-highlight):hover {
+    background-color: var(--surface-hover) !important;
+    color: var(--text-color) !important;
+  }
+
+  .p-datatable .p-datatable-tbody > tr.p-highlight {
+    background-color: var(--primary-color) !important;
+    color: var(--primary-color-text) !important;
+  }
+
+  .p-paginator {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+    border-color: var(--surface-border) !important;
+  }
+
+  .p-paginator .p-paginator-first,
+  .p-paginator .p-paginator-prev,
+  .p-paginator .p-paginator-next,
+  .p-paginator .p-paginator-last {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+    border-color: var(--surface-border) !important;
+  }
+
+  .p-paginator .p-paginator-first:hover,
+  .p-paginator .p-paginator-prev:hover,
+  .p-paginator .p-paginator-next:hover,
+  .p-paginator .p-paginator-last:hover {
+    background-color: var(--surface-hover) !important;
+    color: var(--text-color) !important;
+  }
+
+  .p-paginator .p-paginator-pages .p-paginator-page {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+    border-color: var(--surface-border) !important;
+  }
+
+  .p-paginator .p-paginator-pages .p-paginator-page:hover {
+    background-color: var(--surface-hover) !important;
+    color: var(--text-color) !important;
+  }
+
+  .p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
+    background-color: var(--primary-color) !important;
+    color: var(--primary-color-text) !important;
+  }
+
+  .p-paginator .p-paginator-pages .p-paginator-page.p-highlight:hover {
+    background-color: var(--primary-color) !important;
+    color: var(--primary-color-text) !important;
+  }
+
+  .p-paginator .p-dropdown {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+    border-color: var(--surface-border) !important;
+  }
+
+  .p-paginator .p-dropdown .p-dropdown-label {
+    color: var(--text-color) !important;
+  }
+
+  .p-paginator .p-dropdown .p-dropdown-trigger {
+    color: var(--text-color-secondary) !important;
+  }
+
+  .p-paginator .p-dropdown-panel {
+    background-color: var(--surface-card) !important;
+    border-color: var(--surface-border) !important;
+  }
+
+  .p-paginator .p-dropdown-panel .p-dropdown-item {
+    color: var(--text-color) !important;
+  }
+
+  .p-paginator .p-dropdown-panel .p-dropdown-item:hover {
+    background-color: var(--surface-hover) !important;
+  }
+
+  .p-paginator .p-dropdown-panel .p-dropdown-item.p-highlight {
+    background-color: var(--primary-color) !important;
+    color: var(--primary-color-text) !important;
+  }
+
+  .p-paginator .p-paginator-current {
+    color: var(--text-color) !important;
+  }
+
+  .p-paginator .p-paginator-total {
+    color: var(--text-color) !important;
+  }
+
+  .p-paginator .p-paginator-page-count {
+    color: var(--text-color) !important;
+  }
+
+  .p-paginator .p-paginator-page-count .p-dropdown {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+    border-color: var(--surface-border) !important;
+  }
+
+  .p-paginator .p-paginator-page-count .p-dropdown .p-dropdown-label {
+    color: var(--text-color) !important;
+  }
+
+  .p-paginator .p-paginator-page-count .p-dropdown .p-dropdown-trigger {
+    color: var(--text-color-secondary) !important;
+  }
+
+  .p-datatable .p-paginator {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+    border-color: var(--surface-border) !important;
+  }
+
+  .p-datatable .p-paginator .p-paginator-element {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+    border-color: var(--surface-border) !important;
+  }
+
+  .p-datatable .p-paginator .p-paginator-element:hover {
+    background-color: var(--surface-hover) !important;
+    color: var(--text-color) !important;
+  }
+
+  .p-datatable .p-paginator .p-paginator-element.p-highlight {
+    background-color: var(--primary-color) !important;
+    color: var(--primary-color-text) !important;
+  }
+
+  .p-datatable .p-paginator .p-paginator-element:focus {
+    background-color: var(--surface-hover) !important;
+    color: var(--text-color) !important;
+  }
+
+  .p-datatable .p-paginator .p-paginator-element:focus.p-highlight {
+    background-color: var(--primary-color) !important;
+    color: var(--primary-color-text) !important;
+  }
+
+  .p-float-label {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+  }
+
+  .p-float-label > label {
+    color: var(--text-color-secondary) !important;
+  }
+
+  .p-float-label input:focus ~ label,
+  .p-float-label input.p-filled ~ label,
+  .p-float-label textarea:focus ~ label,
+  .p-float-label textarea.p-filled ~ label {
+    color: var(--primary-color) !important;
+  }
+
+  .p-float-label .p-inputtext {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+    border-color: var(--surface-border) !important;
+  }
+
+  .p-float-label .p-inputtext:enabled:focus {
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
+  }
+
+  .p-dialog {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+    border-color: var(--surface-border) !important;
+  }
+
+  .p-dialog .p-dialog-header {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+    border-color: var(--surface-border) !important;
+  }
+
+  .p-dialog .p-dialog-header .p-dialog-title {
+    color: var(--text-color) !important;
+  }
+
+  .p-dialog .p-dialog-header .p-dialog-header-icon {
+    color: var(--text-color-secondary) !important;
+  }
+
+  .p-dialog .p-dialog-header .p-dialog-header-icon:hover {
+    color: var(--text-color) !important;
+    background-color: var(--surface-hover) !important;
+  }
+
+  .p-dialog .p-dialog-content {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+    border-color: var(--surface-border) !important;
+  }
+
+  .p-dialog .p-dialog-footer {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+    border-color: var(--surface-border) !important;
+  }
+
+  .p-dialog-mask {
+    background-color: rgba(0, 0, 0, 0.4) !important;
+  }
+
+  .p-dialog.p-dialog-draggable .p-dialog-header {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+  }
+
+  .p-dialog.p-dialog-maximizable .p-dialog-header {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+  }
+
+  .p-overlaypanel {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+    border-color: var(--surface-border) !important;
+  }
+
+  .p-overlaypanel .p-overlaypanel-content {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+  }
+
+  .p-sidebar {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+    border-color: var(--surface-border) !important;
+  }
+
+  .p-sidebar .p-sidebar-header {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+  }
+
+  .p-sidebar .p-sidebar-content {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+  }
+
+  .p-tooltip {
+    background-color: var(--surface-overlay) !important;
+    color: var(--text-color) !important;
+    border-color: var(--surface-border) !important;
+  }
+
+  .p-tooltip .p-tooltip-text {
+    color: var(--text-color) !important;
+  }
+
+  .p-tooltip .p-tooltip-arrow {
+    border-color: var(--surface-border) !important;
+  }
+
+  .p-tabview {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+  }
+
+  .p-tabview .p-tabview-nav {
+    background-color: var(--surface-card) !important;
+    border-color: var(--surface-border) !important;
+  }
+
+  .p-tabview .p-tabview-nav li .p-tabview-nav-link {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+    border-color: var(--surface-border) !important;
+  }
+
+  .p-tabview .p-tabview-nav li .p-tabview-nav-link:hover {
+    background-color: var(--surface-hover) !important;
+    color: var(--text-color) !important;
+  }
+
+  .p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link {
+    background-color: var(--primary-color) !important;
+    color: var(--primary-color-text) !important;
+    border-color: var(--primary-color) !important;
+  }
+
+  .p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link:hover {
+    background-color: var(--primary-color) !important;
+    color: var(--primary-color-text) !important;
+  }
+
+  .p-tabview .p-tabview-panels {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+    border-color: var(--surface-border) !important;
+  }
+
+  .p-tabview .p-tabview-panel {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+  }
+
+  .field {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+  }
+
+  .field.grid {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+  }
+
+  .field-grid {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+  }
+
+  .field-grid--sm {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+  }
+
+  .grid {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+  }
+
+  .col {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+  }
+
+  .col-12,
+  .col-11,
+  .col-10,
+  .col-9,
+  .col-8,
+  .col-7,
+  .col-6,
+  .col-5,
+  .col-4,
+  .col-3,
+  .col-2,
+  .col-1 {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+  }
+
+  .p-panel {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+    border-color: var(--surface-border) !important;
+  }
+
+  .p-panel .p-panel-header {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+    border-color: var(--surface-border) !important;
+  }
+
+  .p-panel .p-panel-title {
+    color: var(--text-color) !important;
+  }
+
+  .p-panel .p-panel-content {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+    border-color: var(--surface-border) !important;
+  }
+
+  .p-accordion {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+  }
+
+  .p-accordion .p-accordion-header .p-accordion-header-link {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+    border-color: var(--surface-border) !important;
+  }
+
+  .p-accordion .p-accordion-header .p-accordion-header-link:hover {
+    background-color: var(--surface-hover) !important;
+    color: var(--text-color) !important;
+  }
+
+  .p-accordion .p-accordion-header.p-highlight .p-accordion-header-link {
+    background-color: var(--primary-color) !important;
+    color: var(--primary-color-text) !important;
+  }
+
+  .p-accordion .p-accordion-content {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+    border-color: var(--surface-border) !important;
+  }
+
+  .p-card {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+    border-color: var(--surface-border) !important;
+  }
+
+  .p-card .p-card-header {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+  }
+
+  .p-card .p-card-title {
+    color: var(--text-color) !important;
+  }
+
+  .p-card .p-card-content {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+  }
+
+  .p-card .p-card-footer {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+  }
+
+  // Correções específicas para p-multiselect no tema claro
+  html body.theme-light .p-multiselect {
+    background-color: var(--surface-card) !important;
+    border-color: var(--surface-border) !important;
+    color: var(--text-color) !important;
+  }
+
+  html body.theme-light .p-multiselect:not(.p-disabled):hover {
+    border-color: var(--primary-color) !important;
+  }
+
+  html body.theme-light .p-multiselect:not(.p-disabled).p-focus {
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
+  }
+
+  html body.theme-light .p-multiselect-panel {
+    background-color: var(--surface-card) !important;
+    border-color: var(--surface-border) !important;
+    color: var(--text-color) !important;
+  }
+
+  html body.theme-light .p-multiselect-panel .p-multiselect-item {
+    color: var(--text-color) !important;
+  }
+
+  html body.theme-light .p-multiselect-panel .p-multiselect-item:hover {
+    background-color: var(--surface-hover) !important;
+  }
+
+  html body.theme-light .p-multiselect-panel .p-multiselect-item.p-highlight {
+    background-color: var(--primary-color) !important;
+    color: var(--primary-color-text) !important;
+  }
+
+  html body.theme-light .p-multiselect-trigger {
+    color: var(--text-color-secondary) !important;
+  }
+
+  html body.theme-light .p-multiselect-token {
+    background-color: var(--primary-color) !important;
+    color: var(--primary-color-text) !important;
+  }
+
+  html body.theme-light .p-multiselect-token-icon {
+    color: var(--primary-color-text) !important;
+  } 
+
+  // Estilos adicionais para p-multiselect no tema claro
+  html body.theme-light .p-multiselect .p-multiselect-label-container {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+  }
+
+  html body.theme-light .p-multiselect .p-multiselect-trigger {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color-secondary) !important;
+  }
+
+  html body.theme-light .p-multiselect .p-multiselect-trigger:hover {
+    color: var(--text-color) !important;
+  }
+
+  html body.theme-light .p-multiselect .p-multiselect-token-label {
+    color: var(--primary-color-text) !important;
+  }
+
+  html body.theme-light .p-multiselect .p-multiselect-token-icon {
+    color: var(--primary-color-text) !important;
+  }
+
+  html body.theme-light .p-multiselect .p-multiselect-token-icon:hover {
+    color: var(--primary-color-text) !important;
+  }
+
+  // Estilos específicos para input de busca dentro do painel do p-multiselect no tema claro
+  html body.theme-light .p-multiselect-panel input.p-inputtext {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+    border-color: var(--surface-border) !important;
+  }
+
+  html body.theme-light .p-multiselect-panel input.p-inputtext:focus {
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
+  }
+
+  html body.theme-light .p-multiselect-panel input.p-inputtext::placeholder {
+    color: var(--text-color-secondary) !important;
+  }
+
+  html body.theme-light .p-multiselect-panel .p-multiselect-filter-container input {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+    border-color: var(--surface-border) !important;
+  }
+
+  html body.theme-light .p-multiselect-panel .p-multiselect-filter-container input:focus {
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
+  }
+
+  html body.theme-light .p-multiselect-panel .p-multiselect-filter-container input::placeholder {
+    color: var(--text-color-secondary) !important;
+  }
+
+  // Estilos específicos para p-multiselect-header no tema claro
+  html body.theme-light .p-multiselect-header {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+    border-color: var(--surface-border) !important;
+  }
+
+  html body.theme-light .p-multiselect-header .p-checkbox {
+    background-color: var(--surface-card) !important;
+  }
+
+  html body.theme-light .p-multiselect-header .p-checkbox .p-checkbox-box {
+    background-color: var(--surface-card) !important;
+    border-color: var(--surface-border) !important;
+  }
+
+  html body.theme-light .p-multiselect-header .p-checkbox .p-checkbox-box.p-highlight {
+    background-color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+  }
+
+  html body.theme-light .p-multiselect-header .p-checkbox .p-checkbox-icon {
+    color: var(--primary-color-text) !important;
+  }
+
+  html body.theme-light .p-multiselect-header .p-multiselect-close {
+    color: var(--text-color-secondary) !important;
+  }
+
+  html body.theme-light .p-multiselect-header .p-multiselect-close:hover {
+    color: var(--text-color) !important;
+  }
+
+  // Estilos específicos para p-calendar no tema claro
+  html body.theme-light .p-calendar {
+    background-color: var(--surface-card) !important;
+    border-color: var(--surface-border) !important;
+    color: var(--text-color) !important;
+  }
+
+  html body.theme-light .p-calendar:not(.p-disabled):hover {
+    border-color: var(--primary-color) !important;
+  }
+
+  html body.theme-light .p-calendar:not(.p-disabled).p-focus {
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
+  }
+
+  html body.theme-light .p-calendar .p-inputtext {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+    border-color: var(--surface-border) !important;
+  }
+
+  html body.theme-light .p-calendar .p-inputtext:focus {
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
+  }
+
+  html body.theme-light .p-calendar .p-inputtext::placeholder {
+    color: var(--text-color-secondary) !important;
+  }
+
+  html body.theme-light .p-calendar .p-button {
+    background-color: var(--surface-card) !important;
+    border-color: var(--surface-border) !important;
+    color: var(--text-color) !important;
+  }
+
+  html body.theme-light .p-calendar .p-button:hover {
+    background-color: var(--surface-hover) !important;
+    border-color: var(--primary-color) !important;
+  }
+
+  html body.theme-light .p-calendar .p-button:focus {
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
+  }
+
+  html body.theme-light .p-calendar-panel {
+    background-color: var(--surface-card) !important;
+    border-color: var(--surface-border) !important;
+    color: var(--text-color) !important;
+  }
+
+  html body.theme-light .p-calendar-panel .p-datepicker-header {
+    background-color: var(--surface-card) !important;
+    border-color: var(--surface-border) !important;
+    color: var(--text-color) !important;
+  }
+
+  html body.theme-light .p-calendar-panel .p-datepicker-header .p-datepicker-title {
+    color: var(--text-color) !important;
+  }
+
+  html body.theme-light .p-calendar-panel .p-datepicker-header .p-datepicker-title .p-datepicker-year,
+  html body.theme-light .p-calendar-panel .p-datepicker-header .p-datepicker-title .p-datepicker-month {
+    color: var(--text-color) !important;
+  }
+
+  html body.theme-light .p-calendar-panel .p-datepicker-header .p-datepicker-title .p-datepicker-year:focus,
+  html body.theme-light .p-calendar-panel .p-datepicker-header .p-datepicker-title .p-datepicker-month:focus {
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
+  }
+
+  html body.theme-light .p-calendar-panel .p-datepicker-header .p-datepicker-prev,
+  html body.theme-light .p-calendar-panel .p-datepicker-header .p-datepicker-next {
+    background-color: var(--surface-card) !important;
+    border-color: var(--surface-border) !important;
+    color: var(--text-color) !important;
+  }
+
+  html body.theme-light .p-calendar-panel .p-datepicker-header .p-datepicker-prev:hover,
+  html body.theme-light .p-calendar-panel .p-datepicker-header .p-datepicker-next:hover {
+    background-color: var(--surface-hover) !important;
+    border-color: var(--primary-color) !important;
+  }
+
+  html body.theme-light .p-calendar-panel .p-datepicker-header .p-datepicker-prev:focus,
+  html body.theme-light .p-calendar-panel .p-datepicker-header .p-datepicker-next:focus {
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
+  }
+
+  html body.theme-light .p-calendar-panel .p-datepicker-calendar {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+  }
+
+  html body.theme-light .p-calendar-panel .p-datepicker-calendar thead th {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+    border-color: var(--surface-border) !important;
+  }
+
+  html body.theme-light .p-calendar-panel .p-datepicker-calendar tbody td {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+    border-color: var(--surface-border) !important;
+  }
+
+  html body.theme-light .p-calendar-panel .p-datepicker-calendar tbody td > span {
+    color: var(--text-color) !important;
+  }
+
+  html body.theme-light .p-calendar-panel .p-datepicker-calendar tbody td > span:hover {
+    background-color: var(--surface-hover) !important;
+  }
+
+  html body.theme-light .p-calendar-panel .p-datepicker-calendar tbody td > span.p-highlight {
+    background-color: var(--primary-color) !important;
+    color: var(--primary-color-text) !important;
+  }
+
+  html body.theme-light .p-calendar-panel .p-datepicker-calendar tbody td > span.p-today {
+    background-color: var(--primary-color) !important;
+    color: var(--primary-color-text) !important;
+  }
+
+  html body.theme-light .p-calendar-panel .p-datepicker-calendar tbody td.p-datepicker-other-month > span {
+    color: var(--text-color-secondary) !important;
+  }
+
+  html body.theme-light .p-calendar-panel .p-datepicker-calendar tbody td.p-datepicker-other-month > span:hover {
+    background-color: var(--surface-hover) !important;
+  }
+
+  html body.theme-light .p-calendar-panel .p-datepicker-calendar tbody td.p-datepicker-other-month > span.p-highlight {
+    background-color: var(--primary-color) !important;
+    color: var(--primary-color-text) !important;
+  }
+
+  html body.theme-light .p-calendar-panel .p-datepicker-calendar tbody td.p-datepicker-other-month > span.p-today {
+    background-color: var(--primary-color) !important;
+    color: var(--primary-color-text) !important;
+  } 
+
+  // Estilos específicos para p-datepicker-group-container no tema claro
+  html body.theme-light .p-datepicker-group-container {
+    background-color: var(--surface-card) !important;
+    border-color: var(--surface-border) !important;
+    color: var(--text-color) !important;
+  }
+
+  html body.theme-light .p-datepicker-group {
+    background-color: var(--surface-card) !important;
+    border-color: var(--surface-border) !important;
+    color: var(--text-color) !important;
+  }
+
+  html body.theme-light .p-datepicker-group .p-datepicker-header {
+    background-color: var(--surface-card) !important;
+    border-color: var(--surface-border) !important;
+    color: var(--text-color) !important;
+  }
+
+  html body.theme-light .p-datepicker-group .p-datepicker-header .p-datepicker-title {
+    color: var(--text-color) !important;
+  }
+
+  html body.theme-light .p-datepicker-group .p-datepicker-header .p-datepicker-title .p-datepicker-year,
+  html body.theme-light .p-datepicker-group .p-datepicker-header .p-datepicker-title .p-datepicker-month {
+    color: var(--text-color) !important;
+  }
+
+  html body.theme-light .p-datepicker-group .p-datepicker-header .p-datepicker-title .p-datepicker-year:focus,
+  html body.theme-light .p-datepicker-group .p-datepicker-header .p-datepicker-title .p-datepicker-month:focus {
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
+  }
+
+  html body.theme-light .p-datepicker-group .p-datepicker-header .p-datepicker-prev,
+  html body.theme-light .p-datepicker-group .p-datepicker-header .p-datepicker-next {
+    background-color: var(--surface-card) !important;
+    border-color: var(--surface-border) !important;
+    color: var(--text-color) !important;
+  }
+
+  html body.theme-light .p-datepicker-group .p-datepicker-header .p-datepicker-prev:hover,
+  html body.theme-light .p-datepicker-group .p-datepicker-header .p-datepicker-next:hover {
+    background-color: var(--surface-hover) !important;
+    border-color: var(--primary-color) !important;
+  }
+
+  html body.theme-light .p-datepicker-group .p-datepicker-header .p-datepicker-prev:focus,
+  html body.theme-light .p-datepicker-group .p-datepicker-header .p-datepicker-next:focus {
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
+  }
+
+  html body.theme-light .p-datepicker-group .p-datepicker-calendar-container {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+  }
+
+  html body.theme-light .p-datepicker-group .p-datepicker-calendar-container .p-datepicker-calendar {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+  }
+
+  html body.theme-light .p-datepicker-group .p-datepicker-calendar-container .p-datepicker-calendar thead th {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+    border-color: var(--surface-border) !important;
+  }
+
+  html body.theme-light .p-datepicker-group .p-datepicker-calendar-container .p-datepicker-calendar tbody td {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+    border-color: var(--surface-border) !important;
+  }
+
+  html body.theme-light .p-datepicker-group .p-datepicker-calendar-container .p-datepicker-calendar tbody td > span {
+    color: var(--text-color) !important;
+  }
+
+  html body.theme-light .p-datepicker-group .p-datepicker-calendar-container .p-datepicker-calendar tbody td > span:hover {
+    background-color: var(--surface-hover) !important;
+  }
+
+  html body.theme-light .p-datepicker-group .p-datepicker-calendar-container .p-datepicker-calendar tbody td > span.p-highlight {
+    background-color: var(--primary-color) !important;
+    color: var(--primary-color-text) !important;
+  }
+
+  html body.theme-light .p-datepicker-group .p-datepicker-calendar-container .p-datepicker-calendar tbody td > span.p-today {
+    background-color: var(--primary-color) !important;
+    color: var(--primary-color-text) !important;
+  }
+
+  html body.theme-light .p-datepicker-group .p-datepicker-calendar-container .p-datepicker-calendar tbody td.p-datepicker-other-month > span {
+    color: var(--text-color-secondary) !important;
+  }
+
+  html body.theme-light .p-datepicker-group .p-datepicker-calendar-container .p-datepicker-calendar tbody td.p-datepicker-other-month > span:hover {
+    background-color: var(--surface-hover) !important;
+  }
+
+  html body.theme-light .p-datepicker-group .p-datepicker-calendar-container .p-datepicker-calendar tbody td.p-datepicker-other-month > span.p-highlight {
+    background-color: var(--primary-color) !important;
+    color: var(--primary-color-text) !important;
+  }
+
+  html body.theme-light .p-datepicker-group .p-datepicker-calendar-container .p-datepicker-calendar tbody td.p-datepicker-other-month > span.p-today {
+    background-color: var(--primary-color) !important;
+    color: var(--primary-color-text) !important;
+  }
+
+  // Estilos específicos para p-datepicker-group-container no tema claro
+  html body.theme-light .p-datepicker-group-container {
+    background-color: var(--surface-card) !important;
+    border-color: var(--surface-border) !important;
+    color: var(--text-color) !important;
+  }
+
+  html body.theme-light .p-datepicker-group {
+    background-color: var(--surface-card) !important;
+    border-color: var(--surface-border) !important;
+    color: var(--text-color) !important;
+  }
+
+  html body.theme-light .p-datepicker-group .p-datepicker-header {
+    background-color: var(--surface-card) !important;
+    border-color: var(--surface-border) !important;
+    color: var(--text-color) !important;
+  }
+
+  html body.theme-light .p-datepicker-group .p-datepicker-header .p-datepicker-title {
+    color: var(--text-color) !important;
+  }
+
+  html body.theme-light .p-datepicker-group .p-datepicker-header .p-datepicker-title .p-datepicker-year,
+  html body.theme-light .p-datepicker-group .p-datepicker-header .p-datepicker-title .p-datepicker-month {
+    color: var(--text-color) !important;
+  }
+
+  html body.theme-light .p-datepicker-group .p-datepicker-header .p-datepicker-title .p-datepicker-year:focus,
+  html body.theme-light .p-datepicker-group .p-datepicker-header .p-datepicker-title .p-datepicker-month:focus {
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
+  }
+
+  html body.theme-light .p-datepicker-group .p-datepicker-header .p-datepicker-prev,
+  html body.theme-light .p-datepicker-group .p-datepicker-header .p-datepicker-next {
+    background-color: var(--surface-card) !important;
+    border-color: var(--surface-border) !important;
+    color: var(--text-color) !important;
+  }
+
+  html body.theme-light .p-datepicker-group .p-datepicker-header .p-datepicker-prev:hover,
+  html body.theme-light .p-datepicker-group .p-datepicker-header .p-datepicker-next:hover {
+    background-color: var(--surface-hover) !important;
+    border-color: var(--primary-color) !important;
+  }
+
+  html body.theme-light .p-datepicker-group .p-datepicker-header .p-datepicker-prev:focus,
+  html body.theme-light .p-datepicker-group .p-datepicker-header .p-datepicker-next:focus {
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
+  }
+
+  html body.theme-light .p-datepicker-group .p-datepicker-calendar-container {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+  }
+
+  html body.theme-light .p-datepicker-group .p-datepicker-calendar-container .p-datepicker-calendar {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+  }
+
+  html body.theme-light .p-datepicker-group .p-datepicker-calendar-container .p-datepicker-calendar thead th {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+    border-color: var(--surface-border) !important;
+  }
+
+  html body.theme-light .p-datepicker-group .p-datepicker-calendar-container .p-datepicker-calendar tbody td {
+    background-color: var(--surface-card) !important;
+    color: var(--text-color) !important;
+    border-color: var(--surface-border) !important;
+  }
+
+  html body.theme-light .p-datepicker-group .p-datepicker-calendar-container .p-datepicker-calendar tbody td > span {
+    color: var(--text-color) !important;
+  }
+
+  html body.theme-light .p-datepicker-group .p-datepicker-calendar-container .p-datepicker-calendar tbody td > span:hover {
+    background-color: var(--surface-hover) !important;
+  }
+
+  html body.theme-light .p-datepicker-group .p-datepicker-calendar-container .p-datepicker-calendar tbody td > span.p-highlight {
+    background-color: var(--primary-color) !important;
+    color: var(--primary-color-text) !important;
+  }
+
+  html body.theme-light .p-datepicker-group .p-datepicker-calendar-container .p-datepicker-calendar tbody td > span.p-today {
+    background-color: var(--primary-color) !important;
+    color: var(--primary-color-text) !important;
+  }
+
+  html body.theme-light .p-datepicker-group .p-datepicker-calendar-container .p-datepicker-calendar tbody td.p-datepicker-other-month > span {
+    color: var(--text-color-secondary) !important;
+  }
+
+  html body.theme-light .p-datepicker-group .p-datepicker-calendar-container .p-datepicker-calendar tbody td.p-datepicker-other-month > span:hover {
+    background-color: var(--surface-hover) !important;
+  }
+
+  html body.theme-light .p-datepicker-group .p-datepicker-calendar-container .p-datepicker-calendar tbody td.p-datepicker-other-month > span.p-highlight {
+    background-color: var(--primary-color) !important;
+    color: var(--primary-color-text) !important;
+  }
+
+  html body.theme-light .p-datepicker-group .p-datepicker-calendar-container .p-datepicker-calendar tbody td.p-datepicker-other-month > span.p-today {
+    background-color: var(--primary-color) !important;
+    color: var(--primary-color-text) !important;
+  }
+}
+
+body {
+  background-color: var(--primary-bg);
+  color: var(--primary-text);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 2px 4px var(--shadow-color);
+}
+
+.custom-sidebar {
+  background-color: var(--sidebar-bg);
+  color: var(--sidebar-text);
+}
+
+.title-header {
+  background: linear-gradient(180deg, var(--header-bg) 100%, var(--sidebar-bg) 0%);
+  color: var(--header-text);
+}
+
+.p-datatable {
+  .p-datatable-thead > tr > th {
+    background-color: var(--gray-50);
+    color: var(--primary-text);
+    border-color: var(--border-color);
+  }
+
+  .p-datatable-tbody > tr {
+    background-color: var(--card-bg);
+    color: var(--primary-text);
+
+    &:hover {
+      background-color: var(--hover-bg);
+    }
+  }
+
+  .p-datatable-tbody > tr > td {
+    border-color: var(--border-color);
+  }
+}
+
+.p-inputtext {
+  background-color: var(--card-bg);
+  color: var(--primary-text);
+  border-color: var(--border-color);
+
+  &:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+  }
+}
+
+.p-dropdown {
+  background-color: var(--card-bg);
+  border-color: var(--border-color);
+
+  .p-dropdown-label {
+    color: var(--primary-text);
+  }
+
+  .p-dropdown-trigger {
+    color: var(--secondary-text);
+  }
+}
+
+.p-dropdown-panel {
+  background-color: var(--card-bg);
+  border-color: var(--border-color);
+
+  .p-dropdown-item {
+    color: var(--primary-text);
+
+    &:hover {
+      background-color: var(--hover-bg);
+    }
+  }
+}
+
+.p-button {
+  &.p-button-text {
+    color: var(--primary-text);
+
+    &:hover {
+      background-color: var(--hover-bg);
+    }
+  }
+}
+
+.p-accordion {
+  .p-accordion-header {
+    .p-accordion-header-link {
+      background-color: var(--card-bg);
+      color: var(--primary-text);
+      border-color: var(--border-color);
+
+      &:hover {
+        background-color: var(--hover-bg);
+      }
+    }
+  }
+
+  .p-accordion-content {
+    background-color: var(--card-bg);
+    color: var(--primary-text);
+    border-color: var(--border-color);
+  }
+}
+
+.p-tabview {
+  background-color: var(--card-bg);
+  color: var(--primary-text);
+}
+
+.p-tabview .p-tabview-nav {
+  background-color: var(--card-bg);
+  border-color: var(--border-color);
+}
+
+.p-tabview .p-tabview-nav li .p-tabview-nav-link {
+  background-color: var(--card-bg);
+  color: var(--primary-text);
+  border-color: var(--border-color);
+}
+
+.p-tabview .p-tabview-nav li .p-tabview-nav-link:hover {
+  background-color: var(--hover-bg);
+  color: var(--primary-text);
+}
+
+.p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link {
+  background-color: var(--primary-color);
+  color: var(--primary-color-text);
+  border-color: var(--primary-color);
+}
+
+.p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link:hover {
+  background-color: var(--primary-color);
+  color: var(--primary-color-text);
+}
+
+.p-tabview .p-tabview-panels {
+  background-color: var(--card-bg);
+  color: var(--primary-text);
+  border-color: var(--border-color);
+}
+
+.p-tabview .p-tabview-panel {
+  background-color: var(--card-bg);
+  color: var(--primary-text);
+}
+
+.field {
+  background-color: var(--card-bg);
+  color: var(--primary-text);
+}
+
+.field.grid {
+  background-color: var(--card-bg);
+  color: var(--primary-text);
+}
+
+.field-grid {
+  background-color: var(--card-bg);
+  color: var(--primary-text);
+}
+
+.field-grid--sm {
+  background-color: var(--card-bg);
+  color: var(--primary-text);
+}
+
+.grid {
+  background-color: var(--card-bg);
+  color: var(--primary-text);
+}
+
+.col {
+  background-color: var(--card-bg);
+  color: var(--primary-text);
+}
+
+.col-12,
+.col-11,
+.col-10,
+.col-9,
+.col-8,
+.col-7,
+.col-6,
+.col-5,
+.col-4,
+.col-3,
+.col-2,
+.col-1 {
+  background-color: var(--card-bg);
+  color: var(--primary-text);
+}
+
+.p-panel {
+  background-color: var(--card-bg);
+  color: var(--primary-text);
+  border-color: var(--border-color);
+}
+
+.p-panel .p-panel-header {
+  background-color: var(--card-bg);
+  color: var(--primary-text);
+  border-color: var(--border-color);
+}
+
+.p-panel .p-panel-title {
+  color: var(--primary-text);
+}
+
+.p-panel .p-panel-content {
+  background-color: var(--card-bg);
+  color: var(--primary-text);
+  border-color: var(--border-color);
+}
+
+.p-accordion {
+  background-color: var(--surface-card) !important;
+  color: var(--text-color) !important;
+}
+
+.p-accordion .p-accordion-header .p-accordion-header-link {
+  background-color: var(--surface-card) !important;
+  color: var(--text-color) !important;
+  border-color: var(--surface-border) !important;
+}
+
+.p-accordion .p-accordion-header .p-accordion-header-link:hover {
+  background-color: var(--surface-hover) !important;
+  color: var(--text-color) !important;
+}
+
+.p-accordion .p-accordion-header.p-highlight .p-accordion-header-link {
+  background-color: var(--primary-color) !important;
+  color: var(--primary-color-text) !important;
+}
+
+.p-accordion .p-accordion-content {
+  background-color: var(--surface-card) !important;
+  color: var(--text-color) !important;
+  border-color: var(--surface-border) !important;
+}
+
+.p-card {
+  background-color: var(--card-bg);
+  color: var(--primary-text);
+  border-color: var(--border-color);
+}
+
+.p-card .p-card-header {
+  background-color: var(--card-bg);
+  color: var(--primary-text);
+}
+
+.p-card .p-card-title {
+  color: var(--primary-text);
+}
+
+.p-card .p-card-content {
+  background-color: var(--card-bg);
+  color: var(--primary-text);
+}
+
+.p-card .p-card-footer {
+  background-color: var(--card-bg);
+  color: var(--primary-text);
+}
+
+::-webkit-scrollbar-track {
+  background: var(--secondary-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--primary-color);
+  border: 2px solid var(--secondary-bg);
+}
+
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.theme-dark {
+  label {
+    color: var(--text-color) !important;
+  }
+  
+  .labels-for-checkbox {
+    color: var(--text-color) !important;
+  }
+  
+  .field label,
+  .field-grid label,
+  .field-grid--sm label,
+  .field-grid--md label,
+  .field-grid--lg label,
+  .field-grid--custom label {
+    color: var(--text-color) !important;
+  }
+  
+  .p-dropdown-label {
+    color: var(--text-color) !important;
+  }
+  
+  .p-multiselect-label {
+    color: var(--text-color) !important;
+  }
+  
+  .p-calendar .p-inputtext {
+    color: var(--text-color) !important;
+  }
+  
+  .p-float-label > label {
+    color: var(--text-color-secondary) !important;
+  }
+  
+  .p-float-label input:focus ~ label,
+  .p-float-label input.p-filled ~ label,
+  .p-float-label textarea:focus ~ label,
+  .p-float-label textarea.p-filled ~ label {
+    color: var(--primary-color) !important;
+  }
+  
+  body .p-float-label > label {
+    color: var(--text-color-secondary) !important;
+  }
+  
+  body .p-float-label input:focus ~ label,
+  body .p-float-label input.p-filled ~ label,
+  body .p-float-label textarea:focus ~ label,
+  body .p-float-label textarea.p-filled ~ label {
+    color: var(--primary-color) !important;
+  }
+  
+  html body .theme-dark .p-float-label > label {
+    color: var(--text-color-secondary) !important;
+  }
+  
+  html body .theme-dark .p-float-label input:focus ~ label,
+  html body .theme-dark .p-float-label input.p-filled ~ label,
+  html body .theme-dark .p-float-label textarea:focus ~ label,
+  html body .theme-dark .p-float-label textarea.p-filled ~ label {
+    color: var(--primary-color) !important;
+  }
+  
+  .p-panel .p-panel-title {
+    color: var(--text-color) !important;
+  }
+  
+  .p-card .p-card-title {
+    color: var(--text-color) !important;
+  }
+  
+  .p-accordion .p-accordion-header .p-accordion-header-link {
+    color: var(--text-color) !important;
+  }
+  
+  .p-inputtext {
+    color: var(--text-color) !important;
+  }
+  
+  .p-inputtext::placeholder {
+    color: var(--text-color-secondary) !important;
+  }
+  
+  .p-inputtextarea {
+    color: var(--text-color) !important;
+  }
+  
+  .p-inputtextarea::placeholder {
+    color: var(--text-color-secondary) !important;
+  }
+  
+  .p-tooltip .p-tooltip-text {
+    color: var(--text-color) !important;
+  }
+  
+  .p-message .p-message-text {
+    color: var(--text-color) !important;
+  }
+  
+  .p-toast .p-toast-message .p-toast-message-text {
+    color: var(--text-color) !important;
+  }
+}
+
+.theme-light {
+  label {
+    color: var(--text-color) !important;
+  }
+  
+  .labels-for-checkbox {
+    color: var(--text-color) !important;
+  }
+  
+  .field label,
+  .field-grid label,
+  .field-grid--sm label,
+  .field-grid--md label,
+  .field-grid--lg label,
+  .field-grid--custom label {
+    color: var(--text-color) !important;
+  }
+  
+  .p-dropdown-label {
+    color: var(--text-color) !important;
+  }
+  
+  .p-multiselect-label {
+    color: var(--text-color) !important;
+  }
+  
+  .p-calendar .p-inputtext {
+    color: var(--text-color) !important;
+  }
+  
+  .p-float-label > label {
+    color: var(--text-color-secondary) !important;
+  }
+  
+  .p-float-label input:focus ~ label,
+  .p-float-label input.p-filled ~ label,
+  .p-float-label textarea:focus ~ label,
+  .p-float-label textarea.p-filled ~ label {
+    color: var(--primary-color) !important;
+  }
+  
+  .p-panel .p-panel-title {
+    color: var(--text-color) !important;
+  }
+  
+  .p-card .p-card-title {
+    color: var(--text-color) !important;
+  }
+  
+  .p-accordion .p-accordion-header .p-accordion-header-link {
+    color: var(--text-color) !important;
+  }
+  
+  .p-inputtext {
+    color: var(--text-color) !important;
+  }
+  
+  .p-inputtext::placeholder {
+    color: var(--text-color-secondary) !important;
+  }
+  
+  .p-inputtextarea {
+    color: var(--text-color) !important;
+  }
+  
+  .p-inputtextarea::placeholder {
+    color: var(--text-color-secondary) !important;
+  }
+  
+  .p-tooltip .p-tooltip-text {
+    color: var(--text-color) !important;
+  }
+  
+  .p-message .p-message-text {
+    color: var(--text-color) !important;
+  }
+  
+  .p-toast .p-toast-message .p-toast-message-text {
+    color: var(--text-color) !important;
+  }
+} 
+
+html body.theme-dark .p-float-label > label {
+  color: var(--text-color-secondary) !important;
+}
+
+html body.theme-dark .p-float-label input:focus ~ label,
+html body.theme-dark .p-float-label input.p-filled ~ label,
+html body.theme-dark .p-float-label textarea:focus ~ label,
+html body.theme-dark .p-float-label textarea.p-filled ~ label {
+  color: var(--primary-color) !important;
+}
+
+html body.theme-dark .p-dropdown-label {
+  color: var(--text-color) !important;
+}
+
+html body.theme-dark .p-multiselect-label {
+  color: var(--text-color) !important;
+}
+
+html body.theme-dark .p-calendar .p-inputtext {
+  color: var(--text-color) !important;
+}
+
+html body.theme-dark label {
+  color: var(--text-color) !important;
+}
+
+html body.theme-dark .field label,
+html body.theme-dark .field-grid label,
+html body.theme-dark .field-grid--sm label,
+html body.theme-dark .field-grid--md label,
+html body.theme-dark .field-grid--lg label,
+html body.theme-dark .field-grid--custom label {
+  color: var(--text-color) !important;
+}
+
+html body.theme-light .p-float-label > label {
+  color: var(--text-color-secondary) !important;
+}
+
+html body.theme-light .p-float-label input:focus ~ label,
+html body.theme-light .p-float-label input.p-filled ~ label,
+html body.theme-light .p-float-label textarea:focus ~ label,
+html body.theme-light .p-float-label textarea.p-filled ~ label {
+  color: var(--primary-color) !important;
+}
+
+html body.theme-light .p-dropdown-label {
+  color: var(--text-color) !important;
+}
+
+html body.theme-light .p-multiselect-label {
+  color: var(--text-color) !important;
+}
+
+html body.theme-light .p-calendar .p-inputtext {
+  color: var(--text-color) !important;
+}
+
+html body.theme-light label {
+  color: var(--text-color) !important;
+}
+
+html body.theme-light .field label,
+html body.theme-light .field-grid label,
+html body.theme-light .field-grid--sm label,
+html body.theme-light .field-grid--md label,
+html body.theme-light .field-grid--lg label,
+html body.theme-light .field-grid--custom label {
+  color: var(--text-color) !important;
+} 
+
+// Estilos específicos para p-multiselect no tema escuro
+html body.theme-dark .p-multiselect {
+  background-color: var(--surface-card) !important;
+  border-color: var(--surface-border) !important;
+  color: var(--text-color) !important;
+}
+
+html body.theme-dark .p-multiselect:not(.p-disabled):hover {
+  border-color: var(--primary-color) !important;
+}
+
+html body.theme-dark .p-multiselect:not(.p-disabled).p-focus {
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2) !important;
+}
+
+html body.theme-dark .p-multiselect-panel {
+  background-color: var(--surface-card) !important;
+  border-color: var(--surface-border) !important;
+  color: var(--text-color) !important;
+}
+
+html body.theme-dark .p-multiselect-panel .p-multiselect-item {
+  color: var(--text-color) !important;
+}
+
+html body.theme-dark .p-multiselect-panel .p-multiselect-item:hover {
+  background-color: var(--surface-hover) !important;
+}
+
+html body.theme-dark .p-multiselect-panel .p-multiselect-item.p-highlight {
+  background-color: var(--primary-color) !important;
+  color: var(--primary-color-text) !important;
+}
+
+html body.theme-dark .p-multiselect-trigger {
+  color: var(--text-color-secondary) !important;
+}
+
+html body.theme-dark .p-multiselect-token {
+  background-color: var(--primary-color) !important;
+  color: var(--primary-color-text) !important;
+}
+
+html body.theme-dark .p-multiselect-token-icon {
+  color: var(--primary-color-text) !important;
+}
+
+// Estilos específicos para input de busca do p-multiselect no tema escuro
+html body.theme-dark .p-multiselect-panel .p-multiselect-filter-container {
+  background-color: var(--surface-card) !important;
+  border-color: var(--surface-border) !important;
+}
+
+html body.theme-dark .p-multiselect-panel .p-multiselect-filter-container .p-inputtext {
+  background-color: var(--surface-card) !important;
+  color: var(--text-color) !important;
+  border-color: var(--surface-border) !important;
+}
+
+html body.theme-dark .p-multiselect-panel .p-multiselect-filter-container .p-inputtext:focus {
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2) !important;
+}
+
+html body.theme-dark .p-multiselect-panel .p-multiselect-filter-container .p-inputtext::placeholder {
+  color: var(--text-color-secondary) !important;
+}
+
+html body.theme-dark .p-multiselect-panel .p-multiselect-filter-container .p-multiselect-filter-icon {
+  color: var(--text-color-secondary) !important;
+}
+
+html body.theme-dark .p-multiselect-panel .p-multiselect-filter-container .p-multiselect-close {
+  color: var(--text-color-secondary) !important;
+}
+
+html body.theme-dark .p-multiselect-panel .p-multiselect-filter-container .p-multiselect-close:hover {
+  color: var(--text-color) !important;
+}
+
+// Estilos específicos para p-multiselect no tema claro
+html body.theme-light .p-multiselect {
+  background-color: var(--surface-card) !important;
+  border-color: var(--surface-border) !important;
+  color: var(--text-color) !important;
+}
+
+html body.theme-light .p-multiselect:not(.p-disabled):hover {
+  border-color: var(--primary-color) !important;
+}
+
+html body.theme-light .p-multiselect:not(.p-disabled).p-focus {
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
+}
+
+html body.theme-light .p-multiselect-panel {
+  background-color: var(--surface-card) !important;
+  border-color: var(--surface-border) !important;
+  color: var(--text-color) !important;
+}
+
+html body.theme-light .p-multiselect-panel .p-multiselect-item {
+  color: var(--text-color) !important;
+}
+
+html body.theme-light .p-multiselect-panel .p-multiselect-item:hover {
+  background-color: var(--surface-hover) !important;
+}
+
+html body.theme-light .p-multiselect-panel .p-multiselect-item.p-highlight {
+  background-color: var(--primary-color) !important;
+  color: var(--primary-color-text) !important;
+}
+
+html body.theme-light .p-multiselect-trigger {
+  color: var(--text-color-secondary) !important;
+}
+
+html body.theme-light .p-multiselect-token {
+  background-color: var(--primary-color) !important;
+  color: var(--primary-color-text) !important;
+}
+
+html body.theme-light .p-multiselect-token-icon {
+  color: var(--primary-color-text) !important;
+} 
+
+// Estilos adicionais para p-multiselect no tema escuro
+html body.theme-dark .p-multiselect .p-multiselect-label-container {
+  background-color: var(--surface-card) !important;
+  color: var(--text-color) !important;
+}
+
+html body.theme-dark .p-multiselect .p-multiselect-trigger {
+  background-color: var(--surface-card) !important;
+  color: var(--text-color-secondary) !important;
+}
+
+html body.theme-dark .p-multiselect .p-multiselect-trigger:hover {
+  color: var(--text-color) !important;
+}
+
+html body.theme-dark .p-multiselect .p-multiselect-token-label {
+  color: var(--primary-color-text) !important;
+}
+
+html body.theme-dark .p-multiselect .p-multiselect-token-icon {
+  color: var(--primary-color-text) !important;
+}
+
+html body.theme-dark .p-multiselect .p-multiselect-token-icon:hover {
+  color: var(--primary-color-text) !important;
+}
+
+// Estilos adicionais para p-multiselect no tema claro
+html body.theme-light .p-multiselect .p-multiselect-label-container {
+  background-color: var(--surface-card) !important;
+  color: var(--text-color) !important;
+}
+
+html body.theme-light .p-multiselect .p-multiselect-trigger {
+  background-color: var(--surface-card) !important;
+  color: var(--text-color-secondary) !important;
+}
+
+html body.theme-light .p-multiselect .p-multiselect-trigger:hover {
+  color: var(--text-color) !important;
+}
+
+html body.theme-light .p-multiselect .p-multiselect-token-label {
+  color: var(--primary-color-text) !important;
+}
+
+html body.theme-light .p-multiselect .p-multiselect-token-icon {
+  color: var(--primary-color-text) !important;
+}
+
+html body.theme-light .p-multiselect .p-multiselect-token-icon:hover {
+  color: var(--primary-color-text) !important;
+} 
+
+// Estilos específicos para input de busca dentro do painel do p-multiselect no tema escuro
+html body.theme-dark .p-multiselect-panel input.p-inputtext {
+  background-color: var(--surface-card) !important;
+  color: var(--text-color) !important;
+  border-color: var(--surface-border) !important;
+}
+
+html body.theme-dark .p-multiselect-panel input.p-inputtext:focus {
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2) !important;
+}
+
+html body.theme-dark .p-multiselect-panel input.p-inputtext::placeholder {
+  color: var(--text-color-secondary) !important;
+}
+
+html body.theme-dark .p-multiselect-panel .p-multiselect-filter-container input {
+  background-color: var(--surface-card) !important;
+  color: var(--text-color) !important;
+  border-color: var(--surface-border) !important;
+}
+
+html body.theme-dark .p-multiselect-panel .p-multiselect-filter-container input:focus {
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2) !important;
+}
+
+html body.theme-dark .p-multiselect-panel .p-multiselect-filter-container input::placeholder {
+  color: var(--text-color-secondary) !important;
+}
+
+// Estilos específicos para input de busca dentro do painel do p-multiselect no tema claro
+html body.theme-light .p-multiselect-panel input.p-inputtext {
+  background-color: var(--surface-card) !important;
+  color: var(--text-color) !important;
+  border-color: var(--surface-border) !important;
+}
+
+html body.theme-light .p-multiselect-panel input.p-inputtext:focus {
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
+}
+
+html body.theme-light .p-multiselect-panel input.p-inputtext::placeholder {
+  color: var(--text-color-secondary) !important;
+}
+
+html body.theme-light .p-multiselect-panel .p-multiselect-filter-container input {
+  background-color: var(--surface-card) !important;
+  color: var(--text-color) !important;
+  border-color: var(--surface-border) !important;
+}
+
+html body.theme-light .p-multiselect-panel .p-multiselect-filter-container input:focus {
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
+}
+
+html body.theme-light .p-multiselect-panel .p-multiselect-filter-container input::placeholder {
+  color: var(--text-color-secondary) !important;
+} 
+
+// Estilos específicos para p-multiselect-header no tema escuro
+html body.theme-dark .p-multiselect-header {
+  background-color: var(--surface-card) !important;
+  color: var(--text-color) !important;
+  border-color: var(--surface-border) !important;
+}
+
+html body.theme-dark .p-multiselect-header .p-checkbox {
+  background-color: var(--surface-card) !important;
+}
+
+html body.theme-dark .p-multiselect-header .p-checkbox .p-checkbox-box {
+  background-color: var(--surface-card) !important;
+  border-color: var(--surface-border) !important;
+}
+
+html body.theme-dark .p-multiselect-header .p-checkbox .p-checkbox-box.p-highlight {
+  background-color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
+}
+
+html body.theme-dark .p-multiselect-header .p-checkbox .p-checkbox-icon {
+  color: var(--primary-color-text) !important;
+}
+
+html body.theme-dark .p-multiselect-header .p-multiselect-close {
+  color: var(--text-color-secondary) !important;
+}
+
+html body.theme-dark .p-multiselect-header .p-multiselect-close:hover {
+  color: var(--text-color) !important;
+}
+
+// Estilos específicos para p-multiselect-header no tema claro
+html body.theme-light .p-multiselect-header {
+  background-color: var(--surface-card) !important;
+  color: var(--text-color) !important;
+  border-color: var(--surface-border) !important;
+}
+
+html body.theme-light .p-multiselect-header .p-checkbox {
+  background-color: var(--surface-card) !important;
+}
+
+html body.theme-light .p-multiselect-header .p-checkbox .p-checkbox-box {
+  background-color: var(--surface-card) !important;
+  border-color: var(--surface-border) !important;
+}
+
+html body.theme-light .p-multiselect-header .p-checkbox .p-checkbox-box.p-highlight {
+  background-color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
+}
+
+html body.theme-light .p-multiselect-header .p-checkbox .p-checkbox-icon {
+  color: var(--primary-color-text) !important;
+}
+
+html body.theme-light .p-multiselect-header .p-multiselect-close {
+  color: var(--text-color-secondary) !important;
+}
+
+html body.theme-light .p-multiselect-header .p-multiselect-close:hover {
+  color: var(--text-color) !important;
+} 
+
+// Estilos específicos para p-calendar no tema escuro
+html body.theme-dark .p-calendar {
+  background-color: var(--surface-card) !important;
+  border-color: var(--surface-border) !important;
+  color: var(--text-color) !important;
+}
+
+html body.theme-dark .p-calendar:not(.p-disabled):hover {
+  border-color: var(--primary-color) !important;
+}
+
+html body.theme-dark .p-calendar:not(.p-disabled).p-focus {
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2) !important;
+}
+
+html body.theme-dark .p-calendar .p-inputtext {
+  background-color: var(--surface-card) !important;
+  color: var(--text-color) !important;
+  border-color: var(--surface-border) !important;
+}
+
+html body.theme-dark .p-calendar .p-inputtext:focus {
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2) !important;
+}
+
+html body.theme-dark .p-calendar .p-inputtext::placeholder {
+  color: var(--text-color-secondary) !important;
+}
+
+html body.theme-dark .p-calendar .p-button {
+  background-color: var(--surface-card) !important;
+  border-color: var(--surface-border) !important;
+  color: var(--text-color) !important;
+}
+
+html body.theme-dark .p-calendar .p-button:hover {
+  background-color: var(--surface-hover) !important;
+  border-color: var(--primary-color) !important;
+}
+
+html body.theme-dark .p-calendar .p-button:focus {
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2) !important;
+}
+
+html body.theme-dark .p-calendar-panel {
+  background-color: var(--surface-card) !important;
+  border-color: var(--surface-border) !important;
+  color: var(--text-color) !important;
+}
+
+html body.theme-dark .p-calendar-panel .p-datepicker-header {
+  background-color: var(--surface-card) !important;
+  border-color: var(--surface-border) !important;
+  color: var(--text-color) !important;
+}
+
+html body.theme-dark .p-calendar-panel .p-datepicker-header .p-datepicker-title {
+  color: var(--text-color) !important;
+}
+
+html body.theme-dark .p-calendar-panel .p-datepicker-header .p-datepicker-title .p-datepicker-year,
+html body.theme-dark .p-calendar-panel .p-datepicker-header .p-datepicker-title .p-datepicker-month {
+  color: var(--text-color) !important;
+}
+
+html body.theme-dark .p-calendar-panel .p-datepicker-header .p-datepicker-title .p-datepicker-year:focus,
+html body.theme-dark .p-calendar-panel .p-datepicker-header .p-datepicker-title .p-datepicker-month:focus {
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2) !important;
+}
+
+html body.theme-dark .p-calendar-panel .p-datepicker-header .p-datepicker-prev,
+html body.theme-dark .p-calendar-panel .p-datepicker-header .p-datepicker-next {
+  background-color: var(--surface-card) !important;
+  border-color: var(--surface-border) !important;
+  color: var(--text-color) !important;
+}
+
+html body.theme-dark .p-calendar-panel .p-datepicker-header .p-datepicker-prev:hover,
+html body.theme-dark .p-calendar-panel .p-datepicker-header .p-datepicker-next:hover {
+  background-color: var(--surface-hover) !important;
+  border-color: var(--primary-color) !important;
+}
+
+html body.theme-dark .p-calendar-panel .p-datepicker-header .p-datepicker-prev:focus,
+html body.theme-dark .p-calendar-panel .p-datepicker-header .p-datepicker-next:focus {
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2) !important;
+}
+
+html body.theme-dark .p-calendar-panel .p-datepicker-calendar {
+  background-color: var(--surface-card) !important;
+  color: var(--text-color) !important;
+}
+
+html body.theme-dark .p-calendar-panel .p-datepicker-calendar thead th {
+  background-color: var(--surface-card) !important;
+  color: var(--text-color) !important;
+  border-color: var(--surface-border) !important;
+}
+
+html body.theme-dark .p-calendar-panel .p-datepicker-calendar tbody td {
+  background-color: var(--surface-card) !important;
+  color: var(--text-color) !important;
+  border-color: var(--surface-border) !important;
+}
+
+html body.theme-dark .p-calendar-panel .p-datepicker-calendar tbody td > span {
+  color: var(--text-color) !important;
+}
+
+html body.theme-dark .p-calendar-panel .p-datepicker-calendar tbody td > span:hover {
+  background-color: var(--surface-hover) !important;
+}
+
+html body.theme-dark .p-calendar-panel .p-datepicker-calendar tbody td > span.p-highlight {
+  background-color: var(--primary-color) !important;
+  color: var(--primary-color-text) !important;
+}
+
+html body.theme-dark .p-calendar-panel .p-datepicker-calendar tbody td > span.p-today {
+  background-color: var(--primary-color) !important;
+  color: var(--primary-color-text) !important;
+}
+
+html body.theme-dark .p-calendar-panel .p-datepicker-calendar tbody td.p-datepicker-other-month > span {
+  color: var(--text-color-secondary) !important;
+}
+
+html body.theme-dark .p-calendar-panel .p-datepicker-calendar tbody td.p-datepicker-other-month > span:hover {
+  background-color: var(--surface-hover) !important;
+}
+
+html body.theme-dark .p-calendar-panel .p-datepicker-calendar tbody td.p-datepicker-other-month > span.p-highlight {
+  background-color: var(--primary-color) !important;
+  color: var(--primary-color-text) !important;
+}
+
+html body.theme-dark .p-calendar-panel .p-datepicker-calendar tbody td.p-datepicker-other-month > span.p-today {
+  background-color: var(--primary-color) !important;
+  color: var(--primary-color-text) !important;
+}
+
+// Estilos específicos para p-calendar no tema claro
+html body.theme-light .p-calendar {
+  background-color: var(--surface-card) !important;
+  border-color: var(--surface-border) !important;
+  color: var(--text-color) !important;
+}
+
+html body.theme-light .p-calendar:not(.p-disabled):hover {
+  border-color: var(--primary-color) !important;
+}
+
+html body.theme-light .p-calendar:not(.p-disabled).p-focus {
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
+}
+
+html body.theme-light .p-calendar .p-inputtext {
+  background-color: var(--surface-card) !important;
+  color: var(--text-color) !important;
+  border-color: var(--surface-border) !important;
+}
+
+html body.theme-light .p-calendar .p-inputtext:focus {
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
+}
+
+html body.theme-light .p-calendar .p-inputtext::placeholder {
+  color: var(--text-color-secondary) !important;
+}
+
+html body.theme-light .p-calendar .p-button {
+  background-color: var(--surface-card) !important;
+  border-color: var(--surface-border) !important;
+  color: var(--text-color) !important;
+}
+
+html body.theme-light .p-calendar .p-button:hover {
+  background-color: var(--surface-hover) !important;
+  border-color: var(--primary-color) !important;
+}
+
+html body.theme-light .p-calendar .p-button:focus {
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
+}
+
+html body.theme-light .p-calendar-panel {
+  background-color: var(--surface-card) !important;
+  border-color: var(--surface-border) !important;
+  color: var(--text-color) !important;
+}
+
+html body.theme-light .p-calendar-panel .p-datepicker-header {
+  background-color: var(--surface-card) !important;
+  border-color: var(--surface-border) !important;
+  color: var(--text-color) !important;
+}
+
+html body.theme-light .p-calendar-panel .p-datepicker-header .p-datepicker-title {
+  color: var(--text-color) !important;
+}
+
+html body.theme-light .p-calendar-panel .p-datepicker-header .p-datepicker-title .p-datepicker-year,
+html body.theme-light .p-calendar-panel .p-datepicker-header .p-datepicker-title .p-datepicker-month {
+  color: var(--text-color) !important;
+}
+
+html body.theme-light .p-calendar-panel .p-datepicker-header .p-datepicker-title .p-datepicker-year:focus,
+html body.theme-light .p-calendar-panel .p-datepicker-header .p-datepicker-title .p-datepicker-month:focus {
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
+}
+
+html body.theme-light .p-calendar-panel .p-datepicker-header .p-datepicker-prev,
+html body.theme-light .p-calendar-panel .p-datepicker-header .p-datepicker-next {
+  background-color: var(--surface-card) !important;
+  border-color: var(--surface-border) !important;
+  color: var(--text-color) !important;
+}
+
+html body.theme-light .p-calendar-panel .p-datepicker-header .p-datepicker-prev:hover,
+html body.theme-light .p-calendar-panel .p-datepicker-header .p-datepicker-next:hover {
+  background-color: var(--surface-hover) !important;
+  border-color: var(--primary-color) !important;
+}
+
+html body.theme-light .p-calendar-panel .p-datepicker-header .p-datepicker-prev:focus,
+html body.theme-light .p-calendar-panel .p-datepicker-header .p-datepicker-next:focus {
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
+}
+
+html body.theme-light .p-calendar-panel .p-datepicker-calendar {
+  background-color: var(--surface-card) !important;
+  color: var(--text-color) !important;
+}
+
+html body.theme-light .p-calendar-panel .p-datepicker-calendar thead th {
+  background-color: var(--surface-card) !important;
+  color: var(--text-color) !important;
+  border-color: var(--surface-border) !important;
+}
+
+html body.theme-light .p-calendar-panel .p-datepicker-calendar tbody td {
+  background-color: var(--surface-card) !important;
+  color: var(--text-color) !important;
+  border-color: var(--surface-border) !important;
+}
+
+html body.theme-light .p-calendar-panel .p-datepicker-calendar tbody td > span {
+  color: var(--text-color) !important;
+}
+
+html body.theme-light .p-calendar-panel .p-datepicker-calendar tbody td > span:hover {
+  background-color: var(--surface-hover) !important;
+}
+
+html body.theme-light .p-calendar-panel .p-datepicker-calendar tbody td > span.p-highlight {
+  background-color: var(--primary-color) !important;
+  color: var(--primary-color-text) !important;
+}
+
+html body.theme-light .p-calendar-panel .p-datepicker-calendar tbody td > span.p-today {
+  background-color: var(--primary-color) !important;
+  color: var(--primary-color-text) !important;
+}
+
+html body.theme-light .p-calendar-panel .p-datepicker-calendar tbody td.p-datepicker-other-month > span {
+  color: var(--text-color-secondary) !important;
+}
+
+html body.theme-light .p-calendar-panel .p-datepicker-calendar tbody td.p-datepicker-other-month > span:hover {
+  background-color: var(--surface-hover) !important;
+}
+
+html body.theme-light .p-calendar-panel .p-datepicker-calendar tbody td.p-datepicker-other-month > span.p-highlight {
+  background-color: var(--primary-color) !important;
+  color: var(--primary-color-text) !important;
+}
+
+html body.theme-light .p-calendar-panel .p-datepicker-calendar tbody td.p-datepicker-other-month > span.p-today {
+  background-color: var(--primary-color) !important;
+  color: var(--primary-color-text) !important;
+} 
+
+// Estilos específicos para p-datepicker-group-container no tema escuro
+html body.theme-dark .p-datepicker-group-container {
+  background-color: var(--surface-card) !important;
+  border-color: var(--surface-border) !important;
+  color: var(--text-color) !important;
+}
+
+html body.theme-dark .p-datepicker-group {
+  background-color: var(--surface-card) !important;
+  border-color: var(--surface-border) !important;
+  color: var(--text-color) !important;
+}
+
+html body.theme-dark .p-datepicker-group .p-datepicker-header {
+  background-color: var(--surface-card) !important;
+  border-color: var(--surface-border) !important;
+  color: var(--text-color) !important;
+}
+
+html body.theme-dark .p-datepicker-group .p-datepicker-header .p-datepicker-title {
+  color: var(--text-color) !important;
+}
+
+html body.theme-dark .p-datepicker-group .p-datepicker-header .p-datepicker-title .p-datepicker-year,
+html body.theme-dark .p-datepicker-group .p-datepicker-header .p-datepicker-title .p-datepicker-month {
+  color: var(--text-color) !important;
+}
+
+html body.theme-dark .p-datepicker-group .p-datepicker-header .p-datepicker-title .p-datepicker-year:focus,
+html body.theme-dark .p-datepicker-group .p-datepicker-header .p-datepicker-title .p-datepicker-month:focus {
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2) !important;
+}
+
+html body.theme-dark .p-datepicker-group .p-datepicker-header .p-datepicker-prev,
+html body.theme-dark .p-datepicker-group .p-datepicker-header .p-datepicker-next {
+  background-color: var(--surface-card) !important;
+  border-color: var(--surface-border) !important;
+  color: var(--text-color) !important;
+}
+
+html body.theme-dark .p-datepicker-group .p-datepicker-header .p-datepicker-prev:hover,
+html body.theme-dark .p-datepicker-group .p-datepicker-header .p-datepicker-next:hover {
+  background-color: var(--surface-hover) !important;
+  border-color: var(--primary-color) !important;
+}
+
+html body.theme-dark .p-datepicker-group .p-datepicker-header .p-datepicker-prev:focus,
+html body.theme-dark .p-datepicker-group .p-datepicker-header .p-datepicker-next:focus {
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2) !important;
+}
+
+html body.theme-dark .p-datepicker-group .p-datepicker-calendar-container {
+  background-color: var(--surface-card) !important;
+  color: var(--text-color) !important;
+}
+
+html body.theme-dark .p-datepicker-group .p-datepicker-calendar-container .p-datepicker-calendar {
+  background-color: var(--surface-card) !important;
+  color: var(--text-color) !important;
+}
+
+html body.theme-dark .p-datepicker-group .p-datepicker-calendar-container .p-datepicker-calendar thead th {
+  background-color: var(--surface-card) !important;
+  color: var(--text-color) !important;
+  border-color: var(--surface-border) !important;
+}
+
+html body.theme-dark .p-datepicker-group .p-datepicker-calendar-container .p-datepicker-calendar tbody td {
+  background-color: var(--surface-card) !important;
+  color: var(--text-color) !important;
+  border-color: var(--surface-border) !important;
+}
+
+html body.theme-dark .p-datepicker-group .p-datepicker-calendar-container .p-datepicker-calendar tbody td > span {
+  color: var(--text-color) !important;
+}
+
+html body.theme-dark .p-datepicker-group .p-datepicker-calendar-container .p-datepicker-calendar tbody td > span:hover {
+  background-color: var(--surface-hover) !important;
+}
+
+html body.theme-dark .p-datepicker-group .p-datepicker-calendar-container .p-datepicker-calendar tbody td > span.p-highlight {
+  background-color: var(--primary-color) !important;
+  color: var(--primary-color-text) !important;
+}
+
+html body.theme-dark .p-datepicker-group .p-datepicker-calendar-container .p-datepicker-calendar tbody td > span.p-today {
+  background-color: var(--primary-color) !important;
+  color: var(--primary-color-text) !important;
+}
+
+html body.theme-dark .p-datepicker-group .p-datepicker-calendar-container .p-datepicker-calendar tbody td.p-datepicker-other-month > span {
+  color: var(--text-color-secondary) !important;
+}
+
+html body.theme-dark .p-datepicker-group .p-datepicker-calendar-container .p-datepicker-calendar tbody td.p-datepicker-other-month > span:hover {
+  background-color: var(--surface-hover) !important;
+}
+
+html body.theme-dark .p-datepicker-group .p-datepicker-calendar-container .p-datepicker-calendar tbody td.p-datepicker-other-month > span.p-highlight {
+  background-color: var(--primary-color) !important;
+  color: var(--primary-color-text) !important;
+}
+
+html body.theme-dark .p-datepicker-group .p-datepicker-calendar-container .p-datepicker-calendar tbody td.p-datepicker-other-month > span.p-today {
+  background-color: var(--primary-color) !important;
+  color: var(--primary-color-text) !important;
+}
+
+// Estilos específicos para p-datepicker-group-container no tema claro
+html body.theme-light .p-datepicker-group-container {
+  background-color: var(--surface-card) !important;
+  border-color: var(--surface-border) !important;
+  color: var(--text-color) !important;
+}
+
+html body.theme-light .p-datepicker-group {
+  background-color: var(--surface-card) !important;
+  border-color: var(--surface-border) !important;
+  color: var(--text-color) !important;
+}
+
+html body.theme-light .p-datepicker-group .p-datepicker-header {
+  background-color: var(--surface-card) !important;
+  border-color: var(--surface-border) !important;
+  color: var(--text-color) !important;
+}
+
+html body.theme-light .p-datepicker-group .p-datepicker-header .p-datepicker-title {
+  color: var(--text-color) !important;
+}
+
+html body.theme-light .p-datepicker-group .p-datepicker-header .p-datepicker-title .p-datepicker-year,
+html body.theme-light .p-datepicker-group .p-datepicker-header .p-datepicker-title .p-datepicker-month {
+  color: var(--text-color) !important;
+}
+
+html body.theme-light .p-datepicker-group .p-datepicker-header .p-datepicker-title .p-datepicker-year:focus,
+html body.theme-light .p-datepicker-group .p-datepicker-header .p-datepicker-title .p-datepicker-month:focus {
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
+}
+
+html body.theme-light .p-datepicker-group .p-datepicker-header .p-datepicker-prev,
+html body.theme-light .p-datepicker-group .p-datepicker-header .p-datepicker-next {
+  background-color: var(--surface-card) !important;
+  border-color: var(--surface-border) !important;
+  color: var(--text-color) !important;
+}
+
+html body.theme-light .p-datepicker-group .p-datepicker-header .p-datepicker-prev:hover,
+html body.theme-light .p-datepicker-group .p-datepicker-header .p-datepicker-next:hover {
+  background-color: var(--surface-hover) !important;
+  border-color: var(--primary-color) !important;
+}
+
+html body.theme-light .p-datepicker-group .p-datepicker-header .p-datepicker-prev:focus,
+html body.theme-light .p-datepicker-group .p-datepicker-header .p-datepicker-next:focus {
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
+}
+
+html body.theme-light .p-datepicker-group .p-datepicker-calendar-container {
+  background-color: var(--surface-card) !important;
+  color: var(--text-color) !important;
+}
+
+html body.theme-light .p-datepicker-group .p-datepicker-calendar-container .p-datepicker-calendar {
+  background-color: var(--surface-card) !important;
+  color: var(--text-color) !important;
+}
+
+html body.theme-light .p-datepicker-group .p-datepicker-calendar-container .p-datepicker-calendar thead th {
+  background-color: var(--surface-card) !important;
+  color: var(--text-color) !important;
+  border-color: var(--surface-border) !important;
+}
+
+html body.theme-light .p-datepicker-group .p-datepicker-calendar-container .p-datepicker-calendar tbody td {
+  background-color: var(--surface-card) !important;
+  color: var(--text-color) !important;
+  border-color: var(--surface-border) !important;
+}
+
+html body.theme-light .p-datepicker-group .p-datepicker-calendar-container .p-datepicker-calendar tbody td > span {
+  color: var(--text-color) !important;
+}
+
+html body.theme-light .p-datepicker-group .p-datepicker-calendar-container .p-datepicker-calendar tbody td > span:hover {
+  background-color: var(--surface-hover) !important;
+}
+
+html body.theme-light .p-datepicker-group .p-datepicker-calendar-container .p-datepicker-calendar tbody td > span.p-highlight {
+  background-color: var(--primary-color) !important;
+  color: var(--primary-color-text) !important;
+}
+
+html body.theme-light .p-datepicker-group .p-datepicker-calendar-container .p-datepicker-calendar tbody td > span.p-today {
+  background-color: var(--primary-color) !important;
+  color: var(--primary-color-text) !important;
+}
+
+html body.theme-light .p-datepicker-group .p-datepicker-calendar-container .p-datepicker-calendar tbody td.p-datepicker-other-month > span {
+  color: var(--text-color-secondary) !important;
+}
+
+html body.theme-light .p-datepicker-group .p-datepicker-calendar-container .p-datepicker-calendar tbody td.p-datepicker-other-month > span:hover {
+  background-color: var(--surface-hover) !important;
+}
+
+html body.theme-light .p-datepicker-group .p-datepicker-calendar-container .p-datepicker-calendar tbody td.p-datepicker-other-month > span.p-highlight {
+  background-color: var(--primary-color) !important;
+  color: var(--primary-color-text) !important;
+}
+
+html body.theme-light .p-datepicker-group .p-datepicker-calendar-container .p-datepicker-calendar tbody td.p-datepicker-other-month > span.p-today {
+  background-color: var(--primary-color) !important;
+  color: var(--primary-color-text) !important;
+}
+
+html body.theme-light .p-datepicker-group .p-datepicker-calendar-container .p-datepicker-calendar tbody td.p-datepicker-other-month > span.p-today {
+  background-color: var(--primary-color) !important;
+  color: var(--primary-color-text) !important;
+}
+
+// Regras específicas para p-float-label com máxima especificidade
+html body.theme-dark .p-float-label > label {
+  color: var(--text-color-secondary) !important;
+}
+
+html body.theme-dark .p-float-label input:focus ~ label,
+html body.theme-dark .p-float-label input.p-filled ~ label,
+html body.theme-dark .p-float-label textarea:focus ~ label,
+html body.theme-dark .p-float-label textarea.p-filled ~ label {
+  color: var(--primary-color) !important;
+}
+
+html body.theme-dark span.p-float-label > label {
+  color: var(--text-color-secondary) !important;
+}
+
+html body.theme-dark span.p-float-label input:focus ~ label,
+html body.theme-dark span.p-float-label input.p-filled ~ label,
+html body.theme-dark span.p-float-label textarea:focus ~ label,
+html body.theme-dark span.p-float-label textarea.p-filled ~ label {
+  color: var(--primary-color) !important;
+}
+
+html body.theme-dark *[class*="p-float-label"] > label {
+  color: var(--text-color-secondary) !important;
+}
+
+html body.theme-dark *[class*="p-float-label"] input:focus ~ label,
+html body.theme-dark *[class*="p-float-label"] input.p-filled ~ label,
+html body.theme-dark *[class*="p-float-label"] textarea:focus ~ label,
+html body.theme-dark *[class*="p-float-label"] textarea.p-filled ~ label {
+  color: var(--primary-color) !important;
+}
+
+// Regras para o tema claro também
+html body.theme-light .p-float-label > label {
+  color: var(--text-color-secondary) !important;
+}
+
+html body.theme-light .p-float-label input:focus ~ label,
+html body.theme-light .p-float-label input.p-filled ~ label,
+html body.theme-light .p-float-label textarea:focus ~ label,
+html body.theme-light .p-float-label textarea.p-filled ~ label {
+  color: var(--primary-color) !important;
+}
+
+// Regras para o fundo do input dentro do p-float-label no tema escuro
+html body.theme-dark .p-float-label .p-inputtext {
+  background-color: var(--surface-card) !important;
+  color: var(--text-color) !important;
+  border-color: var(--surface-border) !important;
+}
+
+html body.theme-dark span.p-float-label .p-inputtext {
+  background-color: var(--surface-card) !important;
+  color: var(--text-color) !important;
+  border-color: var(--surface-border) !important;
+}
+
+html body.theme-dark *[class*="p-float-label"] .p-inputtext {
+  background-color: var(--surface-card) !important;
+  color: var(--text-color) !important;
+  border-color: var(--surface-border) !important;
+}

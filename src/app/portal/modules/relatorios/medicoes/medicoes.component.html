@@ -1,1 +1,107 @@
 <app-title-header title="Relatório de Medição"></app-title-header>
+<div class="filters">
+    <p-accordion class="p-accordion-custom-header">
+        <p-accordionTab>
+            <ng-template pTemplate="header">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <span>{{ getFiltrosHeader() }}</span>
+                    
+                    @if (getActiveFilters().length > 0) {
+                        <ng-container>
+                            @for (filter of getActiveFilters(); track filter) {
+                                <p-tag 
+                                    [value]="filter.label + ': ' + filter.value" 
+                                    severity="contrast"
+                                    styleClass="mr-1">
+                                </p-tag>
+                            }
+                        </ng-container>
+                    }
+                </div>
+            </ng-template>
+
+             <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input pInputText id="responsavel" [(ngModel)]="filtros.responsavel" name="responsavel" style="width: 100%;"/>
+                        <label for="responsavel">Responsável</label>
+                    </p-floatLabel>
+                </div>
+
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input pInputText id="fornecedor" [(ngModel)]="filtros.fornecedor" name="fornecedor" style="width: 100%;"/>
+                        <label for="fornecedor">Fornecedor</label>
+                    </p-floatLabel>
+                </div>
+
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-calendar id="dataMedicao" [showTime]="false" [(ngModel)]="filtros.dataMedicao" name="dataMedicao" dateFormat="dd/mm/yy" [showIcon]="true"></p-calendar>
+                        <label for="dataMedicao">Data Medição</label>
+                    </p-floatLabel>
+                </div>
+
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-dropdown id="statusMedicao" appendTo="body" [options]="statusOptions" 
+                            [(ngModel)]="filtros.statusMedicao" name="statusMedicao">
+                        </p-dropdown>
+                    <label for="statusMedicao">Situação Medição</label>
+                </p-floatLabel>
+                </div>
+             </div>
+
+            <div class="actions">
+                <button pButton [outlined]="true" [raised]="true" severity="warning" label="Limpar"
+                    icon="pi pi-times" (click)="limparFiltros()">
+                </button>
+                <button pButton [outlined]="true" [raised]="true" severity="success" label="Filtrar"
+                    icon="pi pi-filter" (click)="filtrar()">
+                </button>
+            </div>
+        </p-accordionTab>
+    </p-accordion>
+</div>
+
+<div class="tables">
+    <p-table [value]="medicoes" [paginator]="true" [lazy]="true" [showCurrentPageReport]="true" [rows]="rows" [resizableColumns]="true" [totalRecords]="totalRecords" [rowsPerPageOptions]="rowsPerPage"
+            styleClass="p-datatable-striped p-datatable-gridlines" (onPage)="handlePageChange($event)" (onLazyLoad)="loadTableData($event)" dataKey="id">
+        <ng-template pTemplate="caption">
+            <div style="display: flex; justify-content: flex-end; align-items: center;">
+                <div class="actions">
+                    <button pButton [outlined]="true" [raised]="true" severity="success" label="Exportar"
+                        icon="pi pi-file-export">
+                    </button>
+                </div>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+            <tr>
+                <th id="responsavel">Responsável</th>
+                <th id="fornecedor">Fornecedor</th>
+                <th id="dataMedicao">Data Medição</th>
+                <th id="status">Status Medição</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-medicao let-rowIndex="rowIndex">
+            <tr>
+                <td>
+                    {{ medicao.responsavel }}
+                </td>
+                <td>
+                    {{ medicao.fornecedor }}
+                </td>
+                <td>
+                    {{ medicao.dataMedicao }}
+                </td>
+                <td>
+                    <p-tag
+                        [value]="medicao.statusMedicao ? 'Aprovado' : 'Aguardando Aprovação'" 
+                        [severity]="medicao.statusMedicao ? 'success' : 'warning'"/>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>

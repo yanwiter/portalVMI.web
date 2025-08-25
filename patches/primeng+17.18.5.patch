@@ -1,0 +1,22 @@
+diff --git a/node_modules/primeng/tag/tag.d.ts b/node_modules/primeng/tag/tag.d.ts
+index 4612620..287c48c 100644
+--- a/node_modules/primeng/tag/tag.d.ts
++++ b/node_modules/primeng/tag/tag.d.ts
+@@ -28,7 +28,7 @@ export declare class Tag {
+      * Severity type of the tag.
+      * @group Props
+      */
+-    severity: 'success' | 'secondary' | 'info' | 'warning' | 'danger' | 'contrast' | undefined;
++    severity: 'success' | 'secondary' | 'info' | 'warning' | 'danger' | 'contrast' | 'help' | undefined;
+     /**
+      * Value to display inside the tag.
+      * @group Props
+@@ -53,7 +53,7 @@ export declare class Tag {
+     ngAfterContentInit(): void;
+     constructor(cd: ChangeDetectorRef);
+     containerClass(): {
+-        [x: string]: boolean | "success" | "secondary" | "info" | "warning" | "danger" | "contrast";
++        [x: string]: boolean | "success" | "secondary" | "info" | "warning" | "danger" | "help" | "contrast";
+         'p-tag p-component': boolean;
+         'p-tag-rounded': boolean;
+     };

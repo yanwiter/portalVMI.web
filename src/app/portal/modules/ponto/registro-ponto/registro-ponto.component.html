@@ -1,0 +1,292 @@
+<div class="registro-ponto-container">
+  <!-- Registro Manual -->
+  <p-card>
+    <ng-template pTemplate="header">
+      <h5>Registro de Ponto</h5>
+    </ng-template>
+    
+    <div class="registro-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="funcionario">Funcionário</label>
+          <p-dropdown id="funcionario" 
+                     [options]="funcionarios" 
+                     [(ngModel)]="funcionarioSelecionado"
+                     optionLabel="nome" 
+                     placeholder="Selecione o funcionário"
+                     [showClear]="true">
+          </p-dropdown>
+        </div>
+        
+        <div class="form-group">
+          <label for="data">Data</label>
+          <p-calendar id="data" 
+                     [(ngModel)]="dataRegistro" 
+                     dateFormat="dd/mm/yy" 
+                     placeholder="Data do registro">
+          </p-calendar>
+        </div>
+        
+        <div class="form-group">
+          <label for="tipoRegistro">Tipo de Registro</label>
+          <p-dropdown id="tipoRegistro" 
+                     [options]="tipoRegistroOptions" 
+                     [(ngModel)]="tipoRegistro"
+                     optionLabel="label" 
+                     optionValue="value"
+                     placeholder="Selecione o tipo">
+          </p-dropdown>
+        </div>
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="hora">Hora</label>
+          <p-calendar id="hora" 
+                     [(ngModel)]="horaRegistro" 
+                     timeOnly="true"
+                     hourFormat="24"
+                     placeholder="Hora do registro">
+          </p-calendar>
+        </div>
+        
+        <div class="form-group">
+          <label for="justificativa">Justificativa</label>
+          <p-inputtextarea id="justificativa" 
+                          [(ngModel)]="justificativa" 
+                          rows="3"
+                          placeholder="Justificativa (opcional)">
+          </p-inputtextarea>
+        </div>
+      </div>
+      
+      <div class="form-actions">
+        <p-button label="Registrar Ponto" 
+                  icon="pi pi-save" 
+                  (onClick)="registrarPonto()"
+                  [disabled]="!podeRegistrar()">
+        </p-button>
+        
+        <p-button label="Limpar" 
+                  icon="pi pi-times" 
+                  severity="secondary" 
+                  (onClick)="limparFormulario()">
+        </p-button>
+      </div>
+    </div>
+  </p-card>
+
+  <!-- Lista de Registros -->
+  <p-card styleClass="mt-3">
+    <ng-template pTemplate="header">
+      <h5>Registros de Ponto</h5>
+    </ng-template>
+    
+    <div class="filtros-container">
+      <div class="filtros-row">
+        <div class="filtro-item">
+          <label for="filtroFuncionario">Funcionário</label>
+          <p-dropdown id="filtroFuncionario" 
+                     [options]="funcionarios" 
+                     [(ngModel)]="filtro.funcionarioId"
+                     optionLabel="nome" 
+                     optionValue="id"
+                     placeholder="Todos os funcionários"
+                     [showClear]="true">
+          </p-dropdown>
+        </div>
+        
+        <div class="filtro-item">
+          <label for="filtroDataInicio">Data Início</label>
+          <p-calendar id="filtroDataInicio" 
+                     [(ngModel)]="filtro.dataInicio" 
+                     dateFormat="dd/mm/yy" 
+                     placeholder="Data início">
+          </p-calendar>
+        </div>
+        
+        <div class="filtro-item">
+          <label for="filtroDataFim">Data Fim</label>
+          <p-calendar id="filtroDataFim" 
+                     [(ngModel)]="filtro.dataFim" 
+                     dateFormat="dd/mm/yy" 
+                     placeholder="Data fim">
+          </p-calendar>
+        </div>
+        
+        <div class="filtro-item">
+          <label for="filtroStatus">Status</label>
+          <p-dropdown id="filtroStatus" 
+                     [options]="statusRegistroOptions" 
+                     [(ngModel)]="filtro.status"
+                     optionLabel="label" 
+                     optionValue="value"
+                     placeholder="Todos os status"
+                     [showClear]="true">
+          </p-dropdown>
+        </div>
+      </div>
+      
+      <div class="filtros-acoes">
+        <p-button label="Aplicar Filtros" 
+                  icon="pi pi-search" 
+                  (onClick)="aplicarFiltros()">
+        </p-button>
+        
+        <p-button label="Limpar Filtros" 
+                  icon="pi pi-times" 
+                  severity="secondary" 
+                  (onClick)="limparFiltros()">
+        </p-button>
+      </div>
+    </div>
+    
+    <p-table [value]="registrosPonto" 
+             [loading]="loading" 
+             [paginator]="true" 
+             [rows]="rows" 
+             [totalRecords]="totalRecords"
+             [showCurrentPageReport]="true"
+             currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros"
+             [rowsPerPageOptions]="[10, 25, 50]">
+      
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Funcionário</th>
+          <th>Data</th>
+          <th>Hora</th>
+          <th>Tipo</th>
+          <th>Status</th>
+          <th>Justificativa</th>
+          <th>Ações</th>
+        </tr>
+      </ng-template>
+      
+      <ng-template pTemplate="body" let-registro>
+        <tr>
+          <td>{{ registro.funcionarioNome }}</td>
+          <td>{{ formatarData(registro.data) }}</td>
+          <td>{{ formatarHora(registro.horaEntrada || registro.horaSaida) }}</td>
+          <td>
+            <span class="tipo-badge" [ngClass]="getTipoClass(registro.tipoRegistro)">
+              {{ getTipoLabel(registro.tipoRegistro) }}
+            </span>
+          </td>
+          <td>
+            <span class="status-badge" [ngClass]="getStatusClass(registro.status)">
+              {{ registro.status }}
+            </span>
+          </td>
+          <td>{{ registro.justificativa || '-' }}</td>
+          <td>
+            <div class="acoes-botoes">
+              <p-button *ngIf="canEdit" 
+                       icon="pi pi-pencil" 
+                       severity="info" 
+                       size="small" 
+                       pTooltip="Editar" 
+                       (onClick)="editarRegistro(registro)" />
+              
+              <p-button *ngIf="canDelete" 
+                       icon="pi pi-trash" 
+                       severity="danger" 
+                       size="small" 
+                       pTooltip="Excluir" 
+                       (onClick)="excluirRegistro(registro)" />
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+      
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="7" class="text-center">Nenhum registro encontrado</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-card>
+</div>
+
+<!-- Dialog para Edição -->
+<p-dialog [(visible)]="displayDialog" 
+          [modal]="true" 
+          [style]="{width: '50vw'}" 
+          [draggable]="false" 
+          [resizable]="false">
+  <ng-template pTemplate="header">
+    <h5>Editar Registro de Ponto</h5>
+  </ng-template>
+  
+  <ng-template pTemplate="content">
+    <div class="edit-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="editFuncionario">Funcionário</label>
+          <p-dropdown id="editFuncionario" 
+                     [options]="funcionarios" 
+                     [(ngModel)]="registroEditando!.funcionarioId"
+                     optionLabel="nome" 
+                     optionValue="id"
+                     placeholder="Selecione o funcionário">
+          </p-dropdown>
+        </div>
+        
+        <div class="form-group">
+          <label for="editData">Data</label>
+          <p-calendar id="editData" 
+                     [(ngModel)]="registroEditando!.data" 
+                     dateFormat="dd/mm/yy" 
+                     placeholder="Data do registro">
+          </p-calendar>
+        </div>
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="editHora">Hora</label>
+          <p-calendar id="editHora" 
+                     [(ngModel)]="horaEditando" 
+                     timeOnly="true"
+                     hourFormat="24"
+                     placeholder="Hora do registro">
+          </p-calendar>
+        </div>
+        
+        <div class="form-group">
+          <label for="editTipo">Tipo</label>
+          <p-dropdown id="editTipo" 
+                     [options]="tipoRegistroOptions" 
+                     [(ngModel)]="registroEditando!.tipoRegistro"
+                     optionLabel="label" 
+                     optionValue="value"
+                     placeholder="Selecione o tipo">
+          </p-dropdown>
+        </div>
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="editJustificativa">Justificativa</label>
+          <p-inputtextarea id="editJustificativa" 
+                          [(ngModel)]="registroEditando!.justificativa" 
+                          rows="3"
+                          placeholder="Justificativa (opcional)">
+          </p-inputtextarea>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+  
+  <ng-template pTemplate="footer">
+    <p-button label="Cancelar" 
+              icon="pi pi-times" 
+              severity="secondary" 
+              (onClick)="displayDialog = false" />
+    <p-button label="Salvar" 
+              icon="pi pi-check" 
+              (onClick)="salvarRegistro()" />
+  </ng-template>
+</p-dialog>
+
+<p-toast></p-toast>
+<p-confirmDialog></p-confirmDialog> 

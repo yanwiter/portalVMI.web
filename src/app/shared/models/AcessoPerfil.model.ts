@@ -1,9 +1,9 @@
 export interface AcessoPerfil {
-  acessoId: number;
+  idAcesso: string;
   acesso: string;
-  rotinaId: number;
+  idRotina: string;
   rotina: string;
-  moduloId: number;
+  idModulo: string;
   modulo: string;
   ativo: boolean;
 }

@@ -1,1 +1,24 @@
-<app-title-header title="Home"></app-title-header>
+<app-title-header title="{{ 'HOME.TITLE' | translate }}"></app-title-header>
+
+<div class="home-container">
+  <!-- Ações Rápidas -->
+  <div class="quick-actions-section">
+    <h3>{{ 'HOME.QUICK_ACTIONS' | translate }}</h3>
+    <div class="quick-actions-grid">
+      @for (action of quickActions; track action.id) {
+      <div class="action-card" [class]="action.color" (click)="navigateTo(action.route)">
+        <div class="action-icon">
+          <i [class]="action.icon"></i>
+        </div>
+        <div class="action-content">
+          <h4>{{ action.title }}</h4>
+          <p>{{ action.description }}</p>
+        </div>
+        <div class="action-arrow">
+          <i class="pi pi-arrow-right"></i>
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+</div>

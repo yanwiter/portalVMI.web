@@ -1,0 +1,176 @@
+<div class="relatorios-avancados-container">
+  <div class="header-section">
+    <div class="title-section">
+      <h1>{{ 'RELATORIOS_AVANCADOS' | translate }}</h1>
+      <p>{{ 'RELATORIOS_AVANCADOS_DESC' | translate }}</p>
+    </div>
+    <div class="actions-section">
+      <p-button 
+        icon="pi pi-plus" 
+        [label]="'NOVO_RELATORIO' | translate"
+        (onClick)="openNewRelatorio()"
+        class="p-button-success">
+      </p-button>
+    </div>
+  </div>
+
+  <div class="content-section">
+    <p-card>
+      <div class="relatorios-grid">
+        <div class="relatorio-card" *ngFor="let relatorio of relatorios">
+          <div class="card-header">
+            <div class="relatorio-info">
+              <h3>{{ relatorio.nome }}</h3>
+              <span class="categoria">{{ relatorio.categoria }}</span>
+            </div>
+            <div class="status-indicator">
+              <i [class]="getStatusIcon(relatorio.status)" 
+                 [ngClass]="getStatusClass(relatorio.status)"></i>
+            </div>
+          </div>
+          
+          <div class="card-content">
+            <p class="descricao">{{ relatorio.descricao }}</p>
+            
+            <div class="info-grid">
+              <div class="info-item">
+                <label>{{ 'ULTIMA_EXECUCAO' | translate }}:</label>
+                <span>{{ relatorio.ultimaExecucao | date:'dd/MM/yyyy HH:mm' }}</span>
+              </div>
+              <div class="info-item">
+                <label>{{ 'PROXIMA_EXECUCAO' | translate }}:</label>
+                <span>{{ relatorio.proximaExecucao | date:'dd/MM/yyyy HH:mm' }}</span>
+              </div>
+              <div class="info-item">
+                <label>{{ 'AGENDAMENTO' | translate }}:</label>
+                <span>{{ relatorio.agendamento }}</span>
+              </div>
+            </div>
+            
+            <div class="formatos">
+              <label>{{ 'FORMATOS' | translate }}:</label>
+              <div class="formato-tags">
+                <span class="formato-tag" *ngFor="let formato of relatorio.formato">
+                  {{ formato }}
+                </span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card-actions">
+            <p-button 
+              icon="pi pi-play" 
+              [label]="'EXECUTAR' | translate"
+              (onClick)="executeRelatorio(relatorio)"
+              class="p-button-primary p-button-sm">
+            </p-button>
+            <p-button 
+              icon="pi pi-pencil" 
+              [label]="'EDITAR' | translate"
+              (onClick)="editRelatorio(relatorio)"
+              class="p-button-secondary p-button-sm">
+            </p-button>
+            <p-button 
+              icon="pi pi-trash" 
+              [label]="'EXCLUIR' | translate"
+              (onClick)="deleteRelatorio(relatorio)"
+              class="p-button-danger p-button-sm">
+            </p-button>
+          </div>
+        </div>
+      </div>
+    </p-card>
+  </div>
+</div>
+
+<!-- Dialog para criar/editar relatório -->
+<p-dialog 
+  [(visible)]="displayDialog" 
+  [header]="(isNewRelatorio ? 'NOVO_RELATORIO' : 'EDITAR_RELATORIO') | translate"
+  [modal]="true" 
+  [style]="{width: '600px'}"
+  [draggable]="false" 
+  [resizable]="false">
+  
+  <div class="dialog-content" *ngIf="selectedRelatorio">
+    <div class="form-row">
+      <div class="form-field">
+        <label for="nome">{{ 'NOME' | translate }} *</label>
+        <input 
+          id="nome"
+          type="text" 
+          pInputText 
+          [(ngModel)]="selectedRelatorio.nome"
+          class="w-full">
+      </div>
+    </div>
+    
+    <div class="form-row">
+      <div class="form-field">
+        <label for="categoria">{{ 'CATEGORIA' | translate }} *</label>
+        <p-dropdown 
+          id="categoria"
+          [options]="categorias" 
+          [(ngModel)]="selectedRelatorio.categoria"
+          placeholder="{{ 'SELECIONE_CATEGORIA' | translate }}"
+          class="w-full">
+        </p-dropdown>
+      </div>
+    </div>
+    
+    <div class="form-row">
+      <div class="form-field">
+        <label for="descricao">{{ 'DESCRICAO' | translate }}</label>
+        <textarea 
+          id="descricao"
+          pInputTextarea 
+          [(ngModel)]="selectedRelatorio.descricao"
+          [rows]="3"
+          class="w-full">
+        </textarea>
+      </div>
+    </div>
+    
+    <div class="form-row">
+      <div class="form-field">
+        <label for="agendamento">{{ 'AGENDAMENTO' | translate }} *</label>
+        <p-dropdown 
+          id="agendamento"
+          [options]="agendamentos" 
+          [(ngModel)]="selectedRelatorio.agendamento"
+          placeholder="{{ 'SELECIONE_AGENDAMENTO' | translate }}"
+          class="w-full">
+        </p-dropdown>
+      </div>
+    </div>
+    
+    <div class="form-row">
+      <div class="form-field">
+        <label>{{ 'FORMATOS_DISPONIVEIS' | translate }}</label>
+        <p-multiSelect 
+          [options]="formatos" 
+          [(ngModel)]="selectedRelatorio.formato"
+          [defaultLabel]="'SELECIONE_FORMATOS' | translate"
+          class="w-full">
+        </p-multiSelect>
+      </div>
+    </div>
+  </div>
+  
+  <ng-template pTemplate="footer">
+    <p-button 
+      [label]="'CANCELAR' | translate"
+      icon="pi pi-times" 
+      (onClick)="displayDialog = false"
+      class="p-button-text">
+    </p-button>
+    <p-button 
+      [label]="'SALVAR' | translate"
+      icon="pi pi-check" 
+      (onClick)="saveRelatorio()"
+      class="p-button-success">
+    </p-button>
+  </ng-template>
+</p-dialog>
+
+<p-toast></p-toast> 

@@ -1,10 +1,10 @@
 export const clienteFornecedorOptions = [
     {
         label: "Cliente",
-        value: 1
+        value: 0
     },
     {
         label: "Fornecedor",
-        value: 2
+        value: 1
     },
 ]

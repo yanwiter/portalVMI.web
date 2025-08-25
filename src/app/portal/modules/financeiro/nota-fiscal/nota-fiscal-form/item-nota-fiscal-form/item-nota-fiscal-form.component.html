@@ -1,0 +1,92 @@
+<form [formGroup]="form" class="item-form">
+  <div class="form-grid">
+    <!-- Produto -->
+    <div class="form-row">
+      <div class="form-field">
+        <label for="produtoId">Produto *</label>
+        <p-dropdown id="produtoId" [options]="produtos" formControlName="produtoId" 
+                   optionLabel="descricao" optionValue="id" placeholder="Selecione o produto"
+                   (onChange)="onProdutoChange($event)" />
+      </div>
+      
+      <div class="form-field">
+        <label for="produtoCodigo">Código do Produto *</label>
+        <input pInputText id="produtoCodigo" formControlName="produtoCodigo" placeholder="Código" readonly />
+      </div>
+      
+      <div class="form-field">
+        <label for="produtoDescricao">Descrição do Produto *</label>
+        <input pInputText id="produtoDescricao" formControlName="produtoDescricao" placeholder="Descrição" readonly />
+      </div>
+    </div>
+
+    <!-- Quantidade e Valores -->
+    <div class="form-row">
+      <div class="form-field">
+        <label for="quantidade">Quantidade *</label>
+        <p-inputNumber id="quantidade" formControlName="quantidade" 
+                      [minFractionDigits]="2" [maxFractionDigits]="2" 
+                      placeholder="0,00" />
+      </div>
+      
+      <div class="form-field">
+        <label for="valorUnitario">Valor Unitário *</label>
+        <p-inputNumber id="valorUnitario" formControlName="valorUnitario" 
+                      mode="currency" currency="BRL" locale="pt-BR"
+                      placeholder="R$ 0,00" />
+      </div>
+      
+      <div class="form-field">
+        <label for="valorTotal">Valor Total</label>
+        <input pInputText id="valorTotal" formControlName="valorTotal" 
+               [value]="formatarMoeda(form.get('valorTotal')?.value || 0)" readonly />
+      </div>
+    </div>
+
+    <!-- Informações Fiscais -->
+    <div class="form-row">
+      <div class="form-field">
+        <label for="cfop">CFOP *</label>
+        <input pInputText id="cfop" formControlName="cfop" placeholder="CFOP" />
+      </div>
+      
+      <div class="form-field">
+        <label for="ncm">NCM *</label>
+        <input pInputText id="ncm" formControlName="ncm" placeholder="NCM" />
+      </div>
+      
+      <div class="form-field">
+        <label for="unidadeComercial">Unidade Comercial *</label>
+        <input pInputText id="unidadeComercial" formControlName="unidadeComercial" placeholder="UN" />
+      </div>
+    </div>
+
+    <!-- Impostos -->
+    <div class="form-row">
+      <div class="form-field">
+        <label for="aliquotaIcms">Alíquota ICMS (%)</label>
+        <p-inputNumber id="aliquotaIcms" formControlName="aliquotaIcms" 
+                      [minFractionDigits]="2" [maxFractionDigits]="2" 
+                      placeholder="0,00" />
+      </div>
+      
+      <div class="form-field">
+        <label for="valorBaseIcms">Base ICMS</label>
+        <input pInputText id="valorBaseIcms" formControlName="valorBaseIcms" 
+               [value]="formatarMoeda(form.get('valorBaseIcms')?.value || 0)" readonly />
+      </div>
+      
+      <div class="form-field">
+        <label for="valorIcms">Valor ICMS</label>
+        <input pInputText id="valorIcms" formControlName="valorIcms" 
+               [value]="formatarMoeda(form.get('valorIcms')?.value || 0)" readonly />
+      </div>
+    </div>
+  </div>
+
+  <!-- Ações -->
+  <div class="form-acoes">
+    <p-button label="Salvar" icon="pi pi-check" (onClick)="onSalvar()" />
+    <p-button label="Cancelar" icon="pi pi-times" severity="secondary" (onClick)="onCancelar()" />
+  </div>
+</form> 

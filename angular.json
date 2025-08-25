@@ -7,7 +7,29 @@
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
-          "style": "scss"
+          "style": "scss",
+          "skipTests": true
+        },
+        "@schematics/angular:class": {
+          "skipTests": true
+        },
+        "@schematics/angular:directive": {
+          "skipTests": true
+        },
+        "@schematics/angular:guard": {
+          "skipTests": true
+        },
+        "@schematics/angular:interceptor": {
+          "skipTests": true
+        },
+        "@schematics/angular:pipe": {
+          "skipTests": true
+        },
+        "@schematics/angular:resolver": {
+          "skipTests": true
+        },
+        "@schematics/angular:service": {
+          "skipTests": true
         }
       },
       "root": "",
@@ -17,40 +39,28 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": {
-              "base": "dist/PortalVMI/portal-vmi/",
-              "browser": ""
-            },
+            "outputPath": "dist/browser",
+            "baseHref": "/",
             "index": "src/index.html",
             "browser": "src/main.ts",
-            "polyfills": [
-              "zone.js"
-            ],
+            "polyfills": ["zone.js"],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
-            "assets": ["src/assets", "src/web.config"],
+            "assets": [
+              "src/favicon.ico",
+              "src/assets",
+              "src/assets/environments",
+              "src/web.config"
+            ],
             "styles": [
               "node_modules/primeng/resources/themes/lara-light-blue/theme.css",
               "node_modules/primeng/resources/primeng.min.css",
               "src/styles.scss"
             ],
-            "scripts": [],
-            "allowedCommonJsDependencies": []
+            "scripts": []
           },
           "configurations": {
             "production": {
-              "baseHref": "/portal-vmi/",
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
-                }
-              ],
-              "optimization": true,
-              "outputHashing": "all",
-              "namedChunks": false,
-              "extractLicenses": true,
-              "sourceMap": false,
               "budgets": [
                 {
                   "type": "initial",
@@ -62,63 +72,36 @@
                   "maximumWarning": "2MB",
                   "maximumError": "5MB"
                 }
-              ]
-            },
-            "hml": {
-              "baseHref": "/portal-vmi/",
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.hml.ts"
-                }
               ],
-              "optimization": true,
-              "outputHashing": "all",
-              "namedChunks": false,
-              "extractLicenses": true,
-              "sourceMap": false,
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "4MB",
-                  "maximumError": "10MB"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "2MB",
-                  "maximumError": "5MB"
-                }
-              ]
+              "outputHashing": "all"
             },
             "development": {
               "optimization": false,
-              "sourceMap": true,
-              "namedChunks": true,
-              "baseHref": "/portal-vmi/",
-              "extractLicenses": false
+              "extractLicenses": false,
+              "sourceMap": true
             }
           },
           "defaultConfiguration": "production"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
-          "options": {
-          "buildTarget": "VMI.portal.Web:build"
-          },
           "configurations": {
             "production": {
-              "buildTarget": "CBMM.FichaIndividual.Web:build:production"
+              "buildTarget": "VMI.portal.Web:build:production"
             },
             "development": {
               "buildTarget": "VMI.portal.Web:build:development"
             }
+          },
+          "options": {
+            "proxyConfig": "proxy.config.json"
           },
           "defaultConfiguration": "development"
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-          "buildTarget": "VMI.portal.Web:build"
+            "buildTarget": "VMI.portal.Web:build"
           }
         },
         "test": {
@@ -131,14 +114,12 @@
             "tsConfig": "tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
             "assets": [
-              {
-                "glob": "**/*",
-                "input": "public"
-              }
+              "src/favicon.ico",
+              "src/assets"
             ],
             "styles": [
               "node_modules/primeng/resources/themes/lara-light-blue/theme.css",
-              "node_modules/primeng/resources/primeng.min.css",
+              "node_modules/primeng/resources/primeng.min.css",   
               "src/styles.scss"
             ],
             "scripts": []
@@ -148,6 +129,6 @@
     }
   },
   "cli": {
-    "analytics": false
+    "analytics": "8b1a8602-8f33-4c3f-a4c1-74ecf05776b5"
   }
 }

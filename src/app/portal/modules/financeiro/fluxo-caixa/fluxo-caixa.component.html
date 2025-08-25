@@ -1,0 +1,89 @@
+<div class="fluxo-caixa-container">
+  <div class="header">
+    <div class="title-section">
+      <h1>{{ 'FLUXO_CAIXA' | translate }}</h1>
+      <p>{{ 'FLUXO_CAIXA_DESC' | translate }}</p>
+    </div>
+  </div>
+
+  <!-- Cards de Resumo -->
+  <div class="summary-cards">
+    <p-card class="summary-card">
+      <div class="card-content">
+        <div class="icon">
+          <i class="pi pi-dollar"></i>
+        </div>
+        <div class="info">
+          <h3>{{ 'SALDO_ATUAL' | translate }}</h3>
+          <span class="number">{{ saldoAtual | currency:'BRL' }}</span>
+        </div>
+      </div>
+    </p-card>
+
+    <p-card class="summary-card">
+      <div class="card-content">
+        <div class="icon">
+          <i class="pi pi-arrow-up"></i>
+        </div>
+        <div class="info">
+          <h3>{{ 'TOTAL_ENTRADAS' | translate }}</h3>
+          <span class="number">{{ getTotalEntradas() | currency:'BRL' }}</span>
+        </div>
+      </div>
+    </p-card>
+
+    <p-card class="summary-card">
+      <div class="card-content">
+        <div class="icon">
+          <i class="pi pi-arrow-down"></i>
+        </div>
+        <div class="info">
+          <h3>{{ 'TOTAL_SAIDAS' | translate }}</h3>
+          <span class="number">{{ getTotalSaidas() | currency:'BRL' }}</span>
+        </div>
+      </div>
+    </p-card>
+  </div>
+
+  <!-- Tabela de Fluxo de Caixa -->
+  <p-card [header]="'MOVIMENTACOES' | translate" class="table-card">
+    <p-table 
+      [value]="fluxoCaixa" 
+      [paginator]="true" 
+      [rows]="10"
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="{{ 'SHOWING' | translate }} {first} {{ 'TO' | translate }} {last} {{ 'OF' | translate }} {totalRecords} {{ 'ENTRIES' | translate }}"
+      [rowsPerPageOptions]="[10,25,50]"
+      styleClass="p-datatable-sm">
+      
+      <ng-template pTemplate="header">
+        <tr>
+          <th>{{ 'DATA' | translate }}</th>
+          <th>{{ 'DESCRICAO' | translate }}</th>
+          <th>{{ 'TIPO' | translate }}</th>
+          <th>{{ 'CATEGORIA' | translate }}</th>
+          <th>{{ 'VALOR' | translate }}</th>
+          <th>{{ 'SALDO' | translate }}</th>
+        </tr>
+      </ng-template>
+      
+      <ng-template pTemplate="body" let-movimento>
+        <tr>
+          <td>{{ movimento.data | date:'dd/MM/yyyy' }}</td>
+          <td>{{ movimento.descricao }}</td>
+          <td>
+            <p-tag 
+              [value]="movimento.tipo" 
+              [severity]="getTipoSeverity(movimento.tipo)">
+            </p-tag>
+          </td>
+          <td>{{ movimento.categoria }}</td>
+          <td [class]="movimento.tipo === 'ENTRADA' ? 'text-success' : 'text-danger'">
+            {{ movimento.tipo === 'ENTRADA' ? '+' : '-' }}{{ movimento.valor | currency:'BRL' }}
+          </td>
+          <td>{{ movimento.saldo | currency:'BRL' }}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-card>
+</div> 

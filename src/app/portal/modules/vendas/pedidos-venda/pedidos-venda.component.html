@@ -1,0 +1,170 @@
+<div class="pedidos-venda-container">
+  <div class="header-section">
+    <div class="title-section">
+      <h1>{{ 'PEDIDOS_VENDA' | translate }}</h1>
+      <p>{{ 'PEDIDOS_VENDA_DESC' | translate }}</p>
+    </div>
+    <div class="actions-section">
+      <p-button 
+        icon="pi pi-plus" 
+        [label]="'NOVO_PEDIDO' | translate"
+        (onClick)="openNewPedido()"
+        class="p-button-success">
+      </p-button>
+    </div>
+  </div>
+
+  <!-- Lista de Pedidos -->
+  <p-card [header]="'PEDIDOS_VENDA' | translate">
+    <p-table [value]="pedidos" [paginator]="true" [rows]="10" 
+             [showCurrentPageReport]="true" 
+             currentPageReportTemplate="{{ 'SHOWING' | translate }} {first} {{ 'TO' | translate }} {last} {{ 'OF' | translate }} {totalRecords} {{ 'ENTRIES' | translate }}"
+             [rowsPerPageOptions]="[5, 10, 25]">
+      
+      <ng-template pTemplate="header">
+        <tr>
+          <th>{{ 'NUMERO' | translate }}</th>
+          <th>{{ 'CLIENTE' | translate }}</th>
+          <th>{{ 'DATA_PEDIDO' | translate }}</th>
+          <th>{{ 'DATA_ENTREGA' | translate }}</th>
+          <th>{{ 'VALOR_TOTAL' | translate }}</th>
+          <th>{{ 'STATUS' | translate }}</th>
+          <th>{{ 'RESPONSAVEL' | translate }}</th>
+          <th>{{ 'ACOES' | translate }}</th>
+        </tr>
+      </ng-template>
+      
+      <ng-template pTemplate="body" let-pedido>
+        <tr>
+          <td>{{ pedido.numero }}</td>
+          <td>{{ pedido.cliente }}</td>
+          <td>{{ pedido.dataPedido | date:'dd/MM/yyyy' }}</td>
+          <td>{{ pedido.dataEntrega | date:'dd/MM/yyyy' }}</td>
+          <td>{{ pedido.valorTotal | currency:'BRL' }}</td>
+          <td>
+            <span class="status-badge" [ngClass]="getStatusClass(pedido.status)">
+              <i [class]="getStatusIcon(pedido.status)"></i>
+              {{ pedido.status | titlecase }}
+            </span>
+          </td>
+          <td>{{ pedido.responsavel }}</td>
+          <td>
+            <div class="action-buttons">
+              <p-button 
+                icon="pi pi-eye" 
+                [label]="'VISUALIZAR' | translate"
+                class="p-button-info p-button-sm">
+              </p-button>
+              <p-button 
+                icon="pi pi-pencil" 
+                [label]="'EDITAR' | translate"
+                (onClick)="editPedido(pedido)"
+                class="p-button-primary p-button-sm">
+              </p-button>
+              <p-button 
+                icon="pi pi-trash" 
+                [label]="'EXCLUIR' | translate"
+                (onClick)="deletePedido(pedido)"
+                class="p-button-danger p-button-sm">
+              </p-button>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-card>
+</div>
+
+<!-- Dialog para criar/editar pedido -->
+<p-dialog 
+  [(visible)]="displayDialog" 
+  [header]="(isNewPedido ? 'NOVO_PEDIDO' : 'EDITAR_PEDIDO') | translate"
+  [modal]="true" 
+  [style]="{width: '800px'}"
+  [draggable]="false" 
+  [resizable]="false">
+  
+  <div class="dialog-content" *ngIf="selectedPedido">
+    <div class="form-row">
+      <div class="form-field">
+        <label for="numero">{{ 'NUMERO' | translate }} *</label>
+        <input 
+          id="numero"
+          type="text" 
+          pInputText 
+          [(ngModel)]="selectedPedido.numero"
+          class="w-full">
+      </div>
+      <div class="form-field">
+        <label for="cliente">{{ 'CLIENTE' | translate }} *</label>
+        <input 
+          id="cliente"
+          type="text" 
+          pInputText 
+          [(ngModel)]="selectedPedido.cliente"
+          class="w-full">
+      </div>
+    </div>
+    
+    <div class="form-row">
+      <div class="form-field">
+        <label for="dataPedido">{{ 'DATA_PEDIDO' | translate }}</label>
+        <p-calendar 
+          id="dataPedido"
+          [(ngModel)]="selectedPedido.dataPedido"
+          dateFormat="dd/mm/yy"
+          class="w-full">
+        </p-calendar>
+      </div>
+      <div class="form-field">
+        <label for="dataEntrega">{{ 'DATA_ENTREGA' | translate }}</label>
+        <p-calendar 
+          id="dataEntrega"
+          [(ngModel)]="selectedPedido.dataEntrega"
+          dateFormat="dd/mm/yy"
+          class="w-full">
+        </p-calendar>
+      </div>
+    </div>
+    
+    <div class="form-row">
+      <div class="form-field">
+        <label for="valorTotal">{{ 'VALOR_TOTAL' | translate }} *</label>
+        <p-inputNumber 
+          id="valorTotal"
+          [(ngModel)]="selectedPedido.valorTotal"
+          [min]="0"
+          [showButtons]="true"
+          prefix="R$ "
+          class="w-full">
+        </p-inputNumber>
+      </div>
+      <div class="form-field">
+        <label for="responsavel">{{ 'RESPONSAVEL' | translate }} *</label>
+        <input 
+          id="responsavel"
+          type="text" 
+          pInputText 
+          [(ngModel)]="selectedPedido.responsavel"
+          class="w-full">
+      </div>
+    </div>
+  </div>
+  
+  <ng-template pTemplate="footer">
+    <p-button 
+      [label]="'CANCELAR' | translate"
+      icon="pi pi-times" 
+      (onClick)="displayDialog = false"
+      class="p-button-text">
+    </p-button>
+    <p-button 
+      [label]="'SALVAR' | translate"
+      icon="pi pi-check" 
+      (onClick)="savePedido()"
+      class="p-button-success">
+    </p-button>
+  </ng-template>
+</p-dialog>
+
+<p-toast></p-toast> 

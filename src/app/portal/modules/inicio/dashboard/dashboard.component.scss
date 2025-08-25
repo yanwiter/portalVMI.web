@@ -2,170 +2,508 @@
 @import 'primeng/resources/primeng.min.css';
 @import 'primeicons/primeicons.css';
 
-.dashboard-content {
-  padding: 2rem;
-  display: grid;
-  gap: 2rem;
-}
+.dashboard-geral {
+  padding: 1.5rem;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+  transition: all 0.3s ease;
 
-.overview-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
+  .dashboard-header {
+    margin-bottom: 2rem;
 
-  .stat-card {
-    transition: transform 0.3s, box-shadow 0.3s;
-    border-radius: 10px;
-    overflow: hidden;
-
-    &:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-    }
-
-    .stat-content {
+    .header-content {
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      gap: 1.5rem;
+      background: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
-      .stat-icon {
-        font-size: 2rem;
-        padding: 1rem;
-        border-radius: 50%;
-        background: rgba(180, 152, 219, 0.1);
-        color: var(--secundary-color);
-      }
-
-      h3 {
+      .dashboard-title {
         margin: 0;
+        color: #2c3e50;
         font-size: 1.8rem;
         font-weight: 600;
-        color: var(--primary-color);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        i {
+          font-size: 1.5rem;
+          color: #3498db;
+        }
       }
 
-      p {
-        margin: 0.2rem 0 0;
-        color: #7f8c8d;
-        font-size: 0.9rem;
+      .header-controls {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
       }
     }
   }
-}
 
-.progress-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.5rem;
-  width: 100%;
-}
+  .metricas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
 
-.progress-item {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
+    .metrica-card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      border: 1px solid #e9ecef;
 
-::ng-deep .progress-1 .p-progressbar-value {
-  background: #3498db !important;
-}
+      &:hover {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        transform: translateY(-2px);
+      }
 
-::ng-deep .progress-2 .p-progressbar-value {
-  background: #2ecc71 !important;
-}
+      .metrica-icon {
+        margin-bottom: 1rem;
 
-::ng-deep .progress-3 .p-progressbar-value {
-  background: #e74c3c !important
-}
+        i {
+          font-size: 2rem;
+        }
+      }
 
-::ng-deep .progress-4 .p-progressbar-value {
-  background: #f39c12 !important;
-}
+      .metrica-content {
+        .metrica-valor {
+          margin: 0 0 0.5rem 0;
+          font-size: 2rem;
+          font-weight: 700;
+          color: #2c3e50;
+        }
 
-::ng-deep .custom-progress .p-progressbar {
-  height: 10px;
-  border-radius: 5px;
-  background: #f0f0f0;
-
-  .p-progressbar-value {
-    border-radius: 5px;
-    transition: width 0.5s ease;
-  }
-}
-
-.charts-grid {
-  width: 100%;
-}
-
-.chart-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-}
-
-.chart-container {
-  flex: 1 1 calc(50% - 1rem);
-  min-width: 300px;
-}
-
-.chart-card {
-  height: 100%;
-}
-
-.chart-placeholder {
-  text-align: center;
-  min-height: 300px;
-  max-height: 400px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-@media (max-width: 768px) {
-  .dashboard-header {
-    flex-direction: column;
-    gap: 1rem;
-    text-align: center;
-
-    .header-left {
-      margin-bottom: 1rem;
+        .metrica-label {
+          margin: 0;
+          color: #6c757d;
+          font-size: 0.9rem;
+        }
+      }
     }
   }
 
-  .module-grid {
-    grid-template-columns: 1fr !important;
+  .graficos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+
+    .grafico-card {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      border: 1px solid #e9ecef;
+
+      &:hover {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+      }
+
+      .grafico-header {
+        padding: 1.5rem;
+        border-bottom: 1px solid #e9ecef;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        h3 {
+          margin: 0;
+          color: #2c3e50;
+          font-size: 1.2rem;
+          font-weight: 600;
+        }
+
+        .grafico-controls {
+          display: flex;
+          gap: 1rem;
+        }
+      }
+
+      .grafico-content {
+        padding: 1.5rem;
+
+        .progress-grid {
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
+
+          .progress-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+
+            .progress-info {
+              flex: 1;
+              display: flex;
+              align-items: center;
+              gap: 1rem;
+
+              .percent-value {
+                font-weight: 600;
+                color: #2c3e50;
+                min-width: 40px;
+              }
+
+              ::ng-deep .custom-progress {
+                flex: 1;
+
+                &.progress-1 .p-progressbar-value {
+                  background: #3498db;
+                }
+
+                &.progress-2 .p-progressbar-value {
+                  background: #27ae60;
+                }
+
+                &.progress-3 .p-progressbar-value {
+                  background: #e74c3c;
+                }
+
+                &.progress-4 .p-progressbar-value {
+                  background: #f39c12;
+                }
+              }
+            }
+
+            .equipamento-name {
+              color: #6c757d;
+              font-size: 0.9rem;
+              min-width: 120px;
+            }
+          }
+        }
+      }
+    }
   }
 
-  .progress-grid {
+  .listas-grid {
+    display: grid;
     grid-template-columns: 1fr;
+    gap: 1.5rem;
+
+    .lista-card {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      border: 1px solid #e9ecef;
+
+      &:hover {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+      }
+
+      .lista-header {
+        padding: 1.5rem;
+        border-bottom: 1px solid #e9ecef;
+
+        h3 {
+          margin: 0;
+          color: #2c3e50;
+          font-size: 1.2rem;
+          font-weight: 600;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+
+          i {
+            color: #3498db;
+          }
+        }
+      }
+
+      .lista-content {
+        padding: 1.5rem;
+
+        ::ng-deep .p-datatable {
+          .p-datatable-header {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 6px 6px 0 0;
+          }
+
+          .p-datatable-thead > tr > th {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            font-weight: 600;
+            color: #2c3e50;
+          }
+
+          .p-datatable-tbody > tr {
+            border: 1px solid #e9ecef;
+
+            &:nth-child(even) {
+              background: #f8f9fa;
+            }
+
+            &:hover {
+              background: #e9ecef;
+            }
+
+            > td {
+              border: 1px solid #e9ecef;
+              padding: 0.75rem;
+            }
+          }
+
+          .p-paginator {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 0 0 6px 6px;
+
+            .p-paginator-pages .p-paginator-page {
+              border: 1px solid #e9ecef;
+              background: white;
+
+              &.p-highlight {
+                background: #3498db;
+                color: white;
+                border-color: #3498db;
+              }
+
+              &:hover {
+                background: #e9ecef;
+              }
+            }
+          }
+        }
+      }
+    }
   }
 
-  .chart-container {
-    flex: 1 1 100%;
+  // Tema escuro
+  &.theme-dark {
+    background-color: #1a1a1a;
+    color: #ffffff;
+
+    .dashboard-header {
+      .header-content {
+        background: #2d2d2d;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+
+        .dashboard-title {
+          color: #ffffff;
+
+          i {
+            color: #3498db;
+          }
+        }
+      }
+    }
+
+    .metrica-card {
+      background: #2d2d2d !important;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      border: 1px solid #1a1a1a !important;
+
+      &:hover {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+        transform: translateY(-2px);
+      }
+
+      .metrica-content {
+        .metrica-valor {
+          color: #ffffff !important;
+        }
+
+        .metrica-label {
+          color: #cccccc !important;
+        }
+      }
+    }
+
+    .grafico-card {
+      background: #2d2d2d !important;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      border: 1px solid #1a1a1a !important;
+
+      &:hover {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+      }
+
+      .grafico-header {
+        border-bottom: 1px solid #1a1a1a !important;
+
+        h3 {
+          color: #ffffff !important;
+        }
+      }
+
+      .grafico-content {
+        .progress-grid {
+          .progress-item {
+            .progress-info {
+              .percent-value {
+                color: #ffffff !important;
+              }
+            }
+
+            .equipamento-name {
+              color: #cccccc !important;
+            }
+          }
+        }
+      }
+    }
+
+    .lista-card {
+      background: #2d2d2d !important;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      border: 1px solid #1a1a1a !important;
+
+      &:hover {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+      }
+
+      .lista-header {
+        border-bottom: 1px solid #1a1a1a !important;
+
+        h3 {
+          color: #ffffff !important;
+        }
+      }
+
+      .lista-content {
+        ::ng-deep .p-datatable {
+          .p-datatable-header {
+            background: #2d2d2d !important;
+            color: #ffffff !important;
+            border: 1px solid #1a1a1a !important;
+          }
+
+          .p-datatable-thead > tr > th {
+            background: #404040 !important;
+            color: #ffffff !important;
+            border: 1px solid #1a1a1a !important;
+          }
+
+          .p-datatable-tbody > tr {
+            border: 1px solid #1a1a1a !important;
+            background: #2d2d2d !important;
+            color: #ffffff !important;
+
+            &:nth-child(even) {
+              background: #333333 !important;
+            }
+
+            &:hover {
+              background: #404040 !important;
+            }
+
+            > td {
+              border: 1px solid #1a1a1a !important;
+              padding: 0.75rem;
+            }
+          }
+
+          .p-paginator {
+            background: #2d2d2d !important;
+            color: #ffffff !important;
+            border: 1px solid #1a1a1a !important;
+            border-radius: 0 0 6px 6px;
+
+            .p-paginator-pages .p-paginator-page {
+              border: 1px solid #1a1a1a !important;
+              background: #404040 !important;
+              color: #ffffff !important;
+
+              &.p-highlight {
+                background: #3498db !important;
+                color: white !important;
+                border-color: #3498db !important;
+              }
+
+              &:hover {
+                background: #555555 !important;
+              }
+            }
+          }
+        }
+      }
+    }
   }
-}
 
-.chart-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-  width: 100%;
-}
+  // Responsividade
+  @media (max-width: 768px) {
+    padding: 1rem;
 
-.chart-controls {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-left: auto;
-}
+    .dashboard-header {
+      .header-content {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
 
-p-calendar {
-  width: 175px;
-}
+        .dashboard-title {
+          font-size: 1.5rem;
+        }
+      }
+    }
 
-p-calendar .p-inputtext {
-  padding: 0.3rem 0.5rem;
-  font-size: 0.8rem;
+    .metricas-grid {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    .graficos-grid {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    .grafico-card {
+      .grafico-header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+
+        .grafico-controls {
+          justify-content: center;
+        }
+      }
+    }
+  }
+
+  @media (max-width: 480px) {
+    .metrica-card {
+      padding: 1rem;
+
+      .metrica-content {
+        .metrica-valor {
+          font-size: 1.5rem;
+        }
+      }
+    }
+
+    .grafico-card {
+      .grafico-header {
+        padding: 1rem;
+
+        h3 {
+          font-size: 1rem;
+        }
+      }
+
+      .grafico-content {
+        padding: 1rem;
+      }
+    }
+
+    .lista-card {
+      .lista-header {
+        padding: 1rem;
+
+        h3 {
+          font-size: 1rem;
+        }
+      }
+
+      .lista-content {
+        padding: 1rem;
+      }
+    }
+  }
 }

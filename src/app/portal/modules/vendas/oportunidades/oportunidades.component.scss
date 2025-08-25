@@ -1,0 +1,384 @@
+.oportunidades-container {
+  padding: 1.5rem;
+  
+  .header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+    
+    .title-section {
+      h1 {
+        margin: 0 0 0.5rem 0;
+        color: var(--text-color);
+        font-size: 2rem;
+        font-weight: 600;
+      }
+      
+      p {
+        margin: 0;
+        color: var(--text-color-secondary);
+        font-size: 1rem;
+      }
+    }
+    
+    .actions-section {
+      display: flex;
+      gap: 1rem;
+    }
+  }
+  
+  .summary-section {
+    margin-bottom: 2rem;
+    
+    .summary-card {
+      .summary-content {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+        
+        .summary-item {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+          
+          i {
+            font-size: 2rem;
+            color: var(--primary-color);
+          }
+          
+          .summary-info {
+            h3 {
+              margin: 0 0 0.5rem 0;
+              color: var(--text-color);
+              font-size: 1rem;
+              font-weight: 500;
+            }
+            
+            .value {
+              font-size: 1.5rem;
+              font-weight: 700;
+              color: var(--primary-color);
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  .filters-card {
+    margin-bottom: 2rem;
+    
+    .filters-content {
+      .filter-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        
+        .filter-item {
+          label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-color);
+          }
+        }
+      }
+    }
+  }
+  
+  .oportunidades-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
+    gap: 1.5rem;
+    
+    .oportunidade-card {
+      background: var(--surface-card);
+      border: 1px solid var(--surface-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: all 0.3s ease;
+      
+      &:hover {
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        transform: translateY(-2px);
+      }
+      
+      .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1rem;
+        
+        .oportunidade-info {
+          h3 {
+            margin: 0 0 0.5rem 0;
+            color: var(--text-color);
+            font-size: 1.25rem;
+            font-weight: 600;
+          }
+          
+          .cliente {
+            display: inline-block;
+            color: var(--text-color-secondary);
+            font-size: 0.875rem;
+          }
+        }
+        
+        .status-indicator {
+          i {
+            font-size: 1.5rem;
+            
+            &.fase-prospeccao {
+              color: var(--blue-500);
+            }
+            
+            &.fase-qualificacao {
+              color: var(--cyan-500);
+            }
+            
+            &.fase-proposta {
+              color: var(--purple-500);
+            }
+            
+            &.fase-negociacao {
+              color: var(--orange-500);
+            }
+            
+            &.fase-fechamento {
+              color: var(--yellow-500);
+            }
+            
+            &.fase-ganho {
+              color: var(--green-500);
+            }
+            
+            &.fase-perdido {
+              color: var(--red-500);
+            }
+          }
+        }
+      }
+      
+      .card-content {
+        .descricao {
+          margin: 0 0 1rem 0;
+          color: var(--text-color-secondary);
+          line-height: 1.5;
+        }
+        
+        .info-grid {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 0.75rem;
+          margin-bottom: 1rem;
+          
+          .info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            
+            label {
+              font-weight: 500;
+              color: var(--text-color);
+              font-size: 0.875rem;
+            }
+            
+            span {
+              font-size: 0.875rem;
+              
+              &.valor {
+                font-weight: 600;
+                color: var(--green-600);
+              }
+              
+              &.probabilidade-alta {
+                color: var(--green-500);
+                font-weight: 600;
+              }
+              
+              &.probabilidade-media {
+                color: var(--orange-500);
+                font-weight: 600;
+              }
+              
+              &.probabilidade-baixa {
+                color: var(--red-500);
+                font-weight: 600;
+              }
+              
+              &.fase-prospeccao {
+                color: var(--blue-500);
+                font-weight: 500;
+              }
+              
+              &.fase-qualificacao {
+                color: var(--cyan-500);
+                font-weight: 500;
+              }
+              
+              &.fase-proposta {
+                color: var(--purple-500);
+                font-weight: 500;
+              }
+              
+              &.fase-negociacao {
+                color: var(--orange-500);
+                font-weight: 500;
+              }
+              
+              &.fase-fechamento {
+                color: var(--yellow-500);
+                font-weight: 500;
+              }
+              
+              &.fase-ganho {
+                color: var(--green-500);
+                font-weight: 500;
+              }
+              
+              &.fase-perdido {
+                color: var(--red-500);
+                font-weight: 500;
+              }
+            }
+          }
+        }
+        
+        .produtos {
+          label {
+            display: block;
+            font-weight: 500;
+            color: var(--text-color);
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+          }
+          
+          .produto-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            
+            .produto-tag {
+              background: var(--surface-200);
+              color: var(--text-color);
+              padding: 0.25rem 0.5rem;
+              border-radius: 4px;
+              font-size: 0.75rem;
+              font-weight: 500;
+            }
+          }
+        }
+      }
+      
+      .card-actions {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 1.5rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--surface-border);
+        
+        .p-button {
+          flex: 1;
+        }
+      }
+    }
+  }
+}
+
+// Dialog styles
+.dialog-content {
+  .form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    
+    .form-field {
+      label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: var(--text-color);
+      }
+      
+      input, textarea, .p-dropdown, .p-inputnumber, .p-calendar {
+        width: 100%;
+      }
+    }
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .oportunidades-container {
+    padding: 1rem;
+    
+    .header-section {
+      flex-direction: column;
+      gap: 1rem;
+      
+      .actions-section {
+        width: 100%;
+        
+        .p-button {
+          width: 100%;
+        }
+      }
+    }
+    
+    .summary-section {
+      .summary-card {
+        .summary-content {
+          grid-template-columns: 1fr;
+          gap: 1rem;
+        }
+      }
+    }
+    
+    .filters-card {
+      .filters-content {
+        .filter-row {
+          grid-template-columns: 1fr;
+        }
+      }
+    }
+    
+    .oportunidades-grid {
+      grid-template-columns: 1fr;
+      
+      .oportunidade-card {
+        .card-actions {
+          flex-direction: column;
+          
+          .p-button {
+            width: 100%;
+          }
+        }
+        
+        .info-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .oportunidades-container {
+    .oportunidades-grid {
+      .oportunidade-card {
+        padding: 1rem;
+        
+        .card-header {
+          flex-direction: column;
+          gap: 1rem;
+          
+          .status-indicator {
+            align-self: flex-end;
+          }
+        }
+      }
+    }
+  }
+} 

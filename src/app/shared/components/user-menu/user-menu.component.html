@@ -1,0 +1,249 @@
+<div class="user-menu-container">
+  <div class="menu-trigger" 
+       (click)="toggleMenu()" 
+       (mouseenter)="isMenuOpen = true"
+       (mouseleave)="isMenuOpen = false">
+    <i class="pi pi-cog menu-icon"></i>
+  </div>
+
+  <div class="menu-dropdown" 
+       [class.menu-open]="isMenuOpen"
+       (mouseenter)="isMenuOpen = true"
+       (mouseleave)="isMenuOpen = false">
+    
+    <!-- Informações do usuário -->
+    <div class="user-info">
+      <div class="user-avatar" (click)="openEditProfileModal()">
+        <img 
+          *ngIf="userProfileImage" 
+          [src]="userProfileImage" 
+          [alt]="userName || 'Foto de perfil'"
+          class="profile-image"
+        />
+        <i *ngIf="!userProfileImage" class="pi pi-user"></i>
+        <div class="edit-overlay">
+          <i class="pi pi-pencil edit-icon"></i>
+        </div>
+      </div>
+      <div class="user-details">
+        <div class="user-name">{{ userName || 'Usuário' }}</div>
+        <div class="user-profile">{{ userProfile || 'Perfil' }}</div>
+      </div>
+    </div>
+
+    <!-- Seletor de Empresa -->
+    <div class="empresa-selector">
+      <div class="empresa-label">
+        <i class="pi pi-building"></i>
+        <span>Empresa Ativa</span>
+      </div>
+      <div class="empresa-current" *ngIf="empresaAtiva">
+        <div class="empresa-nome">{{ empresaAtiva.nomeFantasia }}</div>
+        <div class="empresa-cnpj">{{ empresaAtiva.cnpj }}</div>
+      </div>
+      <div class="empresa-dropdown">
+        <p-dropdown 
+          [options]="empresasDisponiveis" 
+          [(ngModel)]="empresaSelecionada"
+          optionLabel="nomeFantasia"
+          placeholder="Selecionar empresa"
+          (onChange)="onEmpresaChange($event.value)"
+          [showClear]="true"
+          class="empresa-select">
+          <ng-template pTemplate="selectedItem" let-empresa>
+            <div class="empresa-item-selected">
+              <img [src]="empresa.logo || 'assets/ketra_logo.png'" 
+                   [alt]="'Logo ' + empresa.nomeFantasia" 
+                   class="empresa-logo-small" />
+              <span class="empresa-nome">{{ empresa.nomeFantasia }}</span>
+            </div>
+          </ng-template>
+          <ng-template pTemplate="item" let-empresa>
+            <div class="empresa-item">
+              <img [src]="empresa.logo || 'assets/ketra_logo.png'" 
+                   [alt]="'Logo ' + empresa.nomeFantasia" 
+                   class="empresa-logo" />
+              <div class="empresa-info">
+                <span class="empresa-nome">{{ empresa.nomeFantasia }}</span>
+                <span class="empresa-cnpj">{{ empresa.cnpj }}</span>
+              </div>
+            </div>
+          </ng-template>
+        </p-dropdown>
+      </div>
+    </div>
+
+    <!-- Configurações de tema -->
+    <div class="menu-item" (click)="toggleTheme()">
+      <div class="menu-item-content">
+        <i class="pi pi-palette"></i>
+        <span>{{ 'THEME.TOGGLE' | translate }}</span>
+      </div>
+      <div class="menu-item-status">
+        <span class="theme-indicator">{{ getCurrentTheme() === 'light' ? '☀️' : '🌙' }}</span>
+      </div>
+    </div>
+
+    <!-- Configurações de idioma -->
+    <div class="menu-item language-item">
+      <div class="menu-item-content">
+        <i class="pi pi-globe"></i>
+        <span>{{ 'LANGUAGE.SELECT_LANGUAGE' | translate }}</span>
+      </div>
+      <div class="language-options">
+        <button class="lang-btn" 
+                [class.active]="getCurrentLanguage() === 'pt'"
+                (click)="changeLanguage('pt')">
+          <img src="https://flagcdn.com/w20/br.png"
+               class="flag" 
+               style="width: 18px; height: 12px; margin-right: 6px;" 
+               alt="Brasil" />
+          <span class="lang-code">PT</span>
+        </button>
+        <button class="lang-btn" 
+                [class.active]="getCurrentLanguage() === 'en'"
+                (click)="changeLanguage('en')">
+          <img src="https://flagcdn.com/w20/us.png"
+               class="flag" 
+               style="width: 18px; height: 12px; margin-right: 6px;" 
+               alt="Estados Unidos" />
+          <span class="lang-code">EN</span>
+        </button>
+        <button class="lang-btn" 
+                [class.active]="getCurrentLanguage() === 'es'"
+                (click)="changeLanguage('es')">
+          <img src="https://flagcdn.com/w20/es.png"
+               class="flag" 
+               style="width: 18px; height: 12px; margin-right: 6px;" 
+               alt="Espanha" />
+          <span class="lang-code">ES</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="menu-divider"></div>
+
+    <!-- Logout -->
+    <div class="menu-item logout-item" (click)="logout()">
+      <div class="menu-item-content">
+        <i class="pi pi-sign-out"></i>
+        <span>{{ 'AUTH.LOGOUT' | translate }}</span>
+      </div>
+    </div>
+  </div>
+</div> 
+
+<!-- Modal de Edição de Perfil -->
+<p-dialog 
+  [(visible)]="showEditProfileModal" 
+  [modal]="true" 
+  [closable]="true"
+  [draggable]="false"
+  [resizable]="false"
+  header="Editar Perfil"
+  [style]="{width: '500px'}"
+  [closeOnEscape]="true"
+  (onHide)="closeEditProfileModal()"
+  [baseZIndex]="10001"
+>
+  <div class="edit-profile-content">
+    <div class="profile-image-upload">
+      <div class="current-image-container">
+        <img 
+          *ngIf="userProfileImage" 
+          [src]="userProfileImage" 
+          [alt]="userName || 'Foto de perfil'"
+          class="current-profile-image"
+        />
+        <div *ngIf="!userProfileImage" class="no-image-placeholder">
+          <i class="pi pi-user"></i>
+        </div>
+      </div>
+      <div class="upload-actions">
+        <button 
+          pButton 
+          type="button" 
+          label="Alterar Foto" 
+          icon="pi pi-upload"
+          class="p-button-outlined p-button-sm"
+          (click)="fileInput.click()"
+        ></button>
+        <button 
+          *ngIf="userProfileImage" 
+          pButton 
+          type="button" 
+          label="Remover" 
+          icon="pi pi-trash"
+          class="p-button-outlined p-button-danger p-button-sm"
+          (click)="removeProfileImage()"
+        ></button>
+      </div>
+      <input 
+        #fileInput 
+        type="file" 
+        accept="image/*" 
+        style="display: none;"
+        (change)="onFileSelected($event)"
+      />
+    </div>
+    
+    <div class="profile-form">
+      <div class="form-group">
+        <label for="editUserName">Nome</label>
+        <input 
+          id="editUserName"
+          pInputText 
+          type="text" disabled="true"
+          [(ngModel)]="editingUserName" 
+          placeholder="Digite seu nome"
+          class="w-full"
+        />
+      </div>
+      
+      <div class="form-group">
+        <label for="editUserEmail">E-mail</label>
+        <input 
+          id="editUserEmail"
+          pInputText disabled="true"
+          type="email" 
+          [(ngModel)]="editingUserEmail" 
+          placeholder="Digite seu e-mail"
+          class="w-full"
+        />
+      </div>
+      
+      <div class="form-group">
+        <label for="editUserPhone">Telefone</label>
+        <input 
+          id="editUserPhone"
+          pInputText disabled="true"
+          type="tel" 
+          [(ngModel)]="editingUserPhone" 
+          placeholder="Digite seu telefone"
+          class="w-full"
+        />
+      </div>
+    </div>
+  </div>
+  
+  <ng-template pTemplate="footer">
+    <div class="dialog-footer">
+      <button 
+        pButton 
+        type="button" 
+        label="Cancelar" 
+        icon="pi pi-times"
+        class="p-button-text"
+        (click)="closeEditProfileModal()"
+      ></button>
+      <button 
+        pButton 
+        type="button" 
+        label="Salvar" 
+        icon="pi pi-check"
+        class="p-button-primary"
+        (click)="saveProfileChanges()"
+      ></button>
+    </div>
+  </ng-template>
+</p-dialog> 

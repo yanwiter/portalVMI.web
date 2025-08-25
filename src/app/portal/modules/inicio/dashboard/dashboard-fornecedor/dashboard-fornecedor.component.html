@@ -1,0 +1,198 @@
+
+<div class="dashboard-fornecedor" [class.theme-dark]="isDarkTheme">
+  <!-- Cabeçalho do Dashboard -->
+  <div class="dashboard-header">
+    <div class="header-content">
+      <h1 class="dashboard-title">
+        <i class="pi pi-building"></i>
+        {{ translate('DASHBOARD.SUPPLIERS_DASHBOARD') }}
+      </h1>
+      <p-button 
+        icon="pi pi-refresh" 
+        [label]="translate('DASHBOARD.UPDATE')" 
+        severity="secondary"
+        (onClick)="carregarDados()">
+      </p-button>
+    </div>
+  </div>
+
+  <!-- Métricas Principais -->
+  <div class="metricas-grid">
+    <div class="metrica-card">
+      <div class="metrica-icon">
+        <i class="pi pi-building" style="color: #2196F3;"></i>
+      </div>
+      <div class="metrica-content">
+        <h3 class="metrica-valor">{{ totalFornecedores }}</h3>
+        <p class="metrica-label">{{ translate('DASHBOARD.TOTAL_SUPPLIERS') }}</p>
+      </div>
+    </div>
+
+    <div class="metrica-card">
+      <div class="metrica-icon">
+        <i class="pi pi-check-circle" style="color: #4CAF50;"></i>
+      </div>
+      <div class="metrica-content">
+        <h3 class="metrica-valor">{{ fornecedoresAtivos }}</h3>
+        <p class="metrica-label">{{ translate('DASHBOARD.ACTIVE_SUPPLIERS') }}</p>
+      </div>
+    </div>
+
+    <div class="metrica-card">
+      <div class="metrica-icon">
+        <i class="pi pi-times-circle" style="color: #F44336;"></i>
+      </div>
+      <div class="metrica-content">
+        <h3 class="metrica-valor">{{ fornecedoresInativos }}</h3>
+        <p class="metrica-label">{{ translate('DASHBOARD.INACTIVE_SUPPLIERS') }}</p>
+      </div>
+    </div>
+
+    <div class="metrica-card">
+      <div class="metrica-icon">
+        <i class="pi pi-plus-circle" style="color: #FF9800;"></i>
+      </div>
+      <div class="metrica-content">
+        <h3 class="metrica-valor">{{ novosFornecedoresMes }}</h3>
+        <p class="metrica-label">{{ translate('DASHBOARD.NEW_THIS_MONTH') }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gráficos -->
+  <div class="graficos-grid">
+    <!-- Gráfico de Fornecedores por Categoria -->
+    <div class="grafico-card">
+      <div class="grafico-header">
+        <h3>{{ translate('DASHBOARD.SUPPLIERS_BY_CATEGORY') }}</h3>
+      </div>
+      <div class="grafico-content">
+        <p-chart 
+          type="doughnut" 
+          [data]="fornecedoresPorCategoria"
+          [options]="chartOptions">
+        </p-chart>
+      </div>
+    </div>
+
+    <!-- Gráfico de Avaliação dos Fornecedores -->
+    <div class="grafico-card">
+      <div class="grafico-header">
+        <h3>{{ translate('DASHBOARD.SUPPLIERS_RATING') }}</h3>
+      </div>
+      <div class="grafico-content">
+        <p-chart 
+          type="doughnut" 
+          [data]="avaliacaoFornecedores"
+          [options]="chartOptions">
+        </p-chart>
+      </div>
+    </div>
+
+    <!-- Gráfico de Fornecedores por Região -->
+    <div class="grafico-card">
+      <div class="grafico-header">
+        <h3>{{ translate('DASHBOARD.SUPPLIERS_BY_REGION') }}</h3>
+      </div>
+      <div class="grafico-content">
+        <p-chart 
+          type="bar" 
+          [data]="fornecedoresPorRegiao"
+          [options]="chartOptionsBar">
+        </p-chart>
+      </div>
+    </div>
+
+    <!-- Gráfico de Novos Fornecedores -->
+    <div class="grafico-card">
+      <div class="grafico-header">
+        <h3>{{ translate('DASHBOARD.NEW_SUPPLIERS_LAST_6_MONTHS') }}</h3>
+      </div>
+      <div class="grafico-content">
+        <p-chart 
+          type="line" 
+          [data]="novosFornecedoresUltimosMeses"
+          [options]="chartOptionsBar">
+        </p-chart>
+      </div>
+    </div>
+  </div>
+
+  <!-- Listas Recentes -->
+  <div class="listas-grid">
+    <!-- Fornecedores Recentes -->
+    <div class="lista-card">
+      <div class="lista-header">
+        <h3>
+          <i class="pi pi-building"></i>
+          {{ translate('DASHBOARD.RECENT_SUPPLIERS') }}
+        </h3>
+        <p-button 
+          icon="pi pi-external-link" 
+          [label]="translate('DASHBOARD.SEE_ALL')" 
+          severity="secondary"
+          size="small">
+        </p-button>
+      </div>
+      <div class="lista-content">
+        <p-table 
+          [value]="fornecedoresRecentes" 
+          [paginator]="false"
+          [rows]="5"
+          styleClass="p-datatable-sm">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>{{ translate('DASHBOARD.NAME') }}</th>
+              <th>{{ translate('DASHBOARD.CATEGORY') }}</th>
+              <th>{{ translate('DASHBOARD.REGION') }}</th>
+              <th>{{ translate('DASHBOARD.STATUS') }}</th>
+              <th>{{ translate('DASHBOARD.RATING') }}</th>
+              <th>{{ translate('DASHBOARD.REGISTRATION_DATE') }}</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-fornecedor>
+            <tr>
+              <td>{{ fornecedor.nome }}</td>
+              <td>{{ fornecedor.categoria }}</td>
+              <td>{{ fornecedor.regiao }}</td>
+              <td>
+                <p-tag 
+                  [value]="fornecedor.status === 'Ativo' ? translate('DASHBOARD.ACTIVE') : translate('DASHBOARD.INACTIVE')" 
+                  [severity]="fornecedor.status === 'Ativo' ? 'success' : 'danger'">
+                </p-tag>
+              </td>
+              <td>
+                <p-tag 
+                  [value]="fornecedor.avaliacao" 
+                  [severity]="getAvaliacaoSeverity(fornecedor.avaliacao)">
+                </p-tag>
+              </td>
+              <td>{{ fornecedor.dataCadastro | date:'dd/MM/yyyy' }}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+
+    <!-- Controles de Período -->
+    <div class="lista-card">
+      <div class="lista-header">
+        <h3>
+          <i class="pi pi-calendar"></i>
+          {{ translate('DASHBOARD.PERIOD_FILTERS') }}
+        </h3>
+      </div>
+      <div class="lista-content">
+        <div class="period-controls">
+          <p-dropdown 
+            [options]="periodos" 
+            [(ngModel)]="periodoSelecionado"
+            (onChange)="onPeriodoChange()"
+            [placeholder]="translate('DASHBOARD.SELECT_PERIOD')"
+            [style]="{'width': '100%'}">
+          </p-dropdown>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

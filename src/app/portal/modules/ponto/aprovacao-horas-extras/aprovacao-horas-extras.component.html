@@ -1,0 +1,399 @@
+<div class="aprovacao-horas-extras-container">
+  <div class="header-section">
+    <h2>Aprovação de Horas Extras</h2>
+    <p class="text-muted">Gerencie a aprovação de horas extras dos funcionários</p>
+  </div>
+
+  <!-- Filtros -->
+  <p-card header="Filtros" styleClass="mb-3">
+    <div class="grid">
+      <div class="col-12 md:col-3">
+        <label for="funcionario" class="block mb-2">Funcionário</label>
+        <input 
+          id="funcionario"
+          type="text" 
+          pInputText 
+          [(ngModel)]="filtro.funcionarioNome" 
+          placeholder="Nome do funcionário"
+          class="w-full">
+      </div>
+      <div class="col-12 md:col-3">
+        <label for="dataInicio" class="block mb-2">Data Início</label>
+        <p-calendar 
+          id="dataInicio"
+          [(ngModel)]="filtro.dataInicio" 
+          dateFormat="dd/mm/yy"
+          placeholder="Data de início"
+          class="w-full">
+        </p-calendar>
+      </div>
+      <div class="col-12 md:col-3">
+        <label for="dataFim" class="block mb-2">Data Fim</label>
+        <p-calendar 
+          id="dataFim"
+          [(ngModel)]="filtro.dataFim" 
+          dateFormat="dd/mm/yy"
+          placeholder="Data de fim"
+          class="w-full">
+        </p-calendar>
+      </div>
+      <div class="col-12 md:col-3">
+        <label for="status" class="block mb-2">Status</label>
+        <p-dropdown 
+          id="status"
+          [options]="statusRegistroOptions" 
+          [(ngModel)]="filtro.status"
+          placeholder="Selecione o status"
+          optionLabel="label"
+          optionValue="value"
+          class="w-full">
+        </p-dropdown>
+      </div>
+    </div>
+    <div class="flex justify-content-end gap-2 mt-3">
+      <p-button 
+        label="Aplicar Filtros" 
+        icon="pi pi-search" 
+        (click)="aplicarFiltros()"
+        class="p-button-primary">
+      </p-button>
+      <p-button 
+        label="Limpar" 
+        icon="pi pi-times" 
+        (click)="limparFiltros()"
+        class="p-button-secondary">
+      </p-button>
+    </div>
+  </p-card>
+
+  <!-- Tabela de Registros de Ponto -->
+  <p-card>
+    <p-table 
+      [value]="registrosPonto" 
+      [loading]="loading"
+      [paginator]="true" 
+      [rows]="rows"
+      [totalRecords]="totalRecords"
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros"
+      [rowsPerPageOptions]="[10, 25, 50]"
+      styleClass="p-datatable-sm">
+      
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Funcionário</th>
+          <th>Data</th>
+          <th>Horário</th>
+          <th>Tipo</th>
+          <th>Horas Extras</th>
+          <th>Status</th>
+          <th>Ações</th>
+        </tr>
+      </ng-template>
+      
+      <ng-template pTemplate="body" let-registro>
+        <tr>
+          <td>
+            <div>
+              <strong>{{ registro.funcionarioNome }}</strong>
+              <br>
+              <small class="text-muted">{{ registro.funcionarioMatricula }}</small>
+            </div>
+          </td>
+          <td>{{ formatarData(registro.data) }}</td>
+          <td>
+            <div *ngIf="registro.horaEntrada && registro.horaSaida">
+              {{ formatarHora(registro.horaEntrada) }} - {{ formatarHora(registro.horaSaida) }}
+            </div>
+            <div *ngIf="!registro.horaEntrada || !registro.horaSaida">
+              <span class="text-muted">Horário incompleto</span>
+            </div>
+          </td>
+          <td>
+            <p-tag 
+              [value]="getTipoLabel(registro.tipoRegistro)" 
+              [severity]="getTipoClass(registro.tipoRegistro)">
+            </p-tag>
+          </td>
+          <td>
+            <div *ngIf="temHorasExtras(registro)">
+              <strong class="text-warning">{{ formatarHorasExtras(registro.horasExtras || 0) }}</strong>
+              <div *ngIf="registro.horasExtrasAprovadas !== undefined">
+                <small class="text-success">
+                  Aprovadas: {{ formatarHorasExtras(registro.horasExtrasAprovadas) }}
+                </small>
+              </div>
+            </div>
+            <span *ngIf="!temHorasExtras(registro)" class="text-muted">-</span>
+          </td>
+          <td>
+            <p-tag 
+              [value]="registro.status" 
+              [severity]="getStatusClass(registro.status)">
+            </p-tag>
+          </td>
+          <td>
+            <div class="flex gap-1">
+              <p-button 
+                *ngIf="canView"
+                icon="pi pi-eye" 
+                (click)="visualizarRegistro(registro)"
+                pTooltip="Visualizar"
+                class="p-button-sm p-button-info">
+              </p-button>
+              
+              <p-button 
+                *ngIf="podeAprovar(registro)"
+                icon="pi pi-check" 
+                (click)="aprovarHorasExtras(registro)"
+                pTooltip="Aprovar Horas Extras"
+                class="p-button-sm p-button-success">
+              </p-button>
+              
+              <p-button 
+                *ngIf="podeReprovar(registro)"
+                icon="pi pi-times" 
+                (click)="reprovarHorasExtras(registro)"
+                pTooltip="Reprovar Horas Extras"
+                class="p-button-sm p-button-danger">
+              </p-button>
+              
+              <p-button 
+                *ngIf="registro.historicoAprovacao && registro.historicoAprovacao.length > 0"
+                icon="pi pi-history" 
+                (click)="visualizarHistorico(registro)"
+                pTooltip="Ver Histórico"
+                class="p-button-sm p-button-secondary">
+              </p-button>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+      
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="7" class="text-center p-4">
+            Nenhum registro de ponto com horas extras encontrado
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-card>
+
+  <!-- Modal de Registro -->
+  <p-dialog 
+    [(visible)]="displayDialog" 
+    [modal]="true" 
+    [style]="{width: '60vw'}"
+    [draggable]="false" 
+    [resizable]="false">
+    
+    <ng-template pTemplate="header">
+      <h3>Detalhes do Registro de Ponto</h3>
+    </ng-template>
+    
+    <ng-template pTemplate="content">
+      <div class="grid" *ngIf="registroSelecionado">
+        <div class="col-12 md:col-6">
+          <label class="block mb-2 font-bold">Funcionário</label>
+          <p>{{ registroSelecionado.funcionarioNome }} ({{ registroSelecionado.funcionarioMatricula }})</p>
+        </div>
+        
+        <div class="col-12 md:col-6">
+          <label class="block mb-2 font-bold">Data</label>
+          <p>{{ formatarData(registroSelecionado.data) }}</p>
+        </div>
+        
+        <div class="col-12 md:col-6">
+          <label class="block mb-2 font-bold">Horário de Trabalho</label>
+          <p *ngIf="registroSelecionado.horaEntrada && registroSelecionado.horaSaida">
+            {{ formatarHora(registroSelecionado.horaEntrada) }} - {{ formatarHora(registroSelecionado.horaSaida) }}
+          </p>
+          <p *ngIf="!registroSelecionado.horaEntrada || !registroSelecionado.horaSaida" class="text-muted">
+            Horário incompleto
+          </p>
+        </div>
+        
+        <div class="col-12 md:col-6">
+          <label class="block mb-2 font-bold">Tipo de Registro</label>
+          <p-tag 
+            [value]="getTipoLabel(registroSelecionado.tipoRegistro)" 
+            [severity]="getTipoClass(registroSelecionado.tipoRegistro)">
+          </p-tag>
+        </div>
+        
+        <div class="col-12 md:col-6" *ngIf="temHorasExtras(registroSelecionado)">
+          <label class="block mb-2 font-bold">Horas Extras</label>
+          <p class="text-warning font-bold">{{ formatarHorasExtras(registroSelecionado.horasExtras || 0) }}</p>
+          <p *ngIf="registroSelecionado.horasExtrasAprovadas !== undefined" class="text-success">
+            Aprovadas: {{ formatarHorasExtras(registroSelecionado.horasExtrasAprovadas) }}
+          </p>
+        </div>
+        
+        <div class="col-12 md:col-6">
+          <label class="block mb-2 font-bold">Status</label>
+          <p-tag 
+            [value]="registroSelecionado.status" 
+            [severity]="getStatusClass(registroSelecionado.status)">
+          </p-tag>
+        </div>
+        
+        <div class="col-12" *ngIf="registroSelecionado.justificativa">
+          <label class="block mb-2 font-bold">Justificativa</label>
+          <p>{{ registroSelecionado.justificativa }}</p>
+        </div>
+        
+        <div class="col-12" *ngIf="registroSelecionado.observacaoAprovacao">
+          <label class="block mb-2 font-bold">Observação da Aprovação</label>
+          <p>{{ registroSelecionado.observacaoAprovacao }}</p>
+        </div>
+        
+        <div class="col-12 md:col-6" *ngIf="registroSelecionado.aprovadorNome">
+          <label class="block mb-2 font-bold">Aprovador</label>
+          <p>{{ registroSelecionado.aprovadorNome }}</p>
+        </div>
+        
+        <div class="col-12 md:col-6" *ngIf="registroSelecionado.dataAprovacao">
+          <label class="block mb-2 font-bold">Data de Aprovação</label>
+          <p>{{ formatarData(registroSelecionado.dataAprovacao) }}</p>
+        </div>
+      </div>
+    </ng-template>
+    
+    <ng-template pTemplate="footer">
+      <div class="flex justify-content-end">
+        <p-button 
+          label="Fechar" 
+          icon="pi pi-times" 
+          (click)="displayDialog = false"
+          class="p-button-secondary">
+        </p-button>
+      </div>
+    </ng-template>
+  </p-dialog>
+
+  <!-- Modal de Aprovação -->
+  <p-dialog 
+    [(visible)]="displayDialogAprovacao" 
+    [modal]="true" 
+    [style]="{width: '50vw'}"
+    [draggable]="false" 
+    [resizable]="false">
+    
+    <ng-template pTemplate="header">
+      <h3>{{ acaoSelecionada === 'APROVAR_HORAS_EXTRAS' ? 'Aprovar' : 'Reprovar' }} Horas Extras</h3>
+    </ng-template>
+    
+    <ng-template pTemplate="content">
+      <div *ngIf="registroSelecionado">
+        <p><strong>Funcionário:</strong> {{ registroSelecionado.funcionarioNome }}</p>
+        <p><strong>Data:</strong> {{ formatarData(registroSelecionado.data) }}</p>
+        <p><strong>Horas Extras:</strong> {{ formatarHorasExtras(registroSelecionado.horasExtras || 0) }}</p>
+        
+        <div class="mt-3" *ngIf="acaoSelecionada === 'APROVAR_HORAS_EXTRAS'">
+          <label for="horasExtrasAprovadas" class="block mb-2">Horas Extras Aprovadas *</label>
+          <p-inputNumber 
+            id="horasExtrasAprovadas"
+            [(ngModel)]="horasExtrasAprovadas" 
+            [min]="0"
+            [max]="registroSelecionado.horasExtras || 0"
+            [step]="0.25"
+            placeholder="Quantidade de horas a aprovar"
+            class="w-full">
+          </p-inputNumber>
+          <small class="text-muted">
+            Máximo: {{ formatarHorasExtras(registroSelecionado.horasExtras || 0) }}
+          </small>
+        </div>
+        
+        <div class="mt-3">
+          <label for="observacaoAprovacao" class="block mb-2">Observação *</label>
+          <textarea 
+            id="observacaoAprovacao"
+            pInputTextarea 
+            [(ngModel)]="observacaoAprovacao" 
+            placeholder="Digite uma observação para esta ação"
+            rows="4"
+            class="w-full">
+          </textarea>
+        </div>
+      </div>
+    </ng-template>
+    
+    <ng-template pTemplate="footer">
+      <div class="flex justify-content-end gap-2">
+        <p-button 
+          label="Cancelar" 
+          icon="pi pi-times" 
+          (click)="displayDialogAprovacao = false"
+          class="p-button-secondary">
+        </p-button>
+        <p-button 
+          label="Confirmar" 
+          icon="pi pi-check" 
+          (click)="executarAcao()"
+          [loading]="loading"
+          [disabled]="!observacaoAprovacao || (acaoSelecionada === 'APROVAR_HORAS_EXTRAS' && horasExtrasAprovadas <= 0)"
+          class="p-button-primary">
+        </p-button>
+      </div>
+    </ng-template>
+  </p-dialog>
+
+  <!-- Modal de Histórico -->
+  <p-dialog 
+    [(visible)]="displayDialogHistorico" 
+    [modal]="true" 
+    [style]="{width: '70vw'}"
+    [draggable]="false" 
+    [resizable]="false">
+    
+    <ng-template pTemplate="header">
+      <h3>Histórico de Aprovação - {{ registroSelecionado?.funcionarioNome }}</h3>
+    </ng-template>
+    
+    <ng-template pTemplate="content">
+      <div *ngIf="registroSelecionado?.historicoAprovacao">
+        <p-timeline [value]="registroSelecionado!.historicoAprovacao" layout="vertical">
+          <ng-template pTemplate="content" let-historico>
+            <div class="flex align-items-center">
+              <div class="flex-shrink-0">
+                <i class="pi pi-calendar text-primary"></i>
+              </div>
+              <div class="flex-grow-1 ml-3">
+                <h5 class="mb-1">{{ historico.acao }}</h5>
+                <p class="mb-1">{{ historico.observacao }}</p>
+                <small class="text-muted">
+                  {{ historico.responsavelNome }} - {{ formatarData(historico.dataAcao) }}
+                </small>
+                <div *ngIf="historico.statusAnterior" class="mt-2">
+                  <small>
+                    <strong>Status anterior:</strong> {{ historico.statusAnterior }} → 
+                    <strong>Novo status:</strong> {{ historico.statusNovo }}
+                  </small>
+                </div>
+                <div *ngIf="historico.horasExtrasAnterior !== undefined" class="mt-2">
+                  <small>
+                    <strong>Horas extras anterior:</strong> {{ formatarHorasExtras(historico.horasExtrasAnterior) }} → 
+                    <strong>Horas extras novo:</strong> {{ formatarHorasExtras(historico.horasExtrasNovo || 0) }}
+                  </small>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </p-timeline>
+      </div>
+    </ng-template>
+    
+    <ng-template pTemplate="footer">
+      <div class="flex justify-content-end">
+        <p-button 
+          label="Fechar" 
+          icon="pi pi-times" 
+          (click)="displayDialogHistorico = false"
+          class="p-button-secondary">
+        </p-button>
+      </div>
+    </ng-template>
+  </p-dialog>
+</div> 

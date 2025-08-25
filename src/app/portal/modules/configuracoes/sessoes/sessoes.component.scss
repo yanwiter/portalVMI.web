@@ -1,0 +1,327 @@
+// Estilos para informações do usuário
+.user-info {
+  .user-name {
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: 0.25rem;
+  }
+  
+  .user-email {
+    font-size: 0.875rem;
+    color: var(--text-color-secondary);
+  }
+}
+
+// Estilos para informações de data
+.date-info, .last-activity {
+  .date {
+    font-weight: 500;
+    color: var(--text-color);
+    margin-bottom: 0.25rem;
+  }
+  
+  .time {
+    font-size: 0.875rem;
+    color: var(--text-color-secondary);
+  }
+}
+
+// Estilos para tempo de sessão
+.session-time {
+  .time-active {
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 0.25rem;
+  }
+  
+  .time-inactive {
+    font-size: 0.875rem;
+    color: var(--orange-500);
+  }
+}
+
+// Estilos para informações do dispositivo
+.device-info {
+  .device {
+    font-weight: 500;
+    color: var(--text-color);
+    margin-bottom: 0.25rem;
+  }
+  
+  .os {
+    font-size: 0.875rem;
+    color: var(--text-color-secondary);
+  }
+}
+
+// Estilos para informações do navegador
+.browser-info {
+  .browser {
+    font-weight: 500;
+    color: var(--text-color);
+    margin-bottom: 0.25rem;
+  }
+  
+  .version {
+    font-size: 0.875rem;
+    color: var(--text-color-secondary);
+  }
+}
+
+// Estilos para informações de IP
+.ip-info {
+  .ip {
+    font-weight: 500;
+    color: var(--text-color);
+    margin-bottom: 0.25rem;
+    font-family: 'Courier New', monospace;
+  }
+  
+  .location {
+    font-size: 0.875rem;
+    color: var(--text-color-secondary);
+  }
+}
+
+// Estilos para informações de localização
+.location-info {
+  .country {
+    font-weight: 500;
+    color: var(--text-color);
+    margin-bottom: 0.25rem;
+  }
+  
+  .city {
+    font-size: 0.875rem;
+    color: var(--text-color-secondary);
+    margin-bottom: 0.125rem;
+  }
+  
+  .region {
+    font-size: 0.75rem;
+    color: var(--text-color-secondary);
+  }
+}
+
+// Estilos para indicadores de status
+.status-indicators {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  
+  i {
+    font-size: 1rem;
+    
+    &.text-success {
+      color: var(--green-500);
+    }
+    
+    &.text-danger {
+      color: var(--red-500);
+    }
+  }
+}
+
+// Estilos para ações da tabela
+.actions-table {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  
+  .p-button {
+    width: 2rem;
+    height: 2rem;
+    
+    &.p-button-outlined {
+      border-width: 1px;
+    }
+  }
+}
+
+// Estilos para detalhes da sessão
+.session-details {
+  .detail-section {
+    margin-bottom: 2rem;
+    
+    h4 {
+      color: var(--text-color);
+      font-weight: 600;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--surface-200);
+    }
+  }
+  
+  .detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+  }
+  
+  .detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    
+    label {
+      font-weight: 600;
+      color: var(--text-color);
+      font-size: 0.875rem;
+    }
+    
+    span {
+      color: var(--text-color-secondary);
+      padding: 0.5rem;
+      background-color: var(--surface-50);
+      border-radius: 0.25rem;
+      border: 1px solid var(--surface-200);
+      
+      &.user-agent {
+        font-family: 'Courier New', monospace;
+        font-size: 0.75rem;
+        word-break: break-all;
+        max-height: 100px;
+        overflow-y: auto;
+      }
+    }
+  }
+}
+
+// Estilos para confirmação
+.confirmation-content {
+  p {
+    margin-bottom: 1rem;
+    color: var(--text-color);
+  }
+  
+  .form-group {
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--text-color);
+    }
+    
+    textarea {
+      width: 100%;
+      resize: vertical;
+      min-height: 80px;
+    }
+  }
+}
+
+// Estilos para filtros
+.filters {
+  .p-accordion {
+    .p-accordion-header {
+      .p-accordion-header-link {
+        background-color: var(--surface-card);
+        border: 1px solid var(--surface-border);
+        
+        &:hover {
+          background-color: var(--surface-hover);
+        }
+      }
+    }
+  }
+}
+
+// Estilos para tabela
+.tables {
+  .p-datatable {
+    .p-datatable-header {
+      background-color: var(--surface-card);
+      border: 1px solid var(--surface-border);
+    }
+    
+    .p-datatable-thead > tr > th {
+      background-color: var(--surface-50);
+      border-bottom: 2px solid var(--surface-border);
+      font-weight: 600;
+      color: var(--text-color);
+    }
+    
+    .p-datatable-tbody > tr {
+      &:hover {
+        background-color: var(--surface-hover);
+      }
+      
+      > td {
+        border-bottom: 1px solid var(--surface-border);
+        padding: 1rem 0.75rem;
+      }
+    }
+  }
+}
+
+// Estilos para tooltips
+.p-tooltip {
+  .p-tooltip-text {
+    background-color: var(--surface-900);
+    color: var(--surface-0);
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+}
+
+// Estilos responsivos
+@media (max-width: 768px) {
+  .session-details {
+    .detail-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  .actions-table {
+    flex-direction: column;
+    gap: 0.25rem;
+    
+    .p-button {
+      width: 100%;
+      height: auto;
+      padding: 0.5rem;
+    }
+  }
+}
+
+// Estilos para tags de perfil
+.p-tag {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.5rem;
+  
+  &.p-tag-success {
+    background-color: var(--green-100);
+    color: var(--green-700);
+    border: 1px solid var(--green-200);
+  }
+  
+  &.p-tag-warning {
+    background-color: var(--orange-100);
+    color: var(--orange-700);
+    border: 1px solid var(--orange-200);
+  }
+  
+  &.p-tag-danger {
+    background-color: var(--red-100);
+    color: var(--red-700);
+    border: 1px solid var(--red-200);
+  }
+  
+  &.p-tag-info {
+    background-color: var(--blue-100);
+    color: var(--blue-700);
+    border: 1px solid var(--blue-200);
+  }
+  
+  &.p-tag-secondary {
+    background-color: var(--surface-200);
+    color: var(--text-color-secondary);
+    border: 1px solid var(--surface-300);
+  }
+}
+
+

@@ -27,6 +27,6 @@ export class NaoAutorizadoComponent {
    * @public
    */
   goToLogin() {
-    this.router.navigate(['/authenticate']);
+    this.router.navigate(['/login']);
   }
 }

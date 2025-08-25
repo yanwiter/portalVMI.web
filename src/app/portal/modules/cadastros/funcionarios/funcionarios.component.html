@@ -1,0 +1,538 @@
+<app-title-header title="Cadastro de Funcionários"></app-title-header>
+
+<div class="filters">
+    <p-accordion class="p-accordion-custom-header">
+        <p-accordionTab>
+            <ng-template pTemplate="header">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <span>Filtros</span>
+                </div>
+            </ng-template>
+
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input pInputText id="nome" [(ngModel)]="filtro.nome" name="nome" style="width: 100%;" />
+                        <label for="nome">Nome</label>
+                    </p-floatLabel>
+                </div>
+
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input pInputText id="matricula" [(ngModel)]="filtro.matricula" name="matricula" style="width: 100%;" />
+                        <label for="matricula">Matrícula</label>
+                    </p-floatLabel>
+                </div>
+
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input pInputText id="cpf" [(ngModel)]="filtro.cpf" name="cpf" style="width: 100%;" />
+                        <label for="cpf">CPF</label>
+                    </p-floatLabel>
+                </div>
+
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input pInputText id="departamento" [(ngModel)]="filtro.departamento" name="departamento" style="width: 100%;" />
+                        <label for="departamento">Departamento</label>
+                    </p-floatLabel>
+                </div>
+
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-dropdown id="status" appendTo="body" [options]="statusOptions" [(ngModel)]="filtro.status"
+                            name="status" optionLabel="label" optionValue="value">
+                        </p-dropdown>
+                        <label for="status">Status</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button pButton [outlined]="true" [raised]="true" severity="warning" label="Limpar" icon="pi pi-times"
+                    (click)="limparFiltros()">
+                </button>
+                <button pButton [outlined]="true" [raised]="true" severity="success" label="Filtrar" icon="pi pi-filter"
+                    (click)="aplicarFiltros()">
+                </button>
+            </div>
+        </p-accordionTab>
+    </p-accordion>
+</div>
+
+<div class="tables">
+    <p-table [value]="funcionarios" [paginator]="true" [lazy]="true" [showCurrentPageReport]="true" [rows]="rows"
+        [resizableColumns]="true" [reorderableColumns]="true" [columnResizeMode]="'fit'" [totalRecords]="totalRecords" 
+        [rowsPerPageOptions]="[10, 25, 50]" styleClass="p-datatable-striped p-datatable-gridlines" 
+        (onPage)="handlePageChange($event)" (onLazyLoad)="loadTableData($event)" (onColReorder)="onColReorder($event)"
+        dataKey="id">
+        
+        <ng-template pTemplate="caption">
+                <div class="actions">
+                    <button pButton [outlined]="true" [raised]="true" severity="success" label="Exportar"
+                        icon="pi pi-file-excel" (click)="exportarParaExcel()" pTooltip="Exportar para Excel"
+                        tooltipPosition="top">
+                    </button>
+                    <p-button *ngIf="canCreate" icon="pi pi-plus" label="Incluir Funcionário" class="exportButton" (onClick)="novoFuncionario()"/>
+                    <p-button icon="pi pi-cog" styleClass="p-button-text" (click)="toggleColumnConfig($event)"/>
+                </div>
+        </ng-template>
+        
+        <ng-template pTemplate="header">
+            <tr>
+                <th id="reorderableColumn" *ngFor="let col of columns"  pReorderableColumn="col.field" 
+                    [hidden]="!col.visible">
+                    {{col.header}}
+                </th>
+                <th id="acoes">Ações</th>
+            </tr>
+        </ng-template>
+        
+        <ng-template pTemplate="body" let-funcionario let-rowIndex="rowIndex">
+            <tr>
+                <td *ngFor="let col of columns" [hidden]="!col.visible">
+                    <ng-container [ngSwitch]="col.field">
+                        <ng-container *ngSwitchCase="'status'">
+                            <span class="status-badge" [ngClass]="getStatusClass(funcionario.status)">
+                                {{ funcionario.status }}
+                            </span>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'dataAdmissao'">
+                            {{ formatarData(funcionario.dataAdmissao) }}
+                        </ng-container>
+                        <ng-container *ngSwitchDefault>
+                            {{ funcionario[col.field] }}
+                        </ng-container>
+                    </ng-container>
+                </td>
+                <td class="actions-table">
+                    <button *ngIf="canEdit" pButton [outlined]="true" [raised]="true" severity="success" icon="pi pi-pencil"
+                        (click)="editarFuncionario(funcionario)">
+                    </button>
+
+                    <button *ngIf="canDelete" pButton [outlined]="true" [raised]="true" severity="danger" icon="pi pi-trash"
+                        (click)="excluirFuncionario(funcionario)">
+                    </button>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+
+<!-- <p-overlayPanel #op>
+    <app-column-config [columns]="columns" (preferencesSaved)="saveColumnPreferences()"></app-column-config>
+</p-overlayPanel> -->
+
+<!-- Dialog para Edição/Criação -->
+<p-dialog [(visible)]="displayDialog" 
+          [modal]="true" 
+          [style]="{width: '90vw'}" 
+          [draggable]="false" 
+          [resizable]="false">
+  <ng-template pTemplate="header">
+    <div style="display: flex; align-items: center; gap: 0.5rem;">
+      <i class="pi pi-user" style="font-size: 1.2rem;"></i>
+      <h5 style="margin: 0;">{{ funcionarioSelecionado.id ? 'Editar' : 'Novo' }} Funcionário</h5>
+    </div>
+  </ng-template>
+  
+  <p-tabView>
+      <!-- Tab 1: Informações Básicas -->
+      <p-tabPanel header="Informações Básicas">
+        <div class="field grid" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+          <div style="flex: 1;">
+            <p-floatLabel style="flex: 1;">
+              <input pInputText id="matricula" [(ngModel)]="funcionarioSelecionado.matricula" style="width: 100%;" />
+              <label for="matricula">Matrícula *</label>
+            </p-floatLabel>
+          </div>
+          <div style="flex: 1;">
+            <p-floatLabel style="flex: 1;">
+              <input pInputText id="nome" [(ngModel)]="funcionarioSelecionado.nome" style="width: 100%;" />
+              <label for="nome">Nome Completo *</label>
+            </p-floatLabel>
+          </div>
+          <div style="flex: 1;">
+            <p-floatLabel style="flex: 1;">
+              <input pInputText id="cpf" [(ngModel)]="funcionarioSelecionado.cpf" style="width: 100%;" />
+              <label for="cpf">CPF *</label>
+            </p-floatLabel>
+          </div>
+        </div>
+        
+        <div class="field grid" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+          <div style="flex: 1;">
+            <p-floatLabel style="flex: 1;">
+              <p-calendar id="dataNascimento" [(ngModel)]="funcionarioSelecionado.dataNascimento" dateFormat="dd/mm/yy" />
+              <label for="dataNascimento">Data de Nascimento *</label>
+            </p-floatLabel>
+          </div>
+          <div style="flex: 1;">
+            <p-floatLabel style="flex: 1;">
+              <p-dropdown id="sexo" [options]="sexoOptions" [(ngModel)]="funcionarioSelecionado.sexo" optionLabel="label" optionValue="value" />
+              <label for="sexo">Sexo *</label>
+            </p-floatLabel>
+          </div>
+          <div style="flex: 1;">
+            <p-floatLabel style="flex: 1;">
+              <p-dropdown id="estadoCivil" [options]="estadoCivilOptions" [(ngModel)]="funcionarioSelecionado.estadoCivil" optionLabel="label" optionValue="value" />
+              <label for="estadoCivil">Estado Civil</label>
+            </p-floatLabel>
+          </div>
+        </div>
+        
+        <div class="field grid" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+          <div style="flex: 1;">
+            <p-floatLabel style="flex: 1;">
+              <input pInputText id="rg" [(ngModel)]="funcionarioSelecionado.rg" style="width: 100%;" />
+              <label for="rg">RG</label>
+            </p-floatLabel>
+          </div>
+          <div style="flex: 1;">
+            <p-floatLabel style="flex: 1;">
+              <input pInputText id="orgaoExpedidor" [(ngModel)]="funcionarioSelecionado.orgaoExpedidor" style="width: 100%;" />
+              <label for="orgaoExpedidor">Órgão Expedidor</label>
+            </p-floatLabel>
+          </div>
+          <div style="flex: 1;">
+            <p-floatLabel style="flex: 1;">
+              <p-calendar id="dataExpedicao" [(ngModel)]="funcionarioSelecionado.dataExpedicao" dateFormat="dd/mm/yy" />
+              <label for="dataExpedicao">Data de Expedição</label>
+            </p-floatLabel>
+          </div>
+        </div>
+      </p-tabPanel>
+
+      <!-- Tab 2: Informações Profissionais -->
+      <p-tabPanel header="Informações Profissionais">
+        <div class="field grid" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+          <div style="flex: 1;">
+            <p-floatLabel style="flex: 1;">
+              <input pInputText id="cargo" [(ngModel)]="funcionarioSelecionado.cargo" style="width: 100%;" />
+              <label for="cargo">Cargo *</label>
+            </p-floatLabel>
+          </div>
+          <div style="flex: 1;">
+            <p-floatLabel style="flex: 1;">
+              <input pInputText id="departamento" [(ngModel)]="funcionarioSelecionado.departamento" style="width: 100%;" />
+              <label for="departamento">Departamento *</label>
+            </p-floatLabel>
+          </div>
+          <div style="flex: 1;">
+            <p-floatLabel style="flex: 1;">
+              <p-calendar id="dataAdmissao" [(ngModel)]="funcionarioSelecionado.dataAdmissao" dateFormat="dd/mm/yy" />
+              <label for="dataAdmissao">Data de Admissão *</label>
+            </p-floatLabel>
+          </div>
+        </div>
+        
+        <div class="field grid" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+          <div style="flex: 1;">
+            <p-floatLabel style="flex: 1;">
+              <p-dropdown id="tipoContrato" [options]="tipoContratoOptions" [(ngModel)]="funcionarioSelecionado.tipoContrato" optionLabel="label" optionValue="value" />
+              <label for="tipoContrato">Tipo de Contrato *</label>
+            </p-floatLabel>
+          </div>
+          <div style="flex: 1;">
+            <p-floatLabel style="flex: 1;">
+              <p-calendar id="dataContratacao" [(ngModel)]="funcionarioSelecionado.dataContratacao" dateFormat="dd/mm/yy" />
+              <label for="dataContratacao">Data de Contratação</label>
+            </p-floatLabel>
+          </div>
+          <div style="flex: 1;">
+            <p-floatLabel style="flex: 1;">
+              <p-calendar id="dataDemissao" [(ngModel)]="funcionarioSelecionado.dataDemissao" dateFormat="dd/mm/yy" />
+              <label for="dataDemissao">Data de Demissão</label>
+            </p-floatLabel>
+          </div>
+        </div>
+        
+        <div class="field grid" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+          <div style="flex: 1;">
+            <p-floatLabel style="flex: 1;">
+              <p-inputNumber id="salario" [(ngModel)]="funcionarioSelecionado.salario" mode="currency" currency="BRL" locale="pt-BR" />
+              <label for="salario">Salário Base</label>
+            </p-floatLabel>
+          </div>
+          <div style="flex: 1;">
+            <p-floatLabel style="flex: 1;">
+              <p-inputNumber id="valeRefeicao" [(ngModel)]="funcionarioSelecionado.valeRefeicao" mode="currency" currency="BRL" locale="pt-BR" />
+              <label for="valeRefeicao">Vale Refeição</label>
+            </p-floatLabel>
+          </div>
+          <div style="flex: 1;">
+            <p-floatLabel style="flex: 1;">
+              <p-inputNumber id="valeTransporte" [(ngModel)]="funcionarioSelecionado.valeTransporte" mode="currency" currency="BRL" locale="pt-BR" />
+              <label for="valeTransporte">Vale Transporte</label>
+            </p-floatLabel>
+          </div>
+        </div>
+        
+        <div class="field grid" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+          <div style="flex: 1;">
+            <p-floatLabel style="flex: 1;">
+              <p-dropdown id="horarioTrabalho" [options]="horariosTrabalho" [(ngModel)]="funcionarioSelecionado.horarioTrabalho"
+                                                    optionLabel="nome" />
+              <label for="horarioTrabalho">Horário de Trabalho *</label>
+            </p-floatLabel>
+          </div>
+          <div style="flex: 1;">
+            <p-floatLabel style="flex: 1;">
+              <input pInputText id="supervisor" [(ngModel)]="funcionarioSelecionado.supervisor" style="width: 100%;" />
+              <label for="supervisor">Supervisor</label>
+            </p-floatLabel>
+          </div>
+          <div style="flex: 1;">
+            <p-floatLabel style="flex: 1;">
+              <p-dropdown id="status" [options]="statusOptions" [(ngModel)]="funcionarioSelecionado.status" optionLabel="label" optionValue="value" />
+              <label for="status">Status *</label>
+            </p-floatLabel>
+          </div>
+        </div>
+      </p-tabPanel>
+
+      <!-- Tab 3: Endereço -->
+      <p-tabPanel header="Endereço">
+        <div class="field grid" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+          <div style="flex: 1;">
+            <p-floatLabel style="flex: 1;">
+              <input pInputText id="cep" [(ngModel)]="funcionarioSelecionado.cep" style="width: 100%;" />
+              <label for="cep">CEP *</label>
+            </p-floatLabel>
+          </div>
+          <div style="flex: 1;">
+            <p-floatLabel style="flex: 1;">
+              <input pInputText id="logradouro" [(ngModel)]="funcionarioSelecionado.logradouro" style="width: 100%;" />
+              <label for="logradouro">Logradouro *</label>
+            </p-floatLabel>
+          </div>
+          <div style="flex: 1;">
+            <p-floatLabel style="flex: 1;">
+              <input pInputText id="numero" [(ngModel)]="funcionarioSelecionado.numero" style="width: 100%;" />
+              <label for="numero">Número *</label>
+            </p-floatLabel>
+          </div>
+        </div>
+        
+        <div class="field grid" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+          <div style="flex: 1;">
+            <p-floatLabel style="flex: 1;">
+              <input pInputText id="complemento" [(ngModel)]="funcionarioSelecionado.complemento" style="width: 100%;" />
+              <label for="complemento">Complemento</label>
+            </p-floatLabel>
+          </div>
+          <div style="flex: 1;">
+            <p-floatLabel style="flex: 1;">
+              <input pInputText id="bairro" [(ngModel)]="funcionarioSelecionado.bairro" style="width: 100%;" />
+              <label for="bairro">Bairro *</label>
+            </p-floatLabel>
+          </div>
+          <div style="flex: 1;">
+            <p-floatLabel style="flex: 1;">
+              <input pInputText id="cidade" [(ngModel)]="funcionarioSelecionado.cidade" style="width: 100%;" />
+              <label for="cidade">Cidade *</label>
+            </p-floatLabel>
+          </div>
+        </div>
+        
+        <div class="field grid" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+          <div style="flex: 1;">
+            <p-floatLabel style="flex: 1;">
+              <p-dropdown id="estado" [options]="estadosOptions" [(ngModel)]="funcionarioSelecionado.estado" optionLabel="label" optionValue="value" />
+              <label for="estado">Estado *</label>
+            </p-floatLabel>
+          </div>
+          <div style="flex: 1;">
+            <p-floatLabel style="flex: 1;">
+              <input pInputText id="pais" [(ngModel)]="funcionarioSelecionado.pais" style="width: 100%;" value="Brasil" />
+              <label for="pais">País *</label>
+            </p-floatLabel>
+          </div>
+          <div style="flex: 1;">
+            <p-floatLabel style="flex: 1;">
+              <p-dropdown id="tipoEndereco" [options]="tipoEnderecoOptions" [(ngModel)]="funcionarioSelecionado.tipoEndereco" optionLabel="label" optionValue="value" />
+              <label for="tipoEndereco">Tipo de Endereço</label>
+            </p-floatLabel>
+          </div>
+        </div>
+      </p-tabPanel>
+
+      <!-- Tab 4: Contato -->
+      <p-tabPanel header="Contato">
+        <div class="field grid" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+          <div style="flex: 1;">
+            <p-floatLabel style="flex: 1;">
+              <input pInputText id="telefone" [(ngModel)]="funcionarioSelecionado.telefone" style="width: 100%;" />
+              <label for="telefone">Telefone *</label>
+            </p-floatLabel>
+          </div>
+          <div style="flex: 1;">
+            <p-floatLabel style="flex: 1;">
+              <input pInputText id="celular" [(ngModel)]="funcionarioSelecionado.celular" style="width: 100%;" />
+              <label for="celular">Celular</label>
+            </p-floatLabel>
+          </div>
+          <div style="flex: 1;">
+            <p-floatLabel style="flex: 1;">
+              <input pInputText id="email" type="email" [(ngModel)]="funcionarioSelecionado.email" style="width: 100%;" />
+              <label for="email">E-mail *</label>
+            </p-floatLabel>
+          </div>
+        </div>
+        
+        <div class="field grid" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+          <div style="flex: 1;">
+            <p-floatLabel style="flex: 1;">
+              <input pInputText id="emailCorporativo" type="email" [(ngModel)]="funcionarioSelecionado.emailCorporativo" style="width: 100%;" />
+              <label for="emailCorporativo">E-mail Corporativo</label>
+            </p-floatLabel>
+          </div>
+          <div style="flex: 1;">
+            <p-floatLabel style="flex: 1;">
+              <input pInputText id="telefoneEmergencia" [(ngModel)]="funcionarioSelecionado.telefoneEmergencia" style="width: 100%;" />
+              <label for="telefoneEmergencia">Telefone de Emergência</label>
+            </p-floatLabel>
+          </div>
+          <div style="flex: 1;">
+            <p-floatLabel style="flex: 1;">
+              <input pInputText id="contatoEmergencia" [(ngModel)]="funcionarioSelecionado.contatoEmergencia" style="width: 100%;" />
+              <label for="contatoEmergencia">Contato de Emergência</label>
+            </p-floatLabel>
+          </div>
+        </div>
+      </p-tabPanel>
+
+      <!-- Tab 5: Documentos -->
+      <p-tabPanel header="Documentos">
+        <div class="field grid" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+          <div style="flex: 1;">
+            <p-floatLabel style="flex: 1;">
+              <input pInputText id="pis" [(ngModel)]="funcionarioSelecionado.pis" style="width: 100%;" />
+              <label for="pis">PIS</label>
+            </p-floatLabel>
+          </div>
+          <div style="flex: 1;">
+            <p-floatLabel style="flex: 1;">
+              <input pInputText id="tituloEleitor" [(ngModel)]="funcionarioSelecionado.tituloEleitor" style="width: 100%;" />
+              <label for="tituloEleitor">Título de Eleitor</label>
+            </p-floatLabel>
+          </div>
+          <div style="flex: 1;">
+            <p-floatLabel style="flex: 1;">
+              <input pInputText id="zonaEleitoral" [(ngModel)]="funcionarioSelecionado.zonaEleitoral" style="width: 100%;" />
+              <label for="zonaEleitoral">Zona Eleitoral</label>
+            </p-floatLabel>
+          </div>
+        </div>
+        
+        <div class="field grid" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+          <div style="flex: 1;">
+            <p-floatLabel style="flex: 1;">
+              <input pInputText id="certificadoReservista" [(ngModel)]="funcionarioSelecionado.certificadoReservista" style="width: 100%;" />
+              <label for="certificadoReservista">Certificado de Reservista</label>
+            </p-floatLabel>
+          </div>
+          <div style="flex: 1;">
+            <p-floatLabel style="flex: 1;">
+              <input pInputText id="carteiraTrabalho" [(ngModel)]="funcionarioSelecionado.carteiraTrabalho" style="width: 100%;" />
+              <label for="carteiraTrabalho">Carteira de Trabalho</label>
+            </p-floatLabel>
+          </div>
+          <div style="flex: 1;">
+            <p-floatLabel style="flex: 1;">
+              <input pInputText id="serieCarteiraTrabalho" [(ngModel)]="funcionarioSelecionado.serieCarteiraTrabalho" style="width: 100%;" />
+              <label for="serieCarteiraTrabalho">Série da Carteira de Trabalho</label>
+            </p-floatLabel>
+          </div>
+        </div>
+        
+        <div class="field grid" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+          <div style="flex: 1;">
+            <p-floatLabel style="flex: 1;">
+              <p-calendar id="dataEmissaoCarteiraTrabalho" [(ngModel)]="funcionarioSelecionado.dataEmissaoCarteiraTrabalho" dateFormat="dd/mm/yy" />
+              <label for="dataEmissaoCarteiraTrabalho">Data de Emissão da Carteira</label>
+            </p-floatLabel>
+          </div>
+          <div style="flex: 1;">
+            <p-floatLabel style="flex: 1;">
+              <p-dropdown id="ufCarteiraTrabalho" [options]="estadosOptions" [(ngModel)]="funcionarioSelecionado.ufCarteiraTrabalho" optionLabel="label" optionValue="value" />
+              <label for="ufCarteiraTrabalho">UF da Carteira de Trabalho</label>
+            </p-floatLabel>
+          </div>
+          <div style="flex: 1;">
+            <p-floatLabel style="flex: 1;">
+              <input pInputText id="carteiraIdentidade" [(ngModel)]="funcionarioSelecionado.carteiraIdentidade" style="width: 100%;" />
+              <label for="carteiraIdentidade">Carteira de Identidade</label>
+            </p-floatLabel>
+          </div>
+        </div>
+      </p-tabPanel>
+
+      <!-- Tab 6: Informações Adicionais -->
+      <p-tabPanel header="Informações Adicionais">
+        <div class="field grid" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+          <div style="flex: 1;">
+            <p-floatLabel style="flex: 1;">
+              <input pInputText id="nacionalidade" [(ngModel)]="funcionarioSelecionado.nacionalidade" style="width: 100%;" value="Brasileira" />
+              <label for="nacionalidade">Nacionalidade</label>
+            </p-floatLabel>
+          </div>
+          <div style="flex: 1;">
+            <p-floatLabel style="flex: 1;">
+              <input pInputText id="naturalidade" [(ngModel)]="funcionarioSelecionado.naturalidade" style="width: 100%;" />
+              <label for="naturalidade">Naturalidade</label>
+            </p-floatLabel>
+          </div>
+          <div style="flex: 1;">
+            <p-floatLabel style="flex: 1;">
+              <p-dropdown id="ufNaturalidade" [options]="estadosOptions" [(ngModel)]="funcionarioSelecionado.ufNaturalidade" optionLabel="label" optionValue="value" />
+              <label for="ufNaturalidade">UF de Naturalidade</label>
+            </p-floatLabel>
+          </div>
+        </div>
+        
+        <div class="field grid" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+          <div style="flex: 1;">
+            <p-floatLabel style="flex: 1;">
+              <p-dropdown id="escolaridade" [options]="escolaridadeOptions" [(ngModel)]="funcionarioSelecionado.escolaridade" optionLabel="label" optionValue="value" />
+              <label for="escolaridade">Escolaridade</label>
+            </p-floatLabel>
+          </div>
+          <div style="flex: 1;">
+            <p-floatLabel style="flex: 1;">
+              <input pInputText id="formacao" [(ngModel)]="funcionarioSelecionado.formacao" style="width: 100%;" />
+              <label for="formacao">Formação</label>
+            </p-floatLabel>
+          </div>
+          <div style="flex: 1;">
+            <p-floatLabel style="flex: 1;">
+              <input pInputText id="instituicaoEnsino" [(ngModel)]="funcionarioSelecionado.instituicaoEnsino" style="width: 100%;" />
+              <label for="instituicaoEnsino">Instituição de Ensino</label>
+            </p-floatLabel>
+          </div>
+        </div>
+        
+        <div class="field grid" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+          <div style="flex: 1;">
+            <p-floatLabel style="flex: 1;">
+              <p-inputtextarea id="observacoes" [(ngModel)]="funcionarioSelecionado.observacoes" rows="4" style="width: 100%;" />
+              <label for="observacoes">Observações</label>
+            </p-floatLabel>
+          </div>
+        </div>
+      </p-tabPanel>
+    </p-tabView>
+  
+  <ng-template pTemplate="footer">
+    <button pButton [outlined]="true" [raised]="true" severity="danger" icon="pi pi-times" label="Cancelar"
+            (click)="displayDialog = false" class="p-button-text">
+    </button>
+    <button pButton [outlined]="false" [raised]="true" severity="success" icon="pi pi-check" label="Salvar"
+            class="ml-2" (click)="salvarFuncionario()">
+    </button>
+  </ng-template>
+</p-dialog>
+
+<p-toast></p-toast>
+<p-confirmDialog></p-confirmDialog> 

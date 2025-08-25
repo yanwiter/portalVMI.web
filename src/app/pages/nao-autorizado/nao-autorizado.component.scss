@@ -3,14 +3,14 @@
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background-color: #f8f9fa;
+    background-color: var(--surface-card);
     padding: 20px;
     position: relative;
     overflow: hidden;
   }
   
   .error-card {
-    background: white;
+    background: var(--surface-card);
     border-radius: 16px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     padding: 40px;
@@ -27,12 +27,12 @@
       svg {
         width: 64px;
         height: 64px;
-        color: #ff4444;
+        color: var(--primary-color);
         margin-bottom: 16px;
       }
       
       h1 {
-        color: #343a40;
+        color: var(--text-color);
         font-size: 1.8rem;
         margin: 0;
         font-weight: 600;
@@ -43,7 +43,7 @@
       margin-bottom: 32px;
       
       p {
-        color: #6c757d;
+        color: var(--text-color-secondary);
         font-size: 1.1rem;
         line-height: 1.6;
         margin: 0 0 12px 0;
@@ -56,7 +56,7 @@
         align-items: center;
         justify-content: center;
         background:var(--primary-color);
-        color: white;
+        color: var(--text-color);
         border: none;
         padding: 12px 24px;
         border-radius: 6px;
@@ -67,7 +67,7 @@
         box-shadow: 0 4px 12px rgba(66, 133, 244, 0.3);
         
         &:hover {
-          background: #b38a5e;
+          background: var(--primary-color);
           transform: translateY(-2px);
           box-shadow: 0 6px 16px rgba(66, 133, 244, 0.4);
         }

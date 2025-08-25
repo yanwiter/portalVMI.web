@@ -1,0 +1,128 @@
+<div class="emissao-container">
+  <!-- Resumo da Nota Fiscal -->
+  <div class="resumo-nota">
+    <h6>Resumo da Nota Fiscal</h6>
+    
+    <div class="resumo-grid">
+      <div class="resumo-item">
+        <label>Número:</label>
+        <span>{{ notaFiscalSelecionada?.numero }}</span>
+      </div>
+      
+      <div class="resumo-item">
+        <label>Série:</label>
+        <span>{{ notaFiscalSelecionada?.serie }}</span>
+      </div>
+      
+      <div class="resumo-item">
+        <label>Data de Emissão:</label>
+        <span>{{ formatarData(notaFiscalSelecionada?.dataEmissao || dataAtual) }}</span>
+      </div>
+      
+      <div class="resumo-item">
+        <label>Cliente:</label>
+        <span>{{ notaFiscalSelecionada?.clienteNome }}</span>
+      </div>
+      
+      <div class="resumo-item">
+        <label>CNPJ/CPF:</label>
+        <span>{{ notaFiscalSelecionada?.clienteCnpjCpf }}</span>
+      </div>
+      
+      <div class="resumo-item">
+        <label>Valor Total:</label>
+        <span class="valor-total">{{ formatarMoeda(notaFiscalSelecionada?.valorTotal || 0) }}</span>
+      </div>
+      
+      <div class="resumo-item">
+        <label>Status:</label>
+        <span class="status-badge" [ngClass]="getStatusClass(notaFiscalSelecionada?.status || StatusNotaFiscal.RASCUNHO)">
+          {{ notaFiscalSelecionada?.status }}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Itens da Nota Fiscal -->
+  <div class="itens-nota">
+    <h6>Itens da Nota Fiscal</h6>
+    
+    <p-table [value]="notaFiscalSelecionada?.itens || []" [scrollable]="true" scrollHeight="200px">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Código</th>
+          <th>Descrição</th>
+          <th>Qtd</th>
+          <th>Valor Unit.</th>
+          <th>Valor Total</th>
+          <th>CFOP</th>
+          <th>NCM</th>
+        </tr>
+      </ng-template>
+      
+      <ng-template pTemplate="body" let-item>
+        <tr>
+          <td>{{ item.produtoCodigo }}</td>
+          <td>{{ item.produtoDescricao }}</td>
+          <td>{{ item.quantidade }}</td>
+          <td>{{ formatarMoeda(item.valorUnitario) }}</td>
+          <td>{{ formatarMoeda(item.valorTotal) }}</td>
+          <td>{{ item.cfop }}</td>
+          <td>{{ item.ncm }}</td>
+        </tr>
+      </ng-template>
+      
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="7" class="text-center">Nenhum item encontrado</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+  <!-- Configurações de Emissão -->
+  <div class="configuracoes-emissao">
+    <h6>Configurações de Emissão</h6>
+    
+    <div class="config-grid">
+      <div class="config-item">
+        <label for="ambiente">Ambiente *</label>
+        <p-dropdown id="ambiente" [(ngModel)]="ambiente" 
+                   [options]="[
+                     {label: 'Produção', value: 'PRODUCAO'},
+                     {label: 'Homologação', value: 'HOMOLOGACAO'}
+                   ]" 
+                   optionLabel="label" optionValue="value" 
+                   placeholder="Selecione o ambiente" />
+      </div>
+      
+      <div class="config-item">
+        <label for="justificativa">Justificativa (Opcional)</label>
+        <textarea pInputTextarea id="justificativa" [(ngModel)]="justificativa" 
+                  rows="3" placeholder="Justificativa para emissão em contingência"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- Avisos -->
+  <div class="avisos">
+    <p-message severity="info" text="A emissão da nota fiscal será realizada no ambiente selecionado. Certifique-se de que todos os dados estão corretos antes de prosseguir."></p-message>
+    
+    <div class="aviso-item">
+      <i class="pi pi-info-circle"></i>
+      <span>Em caso de problemas na emissão, a nota será automaticamente emitida em contingência.</span>
+    </div>
+    
+    <div class="aviso-item">
+      <i class="pi pi-exclamation-triangle"></i>
+      <span>A nota fiscal será enviada por e-mail para o cliente após a emissão.</span>
+    </div>
+  </div>
+
+  <!-- Ações -->
+  <div class="acoes-emissao">
+    <p-button *ngIf="canEmit" label="Emitir Nota Fiscal" icon="pi pi-send" severity="success" 
+              (onClick)="emitirNotaFiscal(notaFiscalSelecionada!)" [loading]="loading" />
+    <p-button label="Cancelar" icon="pi pi-times" severity="secondary" (onClick)="cancelar()" />
+  </div>
+</div> 

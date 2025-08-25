@@ -1,0 +1,134 @@
+<app-title-header title="{{ 'KPIS.TITLE' | translate }}"></app-title-header>
+
+<div class="kpis-container">
+  <div class="kpis-header">
+    <div class="header-content">
+      <h1></h1>
+      <p>{{ 'KPIS.DESCRIPTION' | translate }}</p>
+    </div>
+    <div class="header-actions">
+      <p-dropdown 
+        [options]="categorias" 
+        [(ngModel)]="categoriaSelecionada"
+        (onChange)="filtrarKpis()"
+        placeholder="{{ 'KPIS.FILTER_BY_CATEGORY' | translate }}"
+        class="filter-dropdown">
+      </p-dropdown>
+      <p-button 
+        icon="pi pi-refresh" 
+        label="{{ 'KPIS.UPDATE' | translate }}" 
+        (onClick)="onAtualizarKpis()"
+        class="p-button-outlined">
+      </p-button>
+      <p-button 
+        icon="pi pi-download" 
+        label="{{ 'KPIS.EXPORT' | translate }}" 
+        (onClick)="onExportarKpis()"
+        class="p-button-success">
+      </p-button>
+    </div>
+  </div>
+
+  <!-- Resumo dos KPIs -->
+  <div class="kpis-summary">
+    <p-card [header]="'KPIS.SUMMARY' | translate">
+      <div class="summary-grid">
+        <div class="summary-item">
+          <div class="summary-icon success">
+            <i class="pi pi-check-circle"></i>
+          </div>
+          <div class="summary-content">
+            <h4>{{ 'KPIS.KPIS_ABOVE_TARGET' | translate }}</h4>
+            <p class="summary-value">{{ getKpisSuccess() }}</p>
+          </div>
+        </div>
+
+        <div class="summary-item">
+          <div class="summary-icon warning">
+            <i class="pi pi-exclamation-triangle"></i>
+          </div>
+          <div class="summary-content">
+            <h4>{{ 'KPIS.KPIS_NEAR_TARGET' | translate }}</h4>
+            <p class="summary-value">{{ getKpisWarning() }}</p>
+          </div>
+        </div>
+
+        <div class="summary-item">
+          <div class="summary-icon danger">
+            <i class="pi pi-times-circle"></i>
+          </div>
+          <div class="summary-content">
+            <h4>{{ 'KPIS.KPIS_BELOW_TARGET' | translate }}</h4>
+            <p class="summary-value">{{ getKpisDanger() }}</p>
+          </div>
+        </div>
+
+        <div class="summary-item">
+          <div class="summary-icon info">
+            <i class="pi pi-chart-line"></i>
+          </div>
+          <div class="summary-content">
+            <h4>{{ 'KPIS.TOTAL_KPIS' | translate }}</h4>
+            <p class="summary-value">{{ getTotalKpis() }}</p>
+          </div>
+        </div>
+      </div>
+    </p-card>
+  </div>
+
+  <div class="kpis-grid">
+    <div class="kpi-card" *ngFor="let kpi of kpisFiltrados">
+      <div class="kpi-header">
+        <div class="kpi-title">
+          <h3>{{ kpi.nome }}</h3>
+          <span class="kpi-categoria">{{ kpi.categoria }}</span>
+        </div>
+        <div class="kpi-actions">
+          <p-button 
+            icon="pi pi-pencil" 
+            (onClick)="onEditarKpi(kpi)"
+            class="p-button-text p-button-sm">
+          </p-button>
+        </div>
+      </div>
+
+      <div class="kpi-content">
+        <div class="kpi-value-section">
+          <div class="kpi-current">
+            <span class="kpi-value">{{ kpi.valor | number:'1.0-2' }}</span>
+            <span class="kpi-unit">{{ kpi.unidade }}</span>
+          </div>
+          <div class="kpi-meta">
+            <span class="meta-label">{{ 'KPIS.TARGET' | translate }}:</span>
+            <span class="meta-value">{{ kpi.meta | number:'1.0-2' }} {{ kpi.unidade }}</span>
+          </div>
+        </div>
+
+        <div class="kpi-progress">
+          <p-progressBar 
+            [value]="(kpi.valor / kpi.meta) * 100"
+            [showValue]="false"
+            [styleClass]="getStatusClass(kpi.status)">
+          </p-progressBar>
+          <span class="progress-percentage">{{ (kpi.valor / kpi.meta) * 100 | number:'1.0-1' }}%</span>
+        </div>
+
+        <div class="kpi-trend">
+          <div class="trend-indicator" [ngClass]="getTendenciaClass(kpi.tendencia)">
+            <i [class]="getTendenciaIcon(kpi.tendencia)"></i>
+            <span class="trend-value">{{ kpi.variacao | number:'1.0-1' }}%</span>
+          </div>
+          <div class="kpi-status" [ngClass]="getStatusClass(kpi.status)">
+            <span class="status-dot"></span>
+            <span class="status-text">
+              {{ kpi.status === 'success' ? ('KPIS.ABOVE_TARGET' | translate) : 
+                 kpi.status === 'warning' ? ('KPIS.NEAR_TARGET' | translate) : ('KPIS.BELOW_TARGET' | translate) }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p-toast></p-toast> 

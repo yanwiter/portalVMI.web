@@ -1,0 +1,84 @@
+<div class="pipeline-vendas-container">
+  <div class="header-section">
+    <div class="title-section">
+      <h1>{{ 'PIPELINE_VENDAS' | translate }}</h1>
+      <p>{{ 'PIPELINE_VENDAS_DESC' | translate }}</p>
+    </div>
+  </div>
+
+  <!-- Resumo do Pipeline -->
+  <div class="summary-section">
+    <div class="summary-cards">
+      <p-card class="summary-card">
+        <div class="card-content">
+          <div class="icon-section">
+            <i class="pi pi-dollar"></i>
+          </div>
+          <div class="info-section">
+            <h3>{{ 'VALOR_TOTAL_PIPELINE' | translate }}</h3>
+            <span class="number">{{ getValorTotalPipeline() | currency:'BRL' }}</span>
+          </div>
+        </div>
+      </p-card>
+      
+      <p-card class="summary-card">
+        <div class="card-content">
+          <div class="icon-section">
+            <i class="pi pi-percentage"></i>
+          </div>
+          <div class="info-section">
+            <h3>{{ 'PROBABILIDADE_MEDIA' | translate }}</h3>
+            <span class="number">{{ getProbabilidadeMediaPipeline() | number:'1.1-1' }}%</span>
+          </div>
+        </div>
+      </p-card>
+      
+      <p-card class="summary-card">
+        <div class="card-content">
+          <div class="icon-section">
+            <i class="pi pi-list"></i>
+          </div>
+          <div class="info-section">
+            <h3>{{ 'TOTAL_OPORTUNIDADES' | translate }}</h3>
+            <span class="number">{{ getTotalOportunidades() }}</span>
+          </div>
+        </div>
+      </p-card>
+    </div>
+  </div>
+
+  <!-- Gráfico do Pipeline -->
+  <p-card [header]="'GRAFICO_PIPELINE' | translate" class="chart-card">
+    <div class="chart-container">
+      <p-chart type="bar" [data]="chartData" [options]="chartOptions" height="300px"></p-chart>
+    </div>
+  </p-card>
+
+  <!-- Estágios do Pipeline -->
+  <div class="pipeline-stages">
+    <div class="stage-column" *ngFor="let stage of pipelineStages">
+      <div class="stage-header" [style.background-color]="stage.cor">
+        <h3>{{ stage.nome }}</h3>
+        <div class="stage-stats">
+          <span class="valor">{{ stage.valorTotal | currency:'BRL' }}</span>
+          <span class="probabilidade">{{ stage.probabilidadeMedia }}%</span>
+        </div>
+      </div>
+      
+      <div class="stage-content">
+        <div class="oportunidade-card" *ngFor="let oportunidade of stage.oportunidades">
+          <div class="oportunidade-header">
+            <h4>{{ oportunidade.titulo }}</h4>
+            <span class="valor">{{ oportunidade.valor | currency:'BRL' }}</span>
+          </div>
+          <div class="oportunidade-info">
+            <div class="probabilidade">
+              <label>{{ 'PROBABILIDADE' | translate }}:</label>
+              <span>{{ oportunidade.probabilidade }}%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 

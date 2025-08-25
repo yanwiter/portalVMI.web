@@ -1,53 +1,184 @@
-@if(isSidebarVisible){
-<div styleClass="custom-sidebar">
-    <div class="sidebar-header">
-        <a [routerLink]="['/portal']">
-            <img src="../../../assets/vmi-medica-logo.svg" class="logo-menu" alt="logo" />
-        </a>
-        <h6 class="sub-title mt-2">Portal VMI</h6>
-    </div>
+@if(modeSidebar){
+    <div class="modern-sidebar" [class]="getThemeClass()">
+        <!-- Header da Sidebar -->
+        <div class="sidebar-header">
+            <div class="logo-container">
+                <a [routerLink]="['/portal']" class="logo-link">
+                    <img src="../../../assets/ketra_logo1.png" class="logo" alt="VMI Médica" />
+                </a>
+            </div>
+        </div>
 
-    <!-- activeIndex para controlar os tabs -->
-    <p-accordion [(activeIndex)]="activeIndex">
-        @for (menu of menus; track $index) {
-        <ng-container>
-            <p-accordionTab>
-                <ng-template pTemplate="header">
-                    <i [class]="menu.icon"></i> {{ menu.title }}
-                </ng-template>
-                <ul class="p-menu-list">
-                    @for (item of menu.items; track $index) {
-                    <li class="menu-item">
-                        @if (!item.hasSubmenu) {
-                        <a pButton pRipple [label]="item.label" [routerLink]="item.routerLink" [state]="{ bypassGuard: true }"
-                            class="p-menuitem-link"></a>
-                        }@else {
-                        <a pButton pRipple (click)="toggleSubmenu(item)" class="p-menuitem-link">
-                            <div class="menu-item-label-container">
-                                <b>{{item.label}}</b>
-                                <span class="pi"
-                                    [ngClass]="{ 'pi-angle-up': item.isSubmenuVisible, 'pi-angle-down': !item.isSubmenuVisible}">
-                                </span>
+        <!-- Conteúdo da Sidebar -->
+        <div class="sidebar-content">
+            <nav class="sidebar-nav">
+                @for (menu of menus; track $index) {
+                <div class="nav-section">
+                    <div class="nav-section-header" (click)="toggleMenuSection(menu)">
+                        <div class="nav-section-title">
+                            <i [class]="menu.icon"></i>
+                            <span class="section-text">{{ translateTitle(menu) }}</span>
+                        </div>
+                        <i class="pi pi-chevron-down section-arrow" 
+                           [class.rotated]="menu.isExpanded"></i>
+                    </div>
+                    
+                    <div class="nav-section-content" 
+                         [class.expanded]="menu.isExpanded"
+                         [@slideInOut]="menu.isExpanded ? 'expanded' : 'collapsed'">
+                        @for (item of menu.items; track $index) {
+                        <div class="nav-item-wrapper">
+                            @if (!item.hasSubmenu) {
+                            <a [routerLink]="item.routerLink" 
+                               [state]="{ bypassGuard: true }" 
+                               class="nav-item"
+                               routerLinkActive="active"
+                               [routerLinkActiveOptions]="{exact: false}">
+                                <span class="nav-item-text">{{ translateLabel(item) }}</span>
+                                <div class="nav-item-indicator"></div>
+                            </a>
+                            } @else {
+                            <div class="nav-item-with-submenu">
+                                <div class="nav-item-submenu-header" 
+                                     (mouseenter)="showExpandedSubmenu(item, $event)"
+                                     (mouseleave)="hideExpandedSubmenu(item)">
+                                    <span class="nav-item-text">{{ translateLabel(item) }}</span>
+                                    <i class="pi pi-chevron-right submenu-arrow"></i>
+                                </div>
+                                @if (item.isSubmenuVisible) {
+                                <div class="submenu-container" [@slideInOut]="'expanded'">
+                                    @for (subItem of item.submenuItems; track $index) {
+                                    <a [routerLink]="subItem.routerLink" 
+                                       [state]="{ bypassGuard: true }" 
+                                       class="submenu-item"
+                                       routerLinkActive="active"
+                                       [routerLinkActiveOptions]="{exact: false}">
+                                        <span class="submenu-item-text">{{ translateSubmenuLabel(subItem) }}</span>
+                                        <div class="submenu-item-indicator"></div>
+                                    </a>
+                                    }
+                                </div>
+                                }
                             </div>
-                        </a>
-                        @if (item.isSubmenuVisible) {
-                        <ul class="p-menu-list submenu">
-                            @for (subItem of item.submenuItems; track $index) {
-                            <li class="submenu-item">
-                                <a pButton pRipple [label]="subItem.label" [routerLink]="subItem.routerLink"
-                                    [state]="{ bypassGuard: true }" class="p-menuitem-link"></a>
-                            </li>
                             }
-                        </ul>
+                        </div>
                         }
-                    }
-                    </li>
+                    </div>
+                </div>
                 }
-                </ul>
-            </p-accordionTab>
-            <p></p>
-        </ng-container>
-        }
-    </p-accordion>
-</div>
+            </nav>
+        </div>
+
+        <!-- Footer da Sidebar -->
+        <div class="sidebar-footer-expand">
+            <button class="sidebar-toggle-btn-expand" 
+                    (click)="toggleSidebar()">
+                <i class="pi pi-chevron-left"></i>
+            </button>
+        </div>
+    </div>
+} @else {
+    <div class="modern-sidebar compact" [class]="getThemeClass()">
+        <!-- Header Compacto -->
+        <div class="sidebar-header-compact compact">
+            <div class="logo-container compact">
+                <a [routerLink]="['/portal']" class="logo-link">
+                    <img src="../../../assets/Ketra.png" class="logo compact" alt="VMI Médica" />
+                </a>
+            </div>
+        </div>
+
+        <!-- Conteúdo Compacto -->
+        <div class="sidebar-content compact">
+            <nav class="sidebar-nav compact">
+                @for (menu of menus; track $index) {
+                <div class="nav-item-compact-wrapper">
+                    <div class="nav-item-compact"
+                         [class.active]="isMenuActive(menu)"
+                         (mouseenter)="showCompactSubmenu(menu, $event)"
+                         (click)="showCompactSubmenu(menu, $event)"
+                         (mouseleave)="!submenuOpenedByClick && hideCompactSubmenu(menu)">
+                        <i [class]="menu.icon"></i>
+                    </div>
+                </div>
+                }
+            </nav>
+        </div>
+
+        <div
+          *ngIf="hoveredMenu"
+          class="compact-submenu-float"
+          [ngClass]="{'submenu-up': isSubmenuUp()}"
+          [ngStyle]="{'top.px': submenuPosition.top, 'left.px': submenuPosition.left}"
+          (mouseenter)="submenuHover = true"
+          (mouseleave)="submenuHover = false; hideCompactSubmenu(hoveredMenu)"
+        >
+            <div class="compact-submenu-header">
+                <div class="submenu-title">
+                    <i [class]="hoveredMenu.icon"></i>
+                    <h6>{{ translateTitle(hoveredMenu) }}</h6>
+                </div>
+            </div>
+            <div class="compact-submenu-content">
+                @for (item of hoveredMenu.items; track $index) {
+                <div class="compact-submenu-item-wrapper">
+                    @if (!item.hasSubmenu) {
+                    <a [routerLink]="item.routerLink" 
+                       [state]="{ bypassGuard: true }" 
+                       class="compact-submenu-item"
+                       routerLinkActive="active">
+                        <span> {{ translateLabel(item) }}</span>
+                    </a>
+                    } @else {
+                    <div class="compact-submenu-with-submenu">
+                        <div class="compact-submenu-header-item" 
+                             (mouseenter)="showNestedSubmenu(item, $event)"
+                             (mouseleave)="hideNestedSubmenu(item)">
+                            <span>{{ translateLabel(item) }}</span>
+                            <i class="pi pi-chevron-right submenu-arrow"></i>
+                        </div>
+                    </div>
+                    }
+                </div>
+                }
+            </div>
+        </div>
+
+        <!-- Submenu aninhado à direita -->
+        <div
+          *ngIf="nestedSubmenu"
+          class="compact-submenu-float nested-submenu"
+          [ngClass]="{'submenu-up': isNestedSubmenuUp()}"
+          [ngStyle]="{'top.px': nestedSubmenuPosition.top, 'left.px': nestedSubmenuPosition.left}"
+          (mouseenter)="nestedSubmenuHover = true"
+          (mouseleave)="nestedSubmenuHover = false; hideNestedSubmenu(nestedSubmenu)"
+        >
+            <div class="compact-submenu-header">
+                <div class="submenu-title">
+                    <i class="pi pi-folder"></i>
+                    <h6>{{ translateLabel(nestedSubmenu) }}</h6>
+                </div>
+            </div>
+            <div class="compact-submenu-content">
+                @for (subItem of nestedSubmenu.submenuItems; track $index) {
+                <div class="compact-submenu-item-wrapper">
+                    <a [routerLink]="subItem.routerLink" 
+                       [state]="{ bypassGuard: true }" 
+                       class="compact-submenu-item"
+                       routerLinkActive="active">
+                        <span>{{ translateSubmenuLabel(subItem) }}</span>
+                    </a>
+                </div>
+                }
+            </div>
+        </div>
+
+        <!-- Footer Compacto -->
+        <div class="sidebar-footer-compact">
+            <button class="sidebar-toggle-btn-compact" 
+                    (click)="toggleSidebar()">
+                <i class="pi pi-chevron-right"></i>
+            </button>
+        </div>
+    </div>
 }

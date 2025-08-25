@@ -1,0 +1,424 @@
+<app-title-header title="{{ 'SESSOES.TITLE' | translate }}"></app-title-header>
+
+<div class="filters">
+    <p-accordion class="p-accordion-custom-header">
+        <p-accordionTab>
+            <ng-template pTemplate="header">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <span>{{ getFiltrosHeader() }}</span>
+
+                    @if (getActiveFilters().length > 0) {
+                    <ng-container>
+                        @for (filter of getActiveFilters(); track filter) {
+                        <p-tag [value]="filter.label + ': ' + filter.value" severity="contrast" styleClass="mr-1">
+                        </p-tag>
+                        }
+                    </ng-container>
+                    }
+                </div>
+            </ng-template>
+
+            <div class="field grid" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input pInputText id="nomeUsuario" [(ngModel)]="filtros.nomeUsuario" name="nomeUsuario" />
+                        <label for="nomeUsuario">{{ 'SESSOES.NOME_USUARIO' | translate }}</label>
+                    </p-floatLabel>
+                </div>
+
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input pInputText id="emailUsuario" [(ngModel)]="filtros.emailUsuario" name="emailUsuario" />
+                        <label for="emailUsuario">{{ 'SESSOES.EMAIL_USUARIO' | translate }}</label>
+                    </p-floatLabel>
+                </div>
+
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-dropdown id="perfilUsuario" appendTo="body" [options]="perfisOptions" optionLabel="label"
+                            optionValue="value" [(ngModel)]="filtros.perfilUsuario" name="perfilUsuario">
+                        </p-dropdown>
+                        <label for="perfilUsuario">{{ 'SESSOES.PERFIL_USUARIO' | translate }}</label>
+                    </p-floatLabel>
+                </div>
+
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input pInputText id="dispositivo" [(ngModel)]="filtros.dispositivo" name="dispositivo" />
+                        <label for="dispositivo">{{ 'SESSOES.DISPOSITIVO' | translate }}</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+
+            <div class="field grid" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-dropdown id="navegador" appendTo="body" [options]="navegadoresOptions" optionLabel="label"
+                            optionValue="value" [(ngModel)]="filtros.navegador" name="navegador">
+                        </p-dropdown>
+                        <label for="navegador">{{ 'SESSOES.NAVEGADOR' | translate }}</label>
+                    </p-floatLabel>
+                </div>
+
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-dropdown id="sistemaOperacional" appendTo="body" [options]="sistemasOperacionaisOptions" optionLabel="label"
+                            optionValue="value" [(ngModel)]="filtros.sistemaOperacional" name="sistemaOperacional">
+                        </p-dropdown>
+                        <label for="sistemaOperacional">{{ 'SESSOES.SISTEMA_OPERACIONAL' | translate }}</label>
+                    </p-floatLabel>
+                </div>
+
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input pInputText id="ipAddress" [(ngModel)]="filtros.ipAddress" name="ipAddress" />
+                        <label for="ipAddress">{{ 'SESSOES.IP_ADDRESS' | translate }}</label>
+                    </p-floatLabel>
+                </div>
+
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-dropdown id="statusSessao" appendTo="body" [options]="statusSessaoOptions" optionLabel="label"
+                            optionValue="value" [(ngModel)]="filtros.ativa" name="statusSessao">
+                        </p-dropdown>
+                        <label for="statusSessao">{{ 'SESSOES.STATUS_SESSAO' | translate }}</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+
+            <div class="field grid" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-calendar [(ngModel)]="filtros.dataLoginInicio" name="dataLoginInicio" [showIcon]="true"
+                            dateFormat="dd/mm/yy" appendTo="body" placeholder="Data Início">
+                        </p-calendar>
+                        <label for="dataLoginInicio">{{ 'SESSOES.DATA_LOGIN_INICIO' | translate }}</label>
+                    </p-floatLabel>
+                </div>
+
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-calendar [(ngModel)]="filtros.dataLoginFim" name="dataLoginFim" [showIcon]="true"
+                            dateFormat="dd/mm/yy" appendTo="body" placeholder="Data Fim">
+                        </p-calendar>
+                        <label for="dataLoginFim">{{ 'SESSOES.DATA_LOGIN_FIM' | translate }}</label>
+                    </p-floatLabel>
+                </div>
+
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-inputNumber [(ngModel)]="filtros.tempoSessaoMinimo" name="tempoSessaoMinimo" 
+                            placeholder="Minutos" [min]="0" [max]="1440">
+                        </p-inputNumber>
+                        <label for="tempoSessaoMinimo">{{ 'SESSOES.TEMPO_SESSAO_MINIMO' | translate }}</label>
+                    </p-floatLabel>
+                </div>
+
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-inputNumber [(ngModel)]="filtros.tempoSessaoMaximo" name="tempoSessaoMaximo" 
+                            placeholder="Minutos" [min]="0" [max]="1440">
+                        </p-inputNumber>
+                        <label for="tempoSessaoMaximo">{{ 'SESSOES.TEMPO_SESSAO_MAXIMO' | translate }}</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button pButton [outlined]="true" [raised]="true" severity="warning" 
+                    [label]="'SESSOES.LIMPAR_FILTROS' | translate" icon="pi pi-times"
+                    (click)="limparFiltros()">
+                </button>
+                <button pButton [outlined]="true" [raised]="true" severity="success" 
+                    [label]="'SESSOES.FILTRAR' | translate" icon="pi pi-filter"
+                    (click)="filtrar()">
+                </button>
+            </div>
+        </p-accordionTab>
+    </p-accordion>
+</div>
+
+<div class="tables">
+    <p-table [value]="sessoes" [paginator]="true" [lazy]="true" [showCurrentPageReport]="true" [rows]="rows"
+        [resizableColumns]="true" [reorderableColumns]="true" [columnResizeMode]="'fit'" [totalRecords]="totalRecords" 
+        [rowsPerPageOptions]="rowsPerPage" styleClass="p-datatable-striped p-datatable-gridlines" 
+        (onPage)="handlePageChange($event)" (onLazyLoad)="loadTableData($event)" (onColReorder)="onColReorder($event)"
+        dataKey="id" [(selection)]="selectedSessoes">
+        
+        <ng-template pTemplate="caption">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                @if (selectedSessoes && selectedSessoes.length > 0) {
+                <div>
+                    <span class="ml-2">{{ selectedSessoes.length }} sessões selecionadas</span>
+                </div>
+                } @else {
+                <div></div>
+                }
+                <div class="actions">
+                    @if (selectedSessoes && selectedSessoes.length > 0) {
+                        <button pButton type="button" icon="pi pi-power-off" class="p-button-outlined" 
+                            severity="danger" (click)="encerrarSessoesSelecionadas()" 
+                            pTooltip="Encerrar sessões selecionadas">
+                        </button>
+                    }
+                    <button pButton type="button" icon="pi pi-refresh" class="p-button-outlined" 
+                        (click)="loadTableData({ first: 0, rows: currentRowsPerPage })" pTooltip="Atualizar">
+                    </button>
+                    <button pButton type="button" icon="pi pi-download" class="p-button-outlined" 
+                        (click)="exportarParaExcel()" pTooltip="Exportar para Excel">
+                    </button>
+                </div>
+            </div>
+        </ng-template>
+        
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="width: 3rem">
+                    <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                </th>
+                <th id="nomeUsuario">{{ 'SESSOES.NOME_COMPLETO' | translate }}</th>
+                <th id="perfilUsuario">{{ 'SESSOES.PERFIL' | translate }}</th>
+                <th id="dataLogin">{{ 'SESSOES.DATA_LOGIN' | translate }}</th>
+                <th id="tempoSessao">{{ 'SESSOES.TEMPO_SESSAO' | translate }}</th>
+                <th id="ultimaAtividade">{{ 'SESSOES.ULTIMA_ATIVIDADE' | translate }}</th>
+                <th id="dispositivo">{{ 'SESSOES.DISPOSITIVO' | translate }}</th>
+                <th id="navegador">{{ 'SESSOES.NAVEGADOR' | translate }}</th>
+                <th id="ipAddress">{{ 'SESSOES.IP_ADDRESS' | translate }}</th>
+                <th id="localizacao">{{ 'SESSOES.CIDADE' | translate }}</th>
+                <th id="status">{{ 'SESSOES.STATUS' | translate }}</th>
+                <th id="acao">{{ 'SESSOES.ACOES' | translate }}</th>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-sessao let-rowIndex="rowIndex">
+            <tr>
+                <td>
+                    <p-tableCheckbox [value]="sessao"></p-tableCheckbox>
+                </td>
+                <td>
+                    <div class="user-info">
+                        <div class="user-name">{{ sessao.nomeUsuario }}</div>
+                        <div class="user-email">{{ sessao.emailUsuario }}</div>
+                    </div>
+                </td>
+                <td>
+                    <p-tag [value]="sessao.perfilUsuario" [severity]="getPerfilSeverity(sessao.perfilUsuario)" />
+                </td>
+                <td>
+                    <div class="date-info">
+                        <div class="date">{{ formatarData(sessao.dataLogin) }}</div>
+                        <div class="time">{{ formatarHora(sessao.dataLogin) }}</div>
+                    </div>
+                </td>
+                <td>
+                    <div class="session-time">
+                        <div class="time-active">{{ sessao.tempoSessao }}</div>
+                        <div class="time-inactive" *ngIf="sessao.tempoInativo !== '0 min'">
+                            Inativo: {{ sessao.tempoInativo }}
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="last-activity">
+                        <div class="date">{{ formatarData(sessao.dataUltimaAtividade) }}</div>
+                        <div class="time">{{ formatarHora(sessao.dataUltimaAtividade) }}</div>
+                    </div>
+                </td>
+                <td>
+                    <div class="device-info">
+                        <div class="device">{{ sessao.dispositivo }}</div>
+                        <div class="os">{{ sessao.sistemaOperacional }}</div>
+                    </div>
+                </td>
+                <td>
+                    <div class="browser-info">
+                        <div class="browser">{{ sessao.navegador }}</div>
+                        <div class="version">{{ sessao.versaoNavegador }}</div>
+                    </div>
+                </td>
+                <td>
+                    <div class="ip-info">
+                        <div class="ip">{{ sessao.ipAddress }}</div>
+                        <div class="location" *ngIf="sessao.cidade">
+                            {{ sessao.cidade }}, {{ sessao.pais }}
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="location-info">
+                        <div class="country">{{ sessao.pais }}</div>
+                        <div class="city">{{ sessao.cidade }}</div>
+                        <div class="region" *ngIf="sessao.regiao">{{ sessao.regiao }}</div>
+                    </div>
+                </td>
+                <td style="text-align: center;">
+                    <div class="status-indicators">
+                        <i class="pi pi-circle-fill" [ngClass]="sessao.ativa ? 'text-success' : 'text-danger'"
+                           pTooltip="Sessão Ativa" tooltipPosition="top"></i>
+                        <i class="pi pi-lock" *ngIf="sessao.bloqueada" 
+                           pTooltip="Sessão Bloqueada" tooltipPosition="top" style="color: #ff6b6b; margin-left: 0.5rem;"></i>
+                    </div>
+                </td>
+                <td>
+                    <div class="actions-table">
+                        <button pButton [outlined]="true" [raised]="true" severity="danger" 
+                            icon="pi pi-power-off" (click)="encerrarSessao(sessao)"
+                            pTooltip="Encerrar Sessão" tooltipPosition="top">
+                        </button>
+                        <button pButton [outlined]="true" [raised]="true" severity="warning" 
+                            icon="pi pi-eye" (click)="visualizarDetalhesSessao(sessao)"
+                            pTooltip="Ver Detalhes" tooltipPosition="top">
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+
+<!-- Modal de detalhes da sessão -->
+<p-dialog [header]="'SESSOES.DETALHES_SESSAO' | translate" [(visible)]="displayDetalhesModal" [style]="{width: '70vw'}" [modal]="true">
+    
+    @if (sessaoSelecionada) {
+    <div class="session-details">
+        <div class="detail-section">
+            <h4>{{ 'SESSOES.INFORMACOES_BASICAS' | translate }}</h4>
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <label>{{ 'SESSOES.NOME_COMPLETO' | translate }}:</label>
+                    <span>{{ sessaoSelecionada.nomeUsuario }}</span>
+                </div>
+                <div class="detail-item">
+                    <label>{{ 'SESSOES.EMAIL' | translate }}:</label>
+                    <span>{{ sessaoSelecionada.emailUsuario }}</span>
+                </div>
+                <div class="detail-item">
+                    <label>{{ 'SESSOES.PERFIL' | translate }}:</label>
+                    <span>{{ sessaoSelecionada.perfilUsuario }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="detail-section">
+            <h4>{{ 'SESSOES.CONFIGURACOES' | translate }}</h4>
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <label>{{ 'SESSOES.DATA_LOGIN' | translate }}:</label>
+                    <span>{{ formatarDataHora(sessaoSelecionada.dataLogin) }}</span>
+                </div>
+                <div class="detail-item">
+                    <label>{{ 'SESSOES.ULTIMA_ATIVIDADE' | translate }}:</label>
+                    <span>{{ formatarDataHora(sessaoSelecionada.dataUltimaAtividade) }}</span>
+                </div>
+                <div class="detail-item">
+                    <label>{{ 'SESSOES.TEMPO_SESSAO' | translate }}:</label>
+                    <span>{{ sessaoSelecionada.tempoSessao }}</span>
+                </div>
+                <div class="detail-item">
+                    <label>{{ 'SESSOES.TEMPO_INATIVO' | translate }}:</label>
+                    <span>{{ sessaoSelecionada.tempoInativo }}</span>
+                </div>
+                <div class="detail-item">
+                    <label>{{ 'SESSOES.EXPIRA_EM' | translate }}:</label>
+                    <span>{{ formatarDataHora(sessaoSelecionada.expiraEm) }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="detail-section">
+            <h4>{{ 'SESSOES.DISPOSITIVO' | translate }}</h4>
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <label>{{ 'SESSOES.DISPOSITIVO' | translate }}:</label>
+                    <span>{{ sessaoSelecionada.dispositivo }}</span>
+                </div>
+                <div class="detail-item">
+                    <label>{{ 'SESSOES.NAVEGADOR' | translate }}:</label>
+                    <span>{{ sessaoSelecionada.navegador }} {{ sessaoSelecionada.versaoNavegador }}</span>
+                </div>
+                <div class="detail-item">
+                    <label>{{ 'SESSOES.SISTEMA_OPERACIONAL' | translate }}:</label>
+                    <span>{{ sessaoSelecionada.sistemaOperacional }}</span>
+                </div>
+                <div class="detail-item">
+                    <label>{{ 'SESSOES.USER_AGENT' | translate }}:</label>
+                    <span class="user-agent">{{ sessaoSelecionada.userAgent }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="detail-section">
+            <h4>{{ 'SESSOES.CIDADE' | translate }}</h4>
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <label>{{ 'SESSOES.IP_ADDRESS' | translate }}:</label>
+                    <span>{{ sessaoSelecionada.ipAddress }}</span>
+                </div>
+                <div class="detail-item">
+                    <label>{{ 'SESSOES.PAIS' | translate }}:</label>
+                    <span>{{ sessaoSelecionada.pais }}</span>
+                </div>
+                <div class="detail-item">
+                    <label>{{ 'SESSOES.CIDADE' | translate }}:</label>
+                    <span>{{ sessaoSelecionada.cidade }}</span>
+                </div>
+                <div class="detail-item">
+                    <label>{{ 'SESSOES.REGIAO' | translate }}:</label>
+                    <span>{{ sessaoSelecionada.regiao }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="detail-section">
+            <h4>{{ 'SESSOES.STATUS' | translate }}</h4>
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <label>{{ 'SESSOES.ATIVA' | translate }}:</label>
+                    <span [class]="sessaoSelecionada.ativa ? 'text-success' : 'text-danger'">
+                        {{ sessaoSelecionada.ativa ? 'Sim' : 'Não' }}
+                    </span>
+                </div>
+                <div class="detail-item">
+                    <label>{{ 'SESSOES.BLOQUEADA' | translate }}:</label>
+                    <span [class]="sessaoSelecionada.bloqueada ? 'text-danger' : 'text-success'">
+                        {{ sessaoSelecionada.bloqueada ? 'Sim' : 'Não' }}
+                    </span>
+                </div>
+                <div class="detail-item" *ngIf="sessaoSelecionada.motivoBloqueio">
+                    <label>{{ 'SESSOES.MOTIVO_BLOQUEIO' | translate }}:</label>
+                    <span>{{ sessaoSelecionada.motivoBloqueio }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    }
+
+    <ng-template pTemplate="footer">
+        <button pButton [outlined]="true" [raised]="true" severity="danger" icon="pi pi-power-off" 
+            [label]="'SESSOES.ENCERRAR_SESSAO' | translate" (click)="encerrarSessao(sessaoSelecionada!)">
+        </button>
+        <button pButton [outlined]="true" [raised]="true" severity="secondary" icon="pi pi-times" 
+            [label]="'SESSOES.FECHAR' | translate" (click)="displayDetalhesModal = false">
+        </button>
+    </ng-template>
+</p-dialog>
+
+<!-- Modal de confirmação para encerrar sessão -->
+<p-dialog [header]="'SESSOES.CONFIRMAR_ENCERRAMENTO' | translate" [(visible)]="displayConfirmacaoModal" [style]="{width: '40vw'}" [modal]="true">
+    <div class="confirmation-content">
+        <p>{{ 'SESSOES.TEM_CERTEZA_ENCERRAR' | translate }}</p>
+        <div class="form-group">
+            <label for="motivoEncerramento">{{ 'SESSOES.MOTIVO_ENCERRAMENTO' | translate }}:</label>
+            <textarea pInputText id="motivoEncerramento" [(ngModel)]="motivoEncerramento" 
+                rows="3" placeholder="Informe o motivo do encerramento da sessão..."></textarea>
+        </div>
+    </div>
+    <ng-template pTemplate="footer">
+        <button pButton [outlined]="true" [raised]="true" severity="secondary" icon="pi pi-times" 
+            [label]="'SESSOES.CANCELAR' | translate" (click)="cancelarEncerramento()">
+        </button>
+        <button pButton [outlined]="false" [raised]="true" severity="danger" icon="pi pi-power-off" 
+            [label]="'SESSOES.CONFIRMAR' | translate" (click)="confirmarEncerramento()">
+        </button>
+    </ng-template>
+</p-dialog>

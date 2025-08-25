@@ -27,8 +27,8 @@ export class GenericService<T> {
 
   public postWithBody(endpoint: keyof IApiEndpoints, specificRoute?: string[], body?: any, ...args: string[]): Observable<Result<T>> {
     return this.http.post<Result<T>>(
-        `${this.apiRoutes.getFullUrl(endpoint, specificRoute)}${this.apiRoutes.getQueryParams(args)}`, 
-        body
+      `${this.apiRoutes.getFullUrl(endpoint, specificRoute)}${this.apiRoutes.getQueryParams(args)}`,
+      body
     );
   }
 
@@ -36,23 +36,51 @@ export class GenericService<T> {
     return this.http.put<Result<T>>(`${this.apiRoutes.getFullUrl(endpoint, specificRoute)}${this.apiRoutes.getQueryParams(args)}/${id}`, item);
   }
 
+  public patch(endpoint: keyof IApiEndpoints, id: number | string, partialItem: Partial<T>, specificRoute?: string[], ...args: string[]): Observable<Result<T>> {
+    return this.http.patch<Result<T>>(`${this.apiRoutes.getFullUrl(endpoint, specificRoute)}${this.apiRoutes.getQueryParams(args)}/${id}`, partialItem);
+  }
+
   public delete(endpoint: keyof IApiEndpoints, id: number | string, specificRoute?: string[], ...args: string[]): Observable<Result<T>> {
     return this.http.delete<Result<T>>(`${this.apiRoutes.getFullUrl(endpoint, specificRoute)}/${id}${this.apiRoutes.getQueryParams(args)}`);
   }
 
   public getfile(endpoint: keyof IApiEndpoints, id: number | string, specificRoute?: string[], ...args: string[]): Observable<Blob> {
-    return this.http.get(`${this.apiRoutes.getFullUrl(endpoint, specificRoute)}/${id}${this.apiRoutes.getQueryParams(args)}`
-      , { responseType: 'blob' }) as Observable<Blob>;
+    return this.http.get(`${this.apiRoutes.getFullUrl(endpoint, specificRoute)}/${id}${this.apiRoutes.getQueryParams(args)}`,
+      { responseType: 'blob' }) as Observable<Blob>;
   }
 
   public postfile(
     endpoint: keyof IApiEndpoints, item: T,
-    id: number | string,
     specificRoute?: string[],
     ...args: string[]): Observable<Blob> {
     return this.http.post(
-      `${this.apiRoutes.getFullUrl(endpoint, specificRoute)}/${id}${this.apiRoutes.getQueryParams(args)}`,
+      `${this.apiRoutes.getFullUrl(endpoint, specificRoute)}/${this.apiRoutes.getQueryParams(args)}`,
       item,
       { responseType: 'blob' }) as Observable<Blob>;
+  }
+
+  public uploadFile(
+    endpoint: keyof IApiEndpoints, 
+    formData: FormData,
+    specificRoute?: string[],
+    ...args: string[]): Observable<any> {
+    
+    console.log('GenericService.uploadFile chamado');
+    console.log('Endpoint:', endpoint);
+    console.log('SpecificRoute:', specificRoute);
+    console.log('Args:', args);
+    console.log('FormData:', formData);
+    
+    const url = `${this.apiRoutes.getFullUrl(endpoint, specificRoute)}${this.apiRoutes.getQueryParams(args)}`;
+    console.log('URL final:', url);
+    
+    return this.http.post(url, formData);
+  }
+
+  public exportarExcel(endpoint: keyof IApiEndpoints, specificRoute?: string[], ...args: string[]): Observable<Blob> {
+    return this.http.get(
+      `${this.apiRoutes.getFullUrl(endpoint, specificRoute)}${this.apiRoutes.getQueryParams(args)}`,
+      { responseType: 'blob' }
+    ) as Observable<Blob>;
   }
 }

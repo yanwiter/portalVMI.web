@@ -1,0 +1,112 @@
+<div class="conciliacao-bancaria-container">
+  <div class="header">
+    <div class="title-section">
+      <h1>{{ 'CONCILIACAO_BANCARIA' | translate }}</h1>
+      <p>{{ 'CONCILIACAO_BANCARIA_DESC' | translate }}</p>
+    </div>
+  </div>
+
+  <!-- Cards de Resumo -->
+  <div class="summary-cards">
+    <p-card class="summary-card">
+      <div class="card-content">
+        <div class="icon">
+          <i class="pi pi-bank"></i>
+        </div>
+        <div class="info">
+          <h3>{{ 'SALDO_CONTABIL' | translate }}</h3>
+          <span class="number">{{ saldoContabil | currency:'BRL' }}</span>
+        </div>
+      </div>
+    </p-card>
+
+    <p-card class="summary-card">
+      <div class="card-content">
+        <div class="icon">
+          <i class="pi pi-credit-card"></i>
+        </div>
+        <div class="info">
+          <h3>{{ 'SALDO_BANCARIO' | translate }}</h3>
+          <span class="number">{{ saldoBancario | currency:'BRL' }}</span>
+        </div>
+      </div>
+    </p-card>
+
+    <p-card class="summary-card">
+      <div class="card-content">
+        <div class="icon">
+          <i class="pi pi-calculator"></i>
+        </div>
+        <div class="info">
+          <h3>{{ 'DIFERENCA' | translate }}</h3>
+          <span class="number" [class]="getDiferenca() >= 0 ? 'text-success' : 'text-danger'">
+            {{ getDiferenca() | currency:'BRL' }}
+          </span>
+        </div>
+      </div>
+    </p-card>
+  </div>
+
+  <!-- Tabela de Conciliação -->
+  <p-card [header]="'MOVIMENTACOES_BANCARIAS' | translate" class="table-card">
+    <p-table 
+      [value]="conciliacoes" 
+      [paginator]="true" 
+      [rows]="10"
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="{{ 'SHOWING' | translate }} {first} {{ 'TO' | translate }} {last} {{ 'OF' | translate }} {totalRecords} {{ 'ENTRIES' | translate }}"
+      [rowsPerPageOptions]="[10,25,50]"
+      styleClass="p-datatable-sm">
+      
+      <ng-template pTemplate="header">
+        <tr>
+          <th>{{ 'DATA' | translate }}</th>
+          <th>{{ 'DESCRICAO' | translate }}</th>
+          <th>{{ 'TIPO' | translate }}</th>
+          <th>{{ 'VALOR' | translate }}</th>
+          <th>{{ 'CATEGORIA' | translate }}</th>
+          <th>{{ 'STATUS' | translate }}</th>
+        </tr>
+      </ng-template>
+      
+      <ng-template pTemplate="body" let-conciliacao>
+        <tr>
+          <td>{{ conciliacao.data | date:'dd/MM/yyyy' }}</td>
+          <td>{{ conciliacao.descricao }}</td>
+          <td>
+            <p-tag 
+              [value]="conciliacao.tipo" 
+              [severity]="getTipoSeverity(conciliacao.tipo)">
+            </p-tag>
+          </td>
+          <td [class]="conciliacao.tipo === 'CREDITO' ? 'text-success' : 'text-danger'">
+            {{ conciliacao.tipo === 'CREDITO' ? '+' : '-' }}{{ conciliacao.valor | currency:'BRL' }}
+          </td>
+          <td>{{ conciliacao.categoria || '-' }}</td>
+          <td>
+            <p-tag 
+              [value]="conciliacao.status" 
+              [severity]="getStatusSeverity(conciliacao.status)">
+            </p-tag>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-card>
+
+  <!-- Resumo de Conciliação -->
+  <div class="conciliacao-summary">
+    <p-card [header]="'RESUMO_CONCILIACAO' | translate">
+      <div class="summary-grid">
+        <div class="summary-item">
+          <h4>{{ 'TOTAL_CONCILIADO' | translate }}</h4>
+          <span class="value">{{ getTotalConciliado() | currency:'BRL' }}</span>
+        </div>
+        <div class="summary-item">
+          <h4>{{ 'TOTAL_NAO_CONCILIADO' | translate }}</h4>
+          <span class="value">{{ getTotalNaoConciliado() | currency:'BRL' }}</span>
+        </div>
+      </div>
+    </p-card>
+  </div>
+</div> 

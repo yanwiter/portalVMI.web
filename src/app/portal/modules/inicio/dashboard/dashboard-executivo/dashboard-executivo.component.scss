@@ -1,0 +1,374 @@
+.dashboard-executivo {
+  padding: 20px;
+  background: #f8f9fa;
+  min-height: 100vh;
+  transition: all 0.3s ease;
+
+  .dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    border: 1px solid #e9ecef;
+
+    .header-content {
+      h1 {
+        margin: 0 0 5px 0;
+        color: #2c3e50;
+        font-size: 28px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+      }
+
+      p {
+        margin: 0;
+        color: #7f8c8d;
+        font-size: 14px;
+        transition: all 0.3s ease;
+      }
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 10px;
+
+      .p-button {
+        border-radius: 6px;
+      }
+    }
+  }
+
+  .kpis-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+
+    .kpi-card {
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+      border: 1px solid #e9ecef;
+
+      &:hover {
+        transform: translateY(-2px);
+      }
+
+      .kpi-content {
+        display: flex;
+        align-items: center;
+        padding: 20px;
+
+        .kpi-icon {
+          width: 60px;
+          height: 60px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-right: 20px;
+          font-size: 24px;
+          color: white;
+
+          &.vendas {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          }
+
+          &.receitas {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+          }
+
+          &.lucro {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+          }
+
+          &.clientes {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+          }
+        }
+
+        .kpi-info {
+          flex: 1;
+
+          h3 {
+            margin: 0 0 8px 0;
+            color: #2c3e50;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+          }
+
+          .kpi-value {
+            margin: 0 0 5px 0;
+            color: #2c3e50;
+            font-size: 24px;
+            font-weight: 700;
+            transition: all 0.3s ease;
+          }
+
+          .kpi-growth {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+
+            &.positive {
+              background: #e8f5e8;
+              color: #4caf50;
+            }
+
+            &.negative {
+              background: #ffebee;
+              color: #f44336;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .charts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+
+    .chart-container {
+      .p-card {
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+        border: 1px solid #e9ecef;
+
+        ::ng-deep .p-card-header {
+          background: #f8f9fa;
+          border-bottom: 1px solid #e9ecef;
+          color: #2c3e50;
+          font-weight: 600;
+        }
+
+        .chart-wrapper {
+          padding: 20px;
+        }
+      }
+    }
+  }
+
+  .performance-section {
+    margin-top: 2rem;
+
+    .performance-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+
+      .performance-card {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 1.5rem;
+        transition: all 0.3s ease;
+        border: 1px solid #e9ecef;
+
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .performance-header {
+          text-align: center;
+          margin-bottom: 1rem;
+
+          h4 {
+            margin: 0;
+            color: #2c3e50;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+          }
+        }
+
+        .performance-content {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 0.5rem;
+
+          .performance-label {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #3498db;
+            transition: all 0.3s ease;
+          }
+        }
+      }
+    }
+  }
+
+  // Tema escuro
+  &.theme-dark {
+    background: #1a1a1a;
+    color: #ffffff;
+
+    .dashboard-header {
+      background: #2d2d2d !important;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      border: 1px solid #1a1a1a !important;
+
+      .header-content {
+        h1 {
+          color: #ffffff !important;
+        }
+
+        p {
+          color: #cccccc !important;
+        }
+      }
+    }
+
+    .kpi-card {
+      background: #2d2d2d !important;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+      border: 1px solid #1a1a1a !important;
+
+      &:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        transform: translateY(-2px);
+      }
+
+      .kpi-info {
+        h3 {
+          color: #ffffff !important;
+        }
+
+        .kpi-value {
+          color: #ffffff !important;
+        }
+
+        .kpi-growth {
+          &.positive {
+            background: #2d4a2d !important;
+            color: #4caf50 !important;
+          }
+
+          &.negative {
+            background: #4a2d2d !important;
+            color: #f44336 !important;
+          }
+        }
+      }
+    }
+
+    .chart-container {
+      .p-card {
+        background: #2d2d2d !important;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        border: 1px solid #1a1a1a !important;
+
+        ::ng-deep .p-card-header {
+          background: #404040 !important;
+          border-bottom: 1px solid #1a1a1a !important;
+          color: #ffffff !important;
+        }
+      }
+    }
+
+    .performance-section {
+      .performance-grid {
+        .performance-card {
+          background: #2d2d2d !important;
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+          border: 1px solid #1a1a1a !important;
+
+          &:hover {
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+            transform: translateY(-2px);
+          }
+
+          .performance-header {
+            h4 {
+              color: #ffffff !important;
+            }
+          }
+
+          .performance-content {
+            .performance-label {
+              color: #3498db !important;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // Responsividade
+  @media (max-width: 768px) {
+    padding: 15px;
+
+    .dashboard-header {
+      flex-direction: column;
+      gap: 15px;
+      text-align: center;
+
+      .header-content {
+        h1 {
+          font-size: 24px;
+        }
+      }
+
+      .header-actions {
+        justify-content: center;
+      }
+    }
+
+    .kpis-grid {
+      grid-template-columns: 1fr;
+      gap: 15px;
+    }
+
+    .charts-grid {
+      grid-template-columns: 1fr;
+      gap: 15px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    padding: 10px;
+
+    .dashboard-header {
+      padding: 15px;
+
+      .header-content {
+        h1 {
+          font-size: 20px;
+        }
+      }
+    }
+
+    .kpi-card {
+      .kpi-content {
+        padding: 15px;
+
+        .kpi-icon {
+          width: 50px;
+          height: 50px;
+          font-size: 20px;
+          margin-right: 15px;
+        }
+
+        .kpi-info {
+          .kpi-value {
+            font-size: 20px;
+          }
+        }
+      }
+    }
+  }
+} 

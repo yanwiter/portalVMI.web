@@ -1,0 +1,199 @@
+<div class="dashboard-executivo" [class.theme-dark]="isDarkTheme">
+  <div class="dashboard-header">
+    <div class="header-content">
+      <h1>Dashboard Executivo</h1>
+      <p>Visão geral dos principais indicadores da empresa</p>
+    </div>
+    <div class="header-actions">
+      <p-button 
+        icon="pi pi-refresh" 
+        label="Atualizar" 
+        (onClick)="onRefresh()"
+        class="p-button-outlined">
+      </p-button>
+      <p-button 
+        icon="pi pi-download" 
+        label="Exportar" 
+        (onClick)="onExport()"
+        class="p-button-success">
+      </p-button>
+    </div>
+  </div>
+
+  <!-- KPIs Principais -->
+  <div class="kpis-grid">
+    <p-card class="kpi-card">
+      <div class="kpi-content">
+        <div class="kpi-icon vendas">
+          <i class="pi pi-dollar"></i>
+        </div>
+        <div class="kpi-info">
+          <h3>Vendas do Mês</h3>
+          <p class="kpi-value">R$ {{ kpis.vendasMes | number:'1.0-0' }}</p>
+          <span class="kpi-growth positive">+{{ kpis.crescimentoVendas }}%</span>
+        </div>
+      </div>
+    </p-card>
+
+    <p-card class="kpi-card">
+      <div class="kpi-content">
+        <div class="kpi-icon receitas">
+          <i class="pi pi-chart-line"></i>
+        </div>
+        <div class="kpi-info">
+          <h3>Receitas</h3>
+          <p class="kpi-value">R$ {{ kpis.receitasMes | number:'1.0-0' }}</p>
+          <span class="kpi-growth positive">+8.2%</span>
+        </div>
+      </div>
+    </p-card>
+
+    <p-card class="kpi-card">
+      <div class="kpi-content">
+        <div class="kpi-icon lucro">
+          <i class="pi pi-chart-bar"></i>
+        </div>
+        <div class="kpi-info">
+          <h3>Lucro</h3>
+          <p class="kpi-value">R$ {{ kpis.lucroMes | number:'1.0-0' }}</p>
+          <span class="kpi-growth positive">+{{ kpis.margemLucro }}%</span>
+        </div>
+      </div>
+    </p-card>
+
+    <p-card class="kpi-card">
+      <div class="kpi-content">
+        <div class="kpi-icon clientes">
+          <i class="pi pi-users"></i>
+        </div>
+        <div class="kpi-info">
+          <h3>Clientes Ativos</h3>
+          <p class="kpi-value">{{ kpis.clientesAtivos | number }}</p>
+          <span class="kpi-growth positive">+3.5%</span>
+        </div>
+      </div>
+    </p-card>
+  </div>
+
+  <!-- Gráficos -->
+  <div class="charts-grid">
+    <div class="chart-container">
+      <p-card header="Evolução de Vendas">
+        <div class="chart-wrapper">
+          <p-chart 
+            type="line" 
+            [data]="vendasData" 
+            [options]="chartOptions"
+            height="300px">
+          </p-chart>
+        </div>
+      </p-card>
+    </div>
+
+    <div class="chart-container">
+      <p-card header="Receitas Mensais">
+        <div class="chart-wrapper">
+          <p-chart 
+            type="line" 
+            [data]="receitasData" 
+            [options]="chartOptions"
+            height="300px">
+          </p-chart>
+        </div>
+      </p-card>
+    </div>
+
+    <div class="chart-container">
+      <p-card header="Lucro Operacional">
+        <div class="chart-wrapper">
+          <p-chart 
+            type="line" 
+            [data]="lucroData" 
+            [options]="chartOptions"
+            height="300px">
+          </p-chart>
+        </div>
+      </p-card>
+    </div>
+
+    <div class="chart-container">
+      <p-card header="Crescimento de Clientes">
+        <div class="chart-wrapper">
+          <p-chart 
+            type="line" 
+            [data]="clientesData" 
+            [options]="chartOptions"
+            height="300px">
+          </p-chart>
+        </div>
+      </p-card>
+    </div>
+  </div>
+
+  <!-- Indicadores de Performance -->
+  <div class="performance-section">
+    <div class="performance-grid">
+      <div class="performance-card">
+        <div class="performance-header">
+          <h4>Taxa de Conversão</h4>
+        </div>
+        <div class="performance-content">
+          <p-knob 
+            value="68" 
+            [size]="100"
+            [readonly]="true"
+            valueColor="#4CAF50">
+          </p-knob>
+          <span class="performance-label">68%</span>
+        </div>
+      </div>
+
+      <div class="performance-card">
+        <div class="performance-header">
+          <h4>Satisfação do Cliente</h4>
+        </div>
+        <div class="performance-content">
+          <p-knob 
+            value="92" 
+            [size]="100"
+            [readonly]="true"
+            valueColor="#2196F3">
+          </p-knob>
+          <span class="performance-label">92%</span>
+        </div>
+      </div>
+
+      <div class="performance-card">
+        <div class="performance-header">
+          <h4>Eficiência Operacional</h4>
+        </div>
+        <div class="performance-content">
+          <p-knob 
+            value="85" 
+            [size]="100"
+            [readonly]="true"
+            valueColor="#FF9800">
+          </p-knob>
+          <span class="performance-label">85%</span>
+        </div>
+      </div>
+
+      <div class="performance-card">
+        <div class="performance-header">
+          <h4>Retenção de Clientes</h4>
+        </div>
+        <div class="performance-content">
+          <p-knob 
+            value="94" 
+            [size]="100"
+            [readonly]="true"
+            valueColor="#9C27B0">
+          </p-knob>
+          <span class="performance-label">94%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p-toast></p-toast> 

@@ -1,0 +1,42 @@
+.ponto-container {
+  padding: 1rem;
+  
+  .ponto-content {
+    margin-top: 1rem;
+    
+    ::ng-deep .p-tabview {
+      .p-tabview-nav {
+        background: #f8f9fa;
+        border-bottom: 1px solid #dee2e6;
+        
+        li {
+          .p-tabview-nav-link {
+            padding: 1rem 1.5rem;
+            font-weight: 500;
+            color: #495057;
+            
+            &:hover {
+              background: #e9ecef;
+              border-color: #dee2e6;
+            }
+          }
+          
+          &.p-highlight {
+            .p-tabview-nav-link {
+              background: #007bff;
+              color: white;
+              border-color: #007bff;
+            }
+          }
+        }
+      }
+      
+      .p-tabview-panels {
+        padding: 1.5rem;
+        background: white;
+        border: 1px solid #dee2e6;
+        border-top: none;
+      }
+    }
+  }
+} 

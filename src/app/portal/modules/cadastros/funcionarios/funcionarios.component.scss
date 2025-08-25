@@ -1,0 +1,122 @@
+:host ::ng-deep .p-datatable .p-datatable-thead > tr > th {
+    background-color: var(--surface-card);
+    white-space: nowrap;
+}
+
+.column-config-button {
+    background: none;
+    border: none;
+    color: var(--text-color-secondary);
+    cursor: pointer;
+    padding: 0.5rem;
+}
+
+.column-config-button:hover {
+    color: var(--text-color);
+}
+
+.p-overlaypanel .p-overlaypanel-content {
+    padding: 1.5rem;
+}
+
+.status-badge {
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    
+    &.status-ativo {
+        background-color: #d4edda;
+        color: #155724;
+    }
+    
+    &.status-inativo {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+    
+    &.status-ferias {
+        background-color: #fff3cd;
+        color: #856404;
+    }
+    
+    &.status-licenca {
+        background-color: #d1ecf1;
+        color: #0c5460;
+    }
+    
+    &.status-demitido {
+        background-color: #e2e3e5;
+        color: #383d41;
+    }
+    
+    &.status-outro {
+        background-color: #f8f9fa;
+        color: #6c757d;
+    }
+}
+
+.actions-table {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.field {
+    margin-bottom: 1rem;
+    
+    .p-float-label {
+        width: 100%;
+        
+        input, p-calendar, p-dropdown, p-inputNumber, p-inputtextarea {
+            width: 100%;
+        }
+    }
+}
+
+// Estilos para o tabpanel
+:host ::ng-deep .p-tabview {
+    .p-tabview-nav {
+        margin-bottom: 1rem;
+        
+        .p-tabview-nav-link {
+            padding: 0.75rem 1rem;
+            font-weight: 500;
+            
+            .p-tabview-nav-icon {
+                margin-right: 0.5rem;
+            }
+        }
+    }
+    
+    .p-tabview-panels {
+        padding: 0;
+    }
+}
+
+// Responsividade
+@media (max-width: 768px) {
+    .field.grid {
+        flex-direction: column;
+        
+        > div {
+            flex: none;
+            width: 100%;
+        }
+    }
+    
+    :host ::ng-deep .p-tabview {
+        .p-tabview-nav {
+            flex-direction: column;
+            
+            .p-tabview-nav-link {
+                margin-bottom: 0.25rem;
+            }
+        }
+    }
+}
+
+@media (max-width: 480px) {
+    .field {
+        margin-bottom: 0.75rem;
+    }
+} 

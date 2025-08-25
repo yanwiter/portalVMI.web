@@ -1,0 +1,900 @@
+<app-title-header title="Gestão de Aditivos"></app-title-header>
+
+<div class="filters">
+    <p-accordion class="p-accordion-custom-header">
+        <p-accordionTab>
+            <ng-template pTemplate="header">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <span>{{ getFiltrosHeader() }}</span>
+
+                    @if (getActiveFilters().length > 0) {
+                    <ng-container>
+                        @for (filter of getActiveFilters(); track filter) {
+                        <p-tag [value]="filter.label + ': ' + filter.value" severity="contrast" styleClass="mr-1">
+                        </p-tag>
+                        }
+                    </ng-container>
+                    }
+                </div>
+            </ng-template>
+            <div class="itens-filters">
+
+                <p-floatLabel>
+                    <input pInputText id="codigoContrato" [(ngModel)]="filtros.codigoContrato" name="codigoContrato" />
+                    <label for="codigoContrato">Código Contrato</label>
+                </p-floatLabel>
+
+                <p-floatLabel>
+                    <p-dropdown id="tipoContrato" appendTo="body" [options]="statusOptions"
+                        [(ngModel)]="filtros.tipoContrato" name="tipoContrato">
+                    </p-dropdown>
+                    <label for="tipoContrato">Tipo Contrato</label>
+                </p-floatLabel>
+
+                <p-floatLabel>
+                    <p-inputNumber 
+                        id="valorContrato"
+                        [(ngModel)]="filtros.valorContrato"
+                        name="valorContrato"
+                        mode="currency"
+                        currency="BRL"
+                        locale="pt-BR"
+                        inputStyle="text-align: right"
+                        (onInput)="onValorContratoChange()">
+                    </p-inputNumber>
+                    <label for="valorContrato">Valor</label>
+                </p-floatLabel>
+
+                <p-floatLabel>
+                    <p-calendar id="dataInicio" [showTime]="false" [(ngModel)]="filtros.dataInicio" name="dataInicio"
+                        dateFormat="dd/mm/yy">
+                    </p-calendar>
+                    <label for="dataInicio">Data Início</label>
+                </p-floatLabel>
+
+                <p-floatLabel>
+                    <p-calendar id="dataFim" [showTime]="false" [(ngModel)]="filtros.dataFim" name="dataFim"
+                        dateFormat="dd/mm/yy">
+                    </p-calendar>
+                    <label for="dataFim">Data Término</label>
+                </p-floatLabel>
+
+                <p-floatLabel>
+                    <p-dropdown id="statusTeste" appendTo="body" [options]="statusOptions"
+                        [(ngModel)]="filtros.statusTeste" name="statusTeste">
+                    </p-dropdown>
+                    <label for="statusProduto">Situação Teste</label>
+                </p-floatLabel>
+            </div>
+
+            <div class="actions">
+                <button pButton [outlined]="true" [raised]="true" severity="warning" label="Limpar" icon="pi pi-times"
+                    (click)="limparFiltros()">
+                </button>
+                <button pButton [outlined]="true" [raised]="true" severity="success" label="Filtrar" icon="pi pi-filter"
+                    (click)="filtrar()">
+                </button>
+            </div>
+        </p-accordionTab>
+    </p-accordion>
+</div>
+
+<div class="tables">
+    <p-table [value]="acessos" [paginator]="true" [lazy]="true" [showCurrentPageReport]="true" [rows]="rows"
+        [resizableColumns]="true" [totalRecords]="totalRecords" [rowsPerPageOptions]="rowsPerPage"
+        styleClass="p-datatable-striped p-datatable-gridlines" (onPage)="handlePageChange($event)"
+        (onLazyLoad)="loadTableData($event)" dataKey="id">
+        <ng-template pTemplate="caption">
+            <div style="display: flex; justify-content: flex-end; align-items: center;">
+                <div class="actions">
+                    <p-button icon="pi pi-plus" label="Incluir Aditivo" class="exportButton" (onClick)="showDialog()" />
+                </div>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+            <tr>
+                <th id="codigo">Código</th>
+                <th id="tipo">Tipo</th>
+                <th id="valor">Valor</th>
+                <th id="dataInicio">Data Início</th>
+                <th id="dataTermino">Data Término</th>
+                <th id="status">Status</th>
+                <th id="acao">Ações</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-acesso let-rowIndex="rowIndex">
+            <tr>
+                <td>
+                    {{ acesso.nome }}
+                </td>
+                <td>
+                    {{ acesso.nome }}
+                </td>
+                <td>
+                    {{ acesso.nome }}
+                </td>
+                <td>
+                    {{ acesso.nomeCriadorUsuario }}
+                </td>
+                <td>
+                    {{ acesso.dataCriacao }}
+                </td>
+                <td>
+                    <p-tag [value]="acesso.status ? 'Ativo' : 'Inativo'"
+                        [severity]="acesso.status ? 'success' : 'danger'" />
+                </td>
+                <td>
+                    <div class="actions-table">
+                        <button pButton [outlined]="true" [raised]="true" severity="success" icon="pi pi-file-pdf"
+                            label="Gerar PDF" (click)="iniciarEdicao(acesso, rowIndex)">
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+
+<!-- Modal para incluir Aditivo -->
+<p-dialog header="Incluir Aditivo" [(visible)]="displayModal" [style]="{width: '55vw', height: '53vh'}"
+    [modal]="true">
+    <p-tabView>
+        <p-tabPanel header="Identificação do Produto">
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel>
+                        <input id="codigoProduto" type="text" pInputText style="width: 100%;">
+                        <label for="codigoProduto">Código Produto</label>
+                    </p-floatLabel>
+                </div>
+
+                <div style="flex: 1;">
+                    <p-floatLabel>
+                        <input id="nomeProduto" type="text" pInputText style="width: 100%;">
+                        <label for="nomeProduto">Nome Produto</label>
+                    </p-floatLabel>
+                </div>
+
+                <div style="flex: 1;">
+                    <p-floatLabel>
+                        <input id="numeroSerieLote" type="text" pInputText style="width: 100%;">
+                        <label for="numeroSerieLote">Número de Série/Lote</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-calendar id="dataTeste" [showTime]="false" [(ngModel)]="dataExpedicao" name="dataCriacao"
+                            appendTo="body" dateFormat="dd/mm/yy" [ngStyle]="{'width': '100%'}">
+                        </p-calendar>
+                        <label for="dataTeste">Data Teste</label>
+                    </p-floatLabel>
+                </div>
+
+                <div style="flex: 1;">
+                    <p-floatLabel>
+                        <input id="operadorResponsavel" type="text" pInputText style="width: 100%;">
+                        <label for="operadorResponsavel">Operador Responsável</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+        </p-tabPanel>
+
+        <p-tabPanel header="Itens de Verificação">
+            <h4>Inspeção Visual</h4>
+            <div class="checklist-container" style="margin-top: 2rem; display: flex; flex-wrap: wrap; gap: 2rem;">
+                <div class="checklist-item"
+                    style="flex: 1 1 calc(50% - 1rem); min-width: 300px; margin-bottom: 1.5rem;">
+                    <h5>1. Produto sem danos físicos (riscos, rachaduras, peças quebradas).</h5>
+                    <div style="display: flex; gap: 1.5rem;">
+                        <div class="flex align-items-center gap-3">
+                            <p-radioButton name="produtoSemDanosFisicos" value="conforme"
+                                [(ngModel)]="produtoSemDanosFisicos" inputId="produtoSemDanosFisicos1">
+                            </p-radioButton>
+                            <label for="produtoSemDanosFisicos" class="p-radiobutton-label">Conforme</label>
+                        </div>
+                        <div class="flex align-items-center gap-3">
+                            <p-radioButton name="produtoSemDanosFisicos" value="naoConforme"
+                                [(ngModel)]="produtoSemDanosFisicos" inputId="produtoSemDanosFisicos2">
+                            </p-radioButton>
+                            <label for="produtoSemDanosFisicos" class="p-radiobutton-label">Não Conforme</label>
+                        </div>
+                        <div class="flex align-items-center gap-3">
+                            <p-radioButton name="embalagem" value="naoAplica" [(ngModel)]="produtoSemDanosFisicos"
+                                inputId="produtoSemDanosFisicos3">
+                            </p-radioButton>
+                            <label for="embalagem3" class="p-radiobutton-label">Não se aplica</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checklist-item"
+                    style="flex: 1 1 calc(50% - 1rem); min-width: 300px; margin-bottom: 1.5rem;">
+                    <h5>2. Etiquetas e marcações corretas e legíveis.</h5>
+                    <div style="display: flex; gap: 1.5rem;">
+                        <div class="flex align-items-center gap-3">
+                            <p-radioButton name="etiquetasCorretas" value="conforme" [(ngModel)]="etiquetasCorretas"
+                                inputId="etiquetasCorretas1"></p-radioButton>
+                            <label for="etiquetasCorretas1" class="p-radiobutton-label">Conforme</label>
+                        </div>
+                        <div class="flex align-items-center gap-3">
+                            <p-radioButton name="etiquetasCorretas" value="naoConforme" [(ngModel)]="etiquetasCorretas"
+                                inputId="etiquetasCorretas2"></p-radioButton>
+                            <label for="etiquetasCorretas2" class="p-radiobutton-label">Não Conforme</label>
+                        </div>
+                        <div class="flex align-items-center gap-3">
+                            <p-radioButton name="etiquetasCorretas" value="naoAplica" [(ngModel)]="etiquetasCorretas"
+                                inputId="etiquetasCorretas3"></p-radioButton>
+                            <label for="etiquetasCorretas3" class="p-radiobutton-label">Não se aplica</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="checklist-container" style="margin-top: 2rem; display: flex; flex-wrap: wrap; gap: 2rem;">
+                <div class="checklist-item"
+                    style="flex: 1 1 calc(50% - 1rem); min-width: 300px; margin-bottom: 1.5rem;">
+                    <h5>3. Cores e acabamentos conforme a especificação.</h5>
+                    <div style="display: flex; gap: 1.5rem;">
+                        <div class="flex align-items-center gap-3">
+                            <p-radioButton name="coresAcabamentoConforme" value="conforme"
+                                [(ngModel)]="coresAcabamentoConforme" inputId="coresAcabamentoConforme1">
+                            </p-radioButton>
+                            <label for="coresAcabamentoConforme1" class="p-radiobutton-label">Conforme</label>
+                        </div>
+                        <div class="flex align-items-center gap-3">
+                            <p-radioButton name="coresAcabamentoConforme" value="naoConforme"
+                                [(ngModel)]="coresAcabamentoConforme" inputId="coresAcabamentoConforme2">
+                            </p-radioButton>
+                            <label for="coresAcabamentoConforme2" class="p-radiobutton-label">Não Conforme</label>
+                        </div>
+                        <div class="flex align-items-center gap-3">
+                            <p-radioButton name="coresAcabamentoConforme" value="naoAplica"
+                                [(ngModel)]="coresAcabamentoConforme" inputId="coresAcabamentoConforme3">
+                            </p-radioButton>
+                            <label for="coresAcabamentoConforme3" class="p-radiobutton-label">Não se aplica</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h4>Testes Funcionais</h4>
+            <div class="checklist-container" style="margin-top: 2rem; display: flex; flex-wrap: wrap; gap: 2rem;">
+                <div class="checklist-item"
+                    style="flex: 1 1 calc(50% - 1rem); min-width: 300px; margin-bottom: 1.5rem;">
+                    <h5>4. Ligação e funcionamento básico do produto verificados.</h5>
+                    <div style="display: flex; gap: 1.5rem;">
+                        <div class="flex align-items-center gap-3">
+                            <p-radioButton name="ligacaoFuncionamentoVerificados" value="conforme"
+                                [(ngModel)]="ligacaoFuncionamentoVerificados"
+                                inputId="ligacaoFuncionamentoVerificados1">
+                            </p-radioButton>
+                            <label for="ligacaoFuncionamentoVerificados1" class="p-radiobutton-label">Conforme</label>
+                        </div>
+                        <div class="flex align-items-center gap-3">
+                            <p-radioButton name="ligacaoFuncionamentoVerificados" value="naoConforme"
+                                [(ngModel)]="ligacaoFuncionamentoVerificados"
+                                inputId="ligacaoFuncionamentoVerificados2">
+                            </p-radioButton>
+                            <label for="ligacaoFuncionamentoVerificados2" class="p-radiobutton-label">Não
+                                Conforme</label>
+                        </div>
+                        <div class="flex align-items-center gap-3">
+                            <p-radioButton name="ligacaoFuncionamentoVerificados" value="naoAplica"
+                                [(ngModel)]="ligacaoFuncionamentoVerificados"
+                                inputId="ligacaoFuncionamentoVerificados3">
+                            </p-radioButton>
+                            <label for="ligacaoFuncionamentoVerificados3" class="p-radiobutton-label">Não se
+                                aplica</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checklist-item"
+                    style="flex: 1 1 calc(50% - 1rem); min-width: 300px; margin-bottom: 1.5rem;">
+                    <h5>5. Teste de todos os botões, sensores e comandos realizado.</h5>
+                    <div style="display: flex; gap: 1.5rem;">
+                        <div class="flex align-items-center gap-3">
+                            <p-radioButton name="estadoProduto" value="conforme" [(ngModel)]="testeTodosComponentes"
+                                inputId="testeTodosComponentes">
+                            </p-radioButton>
+                            <label for="testeTodosComponentes1" class="p-radiobutton-label">Conforme</label>
+                        </div>
+                        <div class="flex align-items-center gap-3">
+                            <p-radioButton name="testeTodosComponentes" value="naoConforme"
+                                [(ngModel)]="testeTodosComponentes" inputId="testeTodosComponentes2">
+                            </p-radioButton>
+                            <label for="testeTodosComponentes2" class="p-radiobutton-label">Não Conforme</label>
+                        </div>
+                        <div class="flex align-items-center gap-3">
+                            <p-radioButton name="testeTodosComponentes" value="naoAplica"
+                                [(ngModel)]="testeTodosComponentes" inputId="testeTodosComponentes3">
+                            </p-radioButton>
+                            <label for="testeTodosComponentes3" class="p-radiobutton-label">Não se aplica</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="checklist-container" style="margin-top: 2rem; display: flex; flex-wrap: wrap; gap: 2rem;">
+                <div class="checklist-item"
+                    style="flex: 1 1 calc(50% - 1rem); min-width: 300px; margin-bottom: 1.5rem;">
+                    <h5>6. Verificação de desempenho dentro dos padrões estabelecidos.</h5>
+                    <div style="display: flex; gap: 1.5rem;">
+                        <div class="flex align-items-center gap-3">
+                            <p-radioButton name="verificacaoDesempenhoPadroes" value="conforme"
+                                [(ngModel)]="verificacaoDesempenhoPadroes" inputId="verificacaoDesempenhoPadroes1">
+                            </p-radioButton>
+                            <label for="verificacaoDesempenhoPadroes1" class="p-radiobutton-label">Conforme</label>
+                        </div>
+                        <div class="flex align-items-center gap-3">
+                            <p-radioButton name="verificacaoDesempenhoPadroes" value="naoConforme"
+                                [(ngModel)]="verificacaoDesempenhoPadroes" inputId="verificacaoDesempenhoPadroes2">
+                            </p-radioButton>
+                            <label for="verificacaoDesempenhoPadroes2" class="p-radiobutton-label">Não Conforme</label>
+                        </div>
+                        <div class="flex align-items-center gap-3">
+                            <p-radioButton name="verificacaoDesempenhoPadroes" value="naoAplica"
+                                [(ngModel)]="verificacaoDesempenhoPadroes" inputId="verificacaoDesempenhoPadroes3">
+                            </p-radioButton>
+                            <label for="verificacaoDesempenhoPadroes3" class="p-radiobutton-label">Não se aplica</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h4>Segurança e Conformidade</h4>
+            <div class="checklist-container" style="margin-top: 2rem; display: flex; flex-wrap: wrap; gap: 2rem;">
+                <div class="checklist-item"
+                    style="flex: 1 1 calc(50% - 1rem); min-width: 300px; margin-bottom: 1.5rem;">
+                    <h5>7. Verificação de componentes críticos para segurança.</h5>
+                    <div style="display: flex; gap: 1.5rem;">
+                        <div class="flex align-items-center gap-3">
+                            <p-radioButton name="verificacaoComponentesCriticos" value="conforme"
+                                [(ngModel)]="verificacaoComponentesCriticos" inputId="verificacaoComponentesCriticos1">
+                            </p-radioButton>
+                            <label for="verificacaoComponentesCriticos1" class="p-radiobutton-label">Conforme</label>
+                        </div>
+                        <div class="flex align-items-center gap-3">
+                            <p-radioButton name="verificacaoComponentesCriticos" value="naoConforme"
+                                [(ngModel)]="verificacaoComponentesCriticos" inputId="verificacaoComponentesCriticos2">
+                            </p-radioButton>
+                            <label for="verificacaoComponentesCriticos2" class="p-radiobutton-label">Não
+                                Conforme</label>
+                        </div>
+                        <div class="flex align-items-center gap-3">
+                            <p-radioButton name="verificacaoComponentesCriticos" value="naoAplica"
+                                [(ngModel)]="verificacaoComponentesCriticos" inputId="verificacaoComponentesCriticos3">
+                            </p-radioButton>
+                            <label for="embalagem3" class="p-radiobutton-label">Não se aplica</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checklist-item"
+                    style="flex: 1 1 calc(50% - 1rem); min-width: 300px; margin-bottom: 1.5rem;">
+                    <h5>8. Teste de isolamento elétrico (se aplicável).</h5>
+                    <div style="display: flex; gap: 1.5rem;">
+                        <div class="flex align-items-center gap-3">
+                            <p-radioButton name="testeIsolamentoEletrico" value="conforme"
+                                [(ngModel)]="testeIsolamentoEletrico"
+                                inputId="testeIsolamentoEletrico1"></p-radioButton>
+                            <label for="testeIsolamentoEletrico1" class="p-radiobutton-label">Conforme</label>
+                        </div>
+                        <div class="flex align-items-center gap-3">
+                            <p-radioButton name="testeIsolamentoEletrico" value="naoConforme"
+                                [(ngModel)]="testeIsolamentoEletrico"
+                                inputId="testeIsolamentoEletrico2"></p-radioButton>
+                            <label for="testeIsolamentoEletrico2" class="p-radiobutton-label">Não Conforme</label>
+                        </div>
+                        <div class="flex align-items-center gap-3">
+                            <p-radioButton name="testeIsolamentoEletrico" value="naoAplica"
+                                [(ngModel)]="testeIsolamentoEletrico"
+                                inputId="testeIsolamentoEletrico3"></p-radioButton>
+                            <label for="testeIsolamentoEletrico3" class="p-radiobutton-label">Não se aplica</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="checklist-container" style="margin-top: 2rem; display: flex; flex-wrap: wrap; gap: 2rem;">
+                <div class="checklist-item"
+                    style="flex: 1 1 calc(50% - 1rem); min-width: 300px; margin-bottom: 1.5rem;">
+                    <h5>9. Verificação de selos e certificações obrigatórias.</h5>
+                    <div style="display: flex; gap: 1.5rem;">
+                        <div class="flex align-items-center gap-3">
+                            <p-radioButton name="verificacaoSelosCertificacoes" value="conforme"
+                                [(ngModel)]="verificacaoSelosCertificacoes" inputId="verificacaoSelosCertificacoes1">
+                            </p-radioButton>
+                            <label for="verificacaoSelosCertificacoes1" class="p-radiobutton-label">Conforme</label>
+                        </div>
+                        <div class="flex align-items-center gap-3">
+                            <p-radioButton name="verificacaoSelosCertificacoes" value="naoConforme"
+                                [(ngModel)]="verificacaoSelosCertificacoes" inputId="verificacaoSelosCertificacoes2">
+                            </p-radioButton>
+                            <label for="verificacaoSelosCertificacoes2" class="p-radiobutton-label">Não Conforme</label>
+                        </div>
+                        <div class="flex align-items-center gap-3">
+                            <p-radioButton name="verificacaoSelosCertificacoes" value="naoAplica"
+                                [(ngModel)]="verificacaoSelosCertificacoes" inputId="verificacaoSelosCertificacoes3">
+                            </p-radioButton>
+                            <label for="verificacaoSelosCertificacoes3" class="p-radiobutton-label">Não se
+                                aplica</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h4>Testes específicos do Produto</h4>
+            <div class="checklist-container" style="margin-top: 2rem; display: flex; flex-wrap: wrap; gap: 2rem;">
+                <div class="checklist-item"
+                    style="flex: 1 1 calc(50% - 1rem); min-width: 300px; margin-bottom: 1.5rem;">
+                    <h5>10. Parâmetros técnicos atendem às especificações (voltagem, resistência, temperatura).</h5>
+                    <div style="display: flex; gap: 1.5rem;">
+                        <div class="flex align-items-center gap-3">
+                            <p-radioButton name="atendemEspecificacoes" value="conforme"
+                                [(ngModel)]="atendemEspecificacoes" inputId="atendemEspecificacoes1">
+                            </p-radioButton>
+                            <label for="atendemEspecificacoes1" class="p-radiobutton-label">Conforme</label>
+                        </div>
+                        <div class="flex align-items-center gap-3">
+                            <p-radioButton name="atendemEspecificacoes" value="naoConforme"
+                                [(ngModel)]="atendemEspecificacoes" inputId="atendemEspecificacoes2">
+                            </p-radioButton>
+                            <label for="atendemEspecificacoes2" class="p-radiobutton-label">Não Conforme</label>
+                        </div>
+                        <div class="flex align-items-center gap-3">
+                            <p-radioButton name="atendemEspecificacoes" value="naoAplica"
+                                [(ngModel)]="atendemEspecificacoes" inputId="atendemEspecificacoes3">
+                            </p-radioButton>
+                            <label for="atendemEspecificacoes3" class="p-radiobutton-label">Não se aplica</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checklist-item"
+                    style="flex: 1 1 calc(50% - 1rem); min-width: 300px; margin-bottom: 1.5rem;">
+                    <h5>11. Teste de conectividade (Bluetooth, Wi-Fi, cabos, etc.) realizado.</h5>
+                    <div style="display: flex; gap: 1.5rem;">
+                        <div class="flex align-items-center gap-3">
+                            <p-radioButton name="testeConectividade" value="conforme" [(ngModel)]="testeConectividade"
+                                inputId="testeConectividade1"></p-radioButton>
+                            <label for="testeConectividade1" class="p-radiobutton-label">Conforme</label>
+                        </div>
+                        <div class="flex align-items-center gap-3">
+                            <p-radioButton name="testeConectividade" value="naoConforme"
+                                [(ngModel)]="testeConectividade" inputId="testeConectividade2"></p-radioButton>
+                            <label for="testeConectividade2" class="p-radiobutton-label">Não Conforme</label>
+                        </div>
+                        <div class="flex align-items-center gap-3">
+                            <p-radioButton name="testeConectividade" value="naoAplica" [(ngModel)]="testeConectividade"
+                                inputId="testeConectividade3"></p-radioButton>
+                            <label for="testeConectividade3" class="p-radiobutton-label">Não se aplica</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="checklist-container" style="margin-top: 2rem; display: flex; flex-wrap: wrap; gap: 2rem;">
+                <div class="checklist-item"
+                    style="flex: 1 1 calc(50% - 1rem); min-width: 300px; margin-bottom: 1.5rem;">
+                    <h5>12. Checagem de funcionalidades adicionais (se aplicável).</h5>
+                    <div style="display: flex; gap: 1.5rem;">
+                        <div class="flex align-items-center gap-3">
+                            <p-radioButton name="checagemFuncionalidades" value="conforme"
+                                [(ngModel)]="checagemFuncionalidades" inputId="checagemFuncionalidades1">
+                            </p-radioButton>
+                            <label for="checagemFuncionalidades1" class="p-radiobutton-label">Conforme</label>
+                        </div>
+                        <div class="flex align-items-center gap-3">
+                            <p-radioButton name="checagemFuncionalidades" value="naoConforme"
+                                [(ngModel)]="checagemFuncionalidades" inputId="checagemFuncionalidades2">
+                            </p-radioButton>
+                            <label for="checagemFuncionalidades2" class="p-radiobutton-label">Não Conforme</label>
+                        </div>
+                        <div class="flex align-items-center gap-3">
+                            <p-radioButton name="checagemFuncionalidades" value="naoAplica"
+                                [(ngModel)]="checagemFuncionalidades" inputId="checagemFuncionalidades3">
+                            </p-radioButton>
+                            <label for="checagemFuncionalidades3" class="p-radiobutton-label">Não se aplica</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </p-tabPanel>
+
+        @if (hasNaoConforme) {
+            <p-tabPanel header="Registro de Não Conformidade">
+
+                @if (produtoSemDanosFisicos == 'naoConforme') {
+                <h5>1. Produto sem danos físicos (riscos, rachaduras, peças quebradas).</h5>
+                <div class="field grid"
+                    style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 49%;">
+                    <div style="flex: 1;">
+                        <p-floatLabel>
+                            <input id="responsavelAcaoCorretiva" type="text" pInputText style="width: 100%;">
+                            <label for="responsavelAcaoCorretiva">Responsável pela Ação Corretiva</label>
+                        </p-floatLabel>
+                    </div>
+                </div>
+
+                <div class="field grid"
+                    style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                    <div style="flex: 1;">
+                        <p-floatLabel>
+                            <textarea id="descricaoProblema" type="text" pInputText style="width: 100%;"></textarea>
+                            <label for="descricaoProblema">Descrição do Problema</label>
+                        </p-floatLabel>
+                    </div>
+
+                    <div style="flex: 1;">
+                        <p-floatLabel>
+                            <textarea id="acaoCorretivaSugerida" type="text" pInputText style="width: 100%;"></textarea>
+                            <label for="acaoCorretivaSugerida">Ação Corretiva Sugerida</label>
+                        </p-floatLabel>
+                    </div>
+                </div>
+                }
+
+                @if (etiquetasCorretas == 'naoConforme') {
+                <h5>2. Etiquetas e marcações corretas e legíveis.</h5>
+                <div class="field grid"
+                    style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 49%;">
+                    <div style="flex: 1;">
+                        <p-floatLabel>
+                            <input id="responsavelAcaoCorretiva2" type="text" pInputText style="width: 100%;">
+                            <label for="responsavelAcaoCorretiva2">Responsável pela Ação Corretiva</label>
+                        </p-floatLabel>
+                    </div>
+                </div>
+                <div class="field grid"
+                    style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                    <div style="flex: 1;">
+                        <p-floatLabel>
+                            <textarea id="descricaoProblema2" type="text" pInputText style="width: 100%;"></textarea>
+                            <label for="descricaoProblema2">Descrição do Problema</label>
+                        </p-floatLabel>
+                    </div>
+                    <div style="flex: 1;">
+                        <p-floatLabel>
+                            <textarea id="acaoCorretivaSugerida2" type="text" pInputText style="width: 100%;"></textarea>
+                            <label for="acaoCorretivaSugerida2">Ação Corretiva Sugerida</label>
+                        </p-floatLabel>
+                    </div>
+                </div>
+                }
+
+                <!-- Item 3 -->
+                @if (coresAcabamentoConforme == 'naoConforme') {
+                <h5>3. Cores e acabamentos conforme a especificação.</h5>
+                <div class="field grid"
+                    style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 49%;">
+                    <div style="flex: 1;">
+                        <p-floatLabel>
+                            <input id="responsavelAcaoCorretiva3" type="text" pInputText style="width: 100%;">
+                            <label for="responsavelAcaoCorretiva3">Responsável pela Ação Corretiva</label>
+                        </p-floatLabel>
+                    </div>
+                </div>
+                <div class="field grid"
+                    style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                    <div style="flex: 1;">
+                        <p-floatLabel>
+                            <textarea id="descricaoProblema3" type="text" pInputText style="width: 100%;"></textarea>
+                            <label for="descricaoProblema3">Descrição do Problema</label>
+                        </p-floatLabel>
+                    </div>
+                    <div style="flex: 1;">
+                        <p-floatLabel>
+                            <textarea id="acaoCorretivaSugerida3" type="text" pInputText style="width: 100%;"></textarea>
+                            <label for="acaoCorretivaSugerida3">Ação Corretiva Sugerida</label>
+                        </p-floatLabel>
+                    </div>
+                </div>
+                }
+
+                <!-- Item 4 -->
+                @if (ligacaoFuncionamentoVerificados == 'naoConforme') {
+                <h5>4. Ligação e funcionamento básico do produto verificados.</h5>
+                <div class="field grid"
+                    style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 49%;">
+                    <div style="flex: 1;">
+                        <p-floatLabel>
+                            <input id="responsavelAcaoCorretiva4" type="text" pInputText style="width: 100%;">
+                            <label for="responsavelAcaoCorretiva4">Responsável pela Ação Corretiva</label>
+                        </p-floatLabel>
+                    </div>
+                </div>
+                <div class="field grid"
+                    style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                    <div style="flex: 1;">
+                        <p-floatLabel>
+                            <textarea id="descricaoProblema4" type="text" pInputText style="width: 100%;"></textarea>
+                            <label for="descricaoProblema4">Descrição do Problema</label>
+                        </p-floatLabel>
+                    </div>
+                    <div style="flex: 1;">
+                        <p-floatLabel>
+                            <textarea id="acaoCorretivaSugerida4" type="text" pInputText style="width: 100%;"></textarea>
+                            <label for="acaoCorretivaSugerida4">Ação Corretiva Sugerida</label>
+                        </p-floatLabel>
+                    </div>
+                </div>
+                }
+
+                <!-- Item 5 -->
+                @if (testeTodosComponentes == 'naoConforme') {
+                <h5>5. Teste de todos os botões, sensores e comandos realizado.</h5>
+                <div class="field grid"
+                    style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 49%;">
+                    <div style="flex: 1;">
+                        <p-floatLabel>
+                            <input id="responsavelAcaoCorretiva5" type="text" pInputText style="width: 100%;">
+                            <label for="responsavelAcaoCorretiva5">Responsável pela Ação Corretiva</label>
+                        </p-floatLabel>
+                    </div>
+                </div>
+                <div class="field grid"
+                    style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                    <div style="flex: 1;">
+                        <p-floatLabel>
+                            <textarea id="descricaoProblema5" type="text" pInputText style="width: 100%;"></textarea>
+                            <label for="descricaoProblema5">Descrição do Problema</label>
+                        </p-floatLabel>
+                    </div>
+                    <div style="flex: 1;">
+                        <p-floatLabel>
+                            <textarea id="acaoCorretivaSugerida5" type="text" pInputText style="width: 100%;"></textarea>
+                            <label for="acaoCorretivaSugerida5">Ação Corretiva Sugerida</label>
+                        </p-floatLabel>
+                    </div>
+                </div>
+                }
+
+                @if (verificacaoDesempenhoPadroes == 'naoConforme') {
+                <h5>6. Verificação de desempenho dentro dos padrões estabelecidos.</h5>
+                <div class="field grid"
+                    style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 49%;">
+                    <div style="flex: 1;">
+                        <p-floatLabel>
+                            <input id="responsavelAcaoCorretiva" type="text" pInputText style="width: 100%;">
+                            <label for="responsavelAcaoCorretiva">Responsável pela Ação Corretiva</label>
+                        </p-floatLabel>
+                    </div>
+                </div>
+                <div class="field grid"
+                    style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                    <div style="flex: 1;">
+                        <p-floatLabel>
+                            <textarea id="descricaoProblema" type="text" pInputText style="width: 100%;"></textarea>
+                            <label for="descricaoProblema">Descrição do Problema</label>
+                        </p-floatLabel>
+                    </div>
+
+                    <div style="flex: 1;">
+                        <p-floatLabel>
+                            <textarea id="acaoCorretivaSugerida" type="text" pInputText style="width: 100%;"></textarea>
+                            <label for="acaoCorretivaSugerida">Ação Corretiva Sugerida</label>
+                        </p-floatLabel>
+                    </div>
+                </div>
+                }
+
+                @if (verificacaoComponentesCriticos == 'naoConforme') {
+                <h5>7. Verificação de componentes críticos para segurança.</h5>
+                <div class="field grid"
+                    style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 49%;">
+                    <div style="flex: 1;">
+                        <p-floatLabel>
+                            <input id="responsavelAcaoCorretiva" type="text" pInputText style="width: 100%;">
+                            <label for="responsavelAcaoCorretiva">Responsável pela Ação Corretiva</label>
+                        </p-floatLabel>
+                    </div>
+                </div>
+                <div class="field grid"
+                    style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                    <div style="flex: 1;">
+                        <p-floatLabel>
+                            <textarea id="descricaoProblema" type="text" pInputText style="width: 100%;"></textarea>
+                            <label for="descricaoProblema">Descrição do Problema</label>
+                        </p-floatLabel>
+                    </div>
+
+                    <div style="flex: 1;">
+                        <p-floatLabel>
+                            <textarea id="acaoCorretivaSugerida" type="text" pInputText style="width: 100%;"></textarea>
+                            <label for="acaoCorretivaSugerida">Ação Corretiva Sugerida</label>
+                        </p-floatLabel>
+                    </div>
+                </div>
+                }
+
+                @if (testeIsolamentoEletrico == 'naoConforme') {
+                <h5>8. Teste de isolamento elétrico.</h5>
+                <div class="field grid"
+                    style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 49%;">
+                    <div style="flex: 1;">
+                        <p-floatLabel>
+                            <input id="responsavelAcaoCorretiva" type="text" pInputText style="width: 100%;">
+                            <label for="responsavelAcaoCorretiva">Responsável pela Ação Corretiva</label>
+                        </p-floatLabel>
+                    </div>
+                </div>
+                <div class="field grid"
+                    style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                    <div style="flex: 1;">
+                        <p-floatLabel>
+                            <textarea id="descricaoProblema" type="text" pInputText style="width: 100%;"></textarea>
+                            <label for="descricaoProblema">Descrição do Problema</label>
+                        </p-floatLabel>
+                    </div>
+
+                    <div style="flex: 1;">
+                        <p-floatLabel>
+                            <textarea id="acaoCorretivaSugerida" type="text" pInputText style="width: 100%;"></textarea>
+                            <label for="acaoCorretivaSugerida">Ação Corretiva Sugerida</label>
+                        </p-floatLabel>
+                    </div>
+                </div>
+                }
+
+                @if (verificacaoSelosCertificacoes == 'naoConforme') {
+                <h5>9. Verificação de selos e certificações obrigatórias.</h5>
+                <div class="field grid"
+                    style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 49%;">
+                    <div style="flex: 1;">
+                        <p-floatLabel>
+                            <input id="responsavelAcaoCorretiva" type="text" pInputText style="width: 100%;">
+                            <label for="responsavelAcaoCorretiva">Responsável pela Ação Corretiva</label>
+                        </p-floatLabel>
+                    </div>
+                </div>
+                <div class="field grid"
+                    style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                    <div style="flex: 1;">
+                        <p-floatLabel>
+                            <textarea id="descricaoProblema" type="text" pInputText style="width: 100%;"></textarea>
+                            <label for="descricaoProblema">Descrição do Problema</label>
+                        </p-floatLabel>
+                    </div>
+
+                    <div style="flex: 1;">
+                        <p-floatLabel>
+                            <textarea id="acaoCorretivaSugerida" type="text" pInputText style="width: 100%;"></textarea>
+                            <label for="acaoCorretivaSugerida">Ação Corretiva Sugerida</label>
+                        </p-floatLabel>
+                    </div>
+                </div>
+                }
+
+                @if (atendemEspecificacoes == 'naoConforme') {
+                <h5>10. Parâmetros técnicos atendem às especificações (voltagem, resistência, temperatura).</h5>
+                <div class="field grid"
+                    style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 49%;">
+                    <div style="flex: 1;">
+                        <p-floatLabel>
+                            <input id="responsavelAcaoCorretiva" type="text" pInputText style="width: 100%;">
+                            <label for="responsavelAcaoCorretiva">Responsável pela Ação Corretiva</label>
+                        </p-floatLabel>
+                    </div>
+                </div>
+                <div class="field grid"
+                    style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                    <div style="flex: 1;">
+                        <p-floatLabel>
+                            <textarea id="descricaoProblema" type="text" pInputText style="width: 100%;"></textarea>
+                            <label for="descricaoProblema">Descrição do Problema</label>
+                        </p-floatLabel>
+                    </div>
+
+                    <div style="flex: 1;">
+                        <p-floatLabel>
+                            <textarea id="acaoCorretivaSugerida" type="text" pInputText style="width: 100%;"></textarea>
+                            <label for="acaoCorretivaSugerida">Ação Corretiva Sugerida</label>
+                        </p-floatLabel>
+                    </div>
+                </div>
+                }
+
+                @if (testeConectividade == 'naoConforme') {
+                <h5>11. Teste de conectividade (Bluetooth, Wi-Fi, cabos, etc.) realizado.</h5>
+                <div class="field grid"
+                    style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 49%;">
+                    <div style="flex: 1;">
+                        <p-floatLabel>
+                            <input id="responsavelAcaoCorretiva" type="text" pInputText style="width: 100%;">
+                            <label for="responsavelAcaoCorretiva">Responsável pela Ação Corretiva</label>
+                        </p-floatLabel>
+                    </div>
+                </div>
+                <div class="field grid"
+                    style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                    <div style="flex: 1;">
+                        <p-floatLabel>
+                            <textarea id="descricaoProblema" type="text" pInputText style="width: 100%;"></textarea>
+                            <label for="descricaoProblema">Descrição do Problema</label>
+                        </p-floatLabel>
+                    </div>
+
+                    <div style="flex: 1;">
+                        <p-floatLabel>
+                            <textarea id="acaoCorretivaSugerida" type="text" pInputText style="width: 100%;"></textarea>
+                            <label for="acaoCorretivaSugerida">Ação Corretiva Sugerida</label>
+                        </p-floatLabel>
+                    </div>
+                </div>
+                }
+
+                @if (checagemFuncionalidades == 'naoConforme') {
+                <h5>12. Checagem de funcionalidades adicionais.</h5>
+                <div class="field grid"
+                    style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 49%;">
+                    <div style="flex: 1;">
+                        <p-floatLabel>
+                            <input id="responsavelAcaoCorretiva" type="text" pInputText style="width: 100%;">
+                            <label for="responsavelAcaoCorretiva">Responsável pela Ação Corretiva</label>
+                        </p-floatLabel>
+                    </div>
+                </div>
+                <div class="field grid"
+                    style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                    <div style="flex: 1;">
+                        <p-floatLabel>
+                            <textarea id="descricaoProblema" type="text" pInputText style="width: 100%;"></textarea>
+                            <label for="descricaoProblema">Descrição do Problema</label>
+                        </p-floatLabel>
+                    </div>
+
+                    <div style="flex: 1;">
+                        <p-floatLabel>
+                            <textarea id="acaoCorretivaSugerida" type="text" pInputText style="width: 100%;"></textarea>
+                            <label for="acaoCorretivaSugerida">Ação Corretiva Sugerida</label>
+                        </p-floatLabel>
+                    </div>
+                </div>
+                }
+            </p-tabPanel>
+        }
+
+        <p-tabPanel header="Observações e Anexos">
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <textarea id="observacoes" type="text" pInputText style="width: 100%;"></textarea>
+                        <label for="observacoes">Observações</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-fileUpload name="demo[]" url="https://www.primefaces.org/cdn/api/upload.php"
+                            (onUpload)="onUpload($event)" [multiple]="true" maxFileSize="1000000">
+                            <ng-template pTemplate="content">
+                                <ul *ngIf="uploadedFiles.length">
+                                    <li *ngFor="let file of uploadedFiles">
+                                        {{ file.name }} - {{ file.size }} bytes
+                                    </li>
+                                </ul>
+                            </ng-template>
+                        </p-fileUpload>
+                    </p-floatLabel>
+                </div>
+            </div>
+        </p-tabPanel>
+    </p-tabView>
+    <ng-template pTemplate="footer">
+        <button pButton [outlined]="true" [raised]="true" severity="danger" icon="pi pi-times" label="Cancelar"
+            (click)="displayModal =false" class="p-button-text">
+        </button>
+        <button pButton [outlined]="false" [raised]="true" severity="success" icon="pi pi-check" label="Salvar"
+            class="ml-2">
+        </button>
+    </ng-template>
+</p-dialog>

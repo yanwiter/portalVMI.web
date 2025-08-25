@@ -1,4 +1,4 @@
-<app-title-header title="Controle de Acessos"></app-title-header>
+<app-title-header title="{{ 'ACESSOS.TITLE' | translate }}"></app-title-header>
 
 <div class="filters">
     <p-accordion class="p-accordion-custom-header">
@@ -6,57 +6,67 @@
             <ng-template pTemplate="header">
                 <div style="display: flex; align-items: center; gap: 0.5rem;">
                     <span>{{ getFiltrosHeader() }}</span>
-                    
+
                     @if (getActiveFilters().length > 0) {
-                        <ng-container>
-                            @for (filter of getActiveFilters(); track filter) {
-                                <p-tag 
-                                    [value]="filter.label + ': ' + filter.value" 
-                                    severity="contrast"
-                                    styleClass="mr-1">
-                                </p-tag>
-                            }
-                        </ng-container>
+                    <ng-container>
+                        @for (filter of getActiveFilters(); track filter) {
+                        <p-tag [value]="filter.label + ': ' + filter.value" severity="contrast" styleClass="mr-1">
+                        </p-tag>
+                        }
+                    </ng-container>
                     }
                 </div>
             </ng-template>
-            <div class="itens-filters">
-                <p-floatLabel>
-                    <input pInputText id="nome" [(ngModel)]="filtros.nome" name="nome" />
-                    <label for="nome">Nome Perfil</label>
-                </p-floatLabel>
 
-                <p-floatLabel>
-                    <input pInputText id="email" [(ngModel)]="filtros.email" name="email" />
-                    <label for="email">Email</label>
-                </p-floatLabel>
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input pInputText id="nome" [(ngModel)]="filtros.nome" name="nome" style="width: 100%;" />
+                        <label for="nome">{{ 'ACESSOS.NOME_PERFIL' | translate }}</label>
+                    </p-floatLabel>
+                </div>
 
-                <p-floatLabel>
-                    <p-dropdown id="perfil" appendTo="body" [filter]="true" filterBy="label" [showClear]="true" [options]="perfisOptions" 
-                        [(ngModel)]="filtros.perfil" name="perfil">
-                    </p-dropdown>
-                    <label for="perfil">Perfil</label>
-                </p-floatLabel>
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input pInputText id="email" [(ngModel)]="filtros.email" name="email" style="width: 100%;" />
+                        <label for="email">{{ 'ACESSOS.EMAIL' | translate }}</label>
+                    </p-floatLabel>
+                </div>
 
-                <p-floatLabel>
-                    <p-calendar id="dataCriacao" [showTime]="false" [(ngModel)]="filtros.dataCriacao" name="dataCriacao" dateFormat="dd/mm/yy"></p-calendar>
-                    <label for="dataCriacao">Data de Criação</label>
-                </p-floatLabel>
-            
-                <p-floatLabel>
-                    <p-dropdown id="status" appendTo="body" [options]="statusOptions" 
-                        [(ngModel)]="filtros.status" name="status">
-                    </p-dropdown>
-                    <label for="status">Situação Perfil</label>
-                </p-floatLabel>
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-dropdown id="perfil" appendTo="body" [filter]="true" filterBy="label" [showClear]="true"
+                            [options]="perfisOptions" [(ngModel)]="filtros.perfil" name="perfil">
+                        </p-dropdown>
+                        <label for="perfil">{{ 'ACESSOS.PERFIL' | translate }}</label>
+                    </p-floatLabel>
+                </div>
+
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-calendar id="dataCriacao" [showTime]="false" [(ngModel)]="filtros.dataCriacao"
+                            appendTo="body" name="dataCriacao" dateFormat="dd/mm/yy"></p-calendar>
+                        <label for="dataCriacao">{{ 'ACESSOS.DATA_CRIACAO' | translate }}</label>
+                    </p-floatLabel>
+                </div>
+
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-dropdown id="status" appendTo="body" [options]="statusOptions" [(ngModel)]="filtros.status"
+                            name="status">
+                        </p-dropdown>
+                        <label for="status">{{ 'ACESSOS.STATUS_ACESSO' | translate }}</label>
+                    </p-floatLabel>
+                </div>
             </div>
 
             <div class="actions">
-                <button pButton [outlined]="true" [raised]="true" severity="warning" label="Limpar"
-                    icon="pi pi-times" (click)="limparFiltros()">
+                <button pButton [outlined]="true" [raised]="true" severity="warning"
+                    [label]="'ACESSOS.LIMPAR' | translate" icon="pi pi-times" (click)="limparFiltros()">
                 </button>
-                <button pButton [outlined]="true" [raised]="true" severity="success" label="Filtrar"
-                    icon="pi pi-filter" (click)="filtrar()">
+                <button pButton [outlined]="true" [raised]="true" severity="success"
+                    [label]="'ACESSOS.FILTRAR' | translate" icon="pi pi-filter" (click)="filtrar()">
                 </button>
             </div>
         </p-accordionTab>
@@ -64,161 +74,565 @@
 </div>
 
 <div class="tables">
-    <p-table [value]="acessos" [paginator]="true" [lazy]="true" [showCurrentPageReport]="true" [rows]="rows" [resizableColumns]="true" [totalRecords]="totalRecords" [rowsPerPageOptions]="rowsPerPage"
-            styleClass="p-datatable-striped p-datatable-gridlines" (onPage)="handlePageChange($event)" (onLazyLoad)="loadTableData($event)" dataKey="id">
+    <p-table [value]="acessos" [paginator]="true" [lazy]="true" [showCurrentPageReport]="true" [rows]="rows"
+        [resizableColumns]="true" [reorderableColumns]="true" [columnResizeMode]="'fit'" [totalRecords]="totalRecords"
+        [rowsPerPageOptions]="rowsPerPage" styleClass="p-datatable-striped p-datatable-gridlines"
+        (onPage)="handlePageChange($event)" (onLazyLoad)="loadTableData($event)" (onColReorder)="onColReorder($event)"
+        dataKey="id">
+
         <ng-template pTemplate="caption">
-            <div style="display: flex; justify-content: flex-end; align-items: center;">
-                <div class="actions">
-                    <button pButton [outlined]="true" [raised]="true" severity="success" label="Exportar"
-                        icon="pi pi-file-export"></button>
-                    <p-button icon="pi pi-plus" label="Incluir Acesso" class="exportButton"
-                        (onClick)="showDialog()" />
-                </div>
+            <div class="actions">
+                <button pButton [outlined]="true" [raised]="true" severity="success"
+                    [label]="'ACESSOS.EXPORTAR' | translate" icon="pi pi-file-excel" (click)="exportarParaExcel()"
+                    [pTooltip]="'ACESSOS.EXPORTAR_EXCEL_TOOLTIP' | translate" tooltipPosition="top">
+                </button>
+                <p-button *ngIf="canCreate" icon="pi pi-plus" [label]="'ACESSOS.INCLUIR_ACESSO' | translate"
+                    class="exportButton" (onClick)="showDialog()" />
+                <p-button icon="pi pi-cog" styleClass="p-button-text" (click)="openColumnConfigModal()" />
             </div>
         </ng-template>
+
         <ng-template pTemplate="header">
             <tr>
-                <th id="login">Nome</th>
-                <th id="login">Email</th>
-                <th id="perfis">Perfil</th>
-                <th id="status">Status Acesso</th>
-                <th id="dataCriação">Dt. Criação</th>
-                <th id="criadoPor">Resp. Criação</th>
-                <th id="dataAlteracao">Dt. Últ. Modificação</th>
-                <th id="alteradoPor">Resp. Últ. Modificação</th>
-                <th id="dataAlteracao">Justificativa Inativação</th>
-                <th id="acao">Ações</th>
+                <th id="reorderableColumn" *ngFor="let col of visibleColumns; let i = index"
+                    pReorderableColumn="col.field"
+                    [class.last-visible-column]="i === visibleColumns.length - 1 && !showActionsColumn">
+                    {{col.header}}
+                </th>
+                <th *ngIf="showActionsColumn" id="acoes">{{ 'COMMON.ACTIONS' | translate }}</th>
             </tr>
         </ng-template>
+
         <ng-template pTemplate="body" let-acesso let-rowIndex="rowIndex">
             <tr>
-                <td>
-                    {{ acesso.nome }}
+                <td *ngFor="let col of visibleColumns; let i = index"
+                    [class.last-visible-column]="i === visibleColumns.length - 1 && !showActionsColumn">
+                    <ng-container [ngSwitch]="col.field">
+                        <ng-container *ngSwitchCase="'nome'">
+                            <div class="nome-com-foto">
+                                @if (acesso.fotoPerfil) {
+                                <img [src]="acesso.fotoPerfil" 
+                                     [alt]="'Foto de ' + acesso.nome"
+                                     class="profile-image-table" />
+                                } @else {
+                                <i class="pi pi-user profile-icon-table"></i>
+                                }
+                                <span class="nome-texto" [appSensitiveData]="'nome'" [sensitiveLevel]="SensitiveDataLevel.PUBLIC">{{ acesso.nome }}</span>
+                            </div>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'email'">
+                            <span [appSensitiveData]="'email'" [sensitiveLevel]="SensitiveDataLevel.INTERNAL">{{ acesso.email }}</span>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'cpfCnpj'">
+                            <span [appSensitiveData]="'cpf'" [sensitiveLevel]="SensitiveDataLevel.CONFIDENTIAL">{{ acesso.cpfCnpj || 'N/A' }}</span>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'telefone'">
+                            <span [appSensitiveData]="'telefone'" [sensitiveLevel]="SensitiveDataLevel.INTERNAL">{{ acesso.telefone || 'N/A' }}</span>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'status'">
+                            <p-tag [value]="getStatusText(acesso.status)"
+                                [severity]="getStatusSeverity(acesso.status)" />
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'tipoAcesso'">
+                            <p-tag [value]="getTipoAcessoText(acesso.tipoAcesso)"
+                                [severity]="getSeverityTipoAcesso(acesso.tipoAcesso)" />
+                        </ng-container>
+                        <ng-container *ngSwitchDefault>
+                            <span [appSensitiveData]="col.field" [sensitiveLevel]="getFieldSensitiveLevel(col.field)">{{ acesso[col.field] }}</span>
+                        </ng-container>
+                    </ng-container>
                 </td>
-                <td>
-                    {{ acesso.email }}
-                </td>
-                <td>
-                    {{ acesso.perfilNome }}
-                </td>
-                <td>
-                    <p-tag
-                        [value]="acesso.status ? 'Ativo' : 'Inativo'" 
-                        [severity]="acesso.status ? 'success' : 'danger'"/>
-                </td>
-                <td>
-                    {{ acesso.dataCriacao }}
-                </td>
-                <td>
-                    {{ acesso.nomeCriadorUsuario }}
-                </td>
-                <td>
-                    {{ acesso.dataAlteracao }}
-                </td>
-                <td>
-                    {{ acesso.respUltimaModificacaoUsuario }}
-                </td>
-                <td>
-                    {{ acesso.justificativaInativacao }}
-                </td>
-                <td>
-                    <div class="actions-table">
-                        @if (!acesso.editing) { 
-                        <button pButton [outlined]="true" [raised]="true" 
-                            severity="success" icon="pi pi-pencil" 
-                            (click)="iniciarEdicao(acesso, rowIndex)">
-                        </button>
-                        }
+                <td *ngIf="showActionsColumn" class="actions-table">
+                    <button pButton *ngIf="canEdit" [outlined]="true" [raised]="true" severity="success"
+                        icon="pi pi-pencil" (click)="iniciarEdicao(acesso, rowIndex)">
+                    </button>
 
-                        @if (!acesso.editing) {
-                            <button pButton [outlined]="true" [raised]="true" 
-                            severity="danger" icon="pi pi-trash" (click)="confirmarExclusao(acesso)">
-                        </button>
-                        }
-
-                    </div>
+                    <button pButton *ngIf="canDelete" [outlined]="true" [raised]="true" severity="danger"
+                        icon="pi pi-trash" (click)="confirmarExclusao(acesso)">
+                    </button>
                 </td>
             </tr>
         </ng-template>
     </p-table>
 </div>
 
+<!-- Modal de Configuração de Colunas -->
+<p-dialog 
+  [(visible)]="showColumnConfigModal" 
+  [modal]="true" 
+  [closable]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [style]="{width: '600px', maxHeight: '85vh'}"
+  [closeOnEscape]="true"
+  (onHide)="closeColumnConfigModal()"
+  [baseZIndex]="10001"
+  class="column-config-modal">
+  
+  <app-column-config 
+    [columns]="columns"
+    [componentName]="'acessos'"
+    [defaultColumns]="getDefaultColumns()"
+    (preferencesSaved)="saveColumnPreferences()"
+    (columnsChanged)="onColumnsChanged($event)"
+    (closeModal)="closeColumnConfigModal()">
+  </app-column-config>
+</p-dialog>
+
 <!-- Modal para incluir/editar acesso -->
-<p-dialog [header]="modalTitle" [(visible)]="displayModal" [style]="{width: '55vw'}" [modal]="true">
-    <div class="itens-modal">
-        <p-floatLabel>
-            <input pInputText id="nome" name="nome" [(ngModel)]="acessoEditando.nome" required />
-            <label for="nome">Nome</label>
-        </p-floatLabel>
+<p-dialog [header]="modalTitle" [(visible)]="displayModal" [style]="{width: '90vw'}" [modal]="true" draggable="false">
 
-        @if (!isEditando) {
-            <p-floatLabel class="password-toggle">
-                <input pInputText id="senha" name="senha" [(ngModel)]="acessoEditando.senha" required 
-                    [type]="mostrarSenha ? 'text' : 'password'" />
-                <label for="senha">Senha Temporária</label>
-                <button type="button" pButton 
-                    [icon]="mostrarSenha ? 'pi pi-eye-slash' : 'pi pi-eye'" 
-                    (click)="mostrarSenha = !mostrarSenha"
-                    class="p-button-text p-button-plain">
-                </button>
-            </p-floatLabel>
-        }
+    <p-tabView #tabView>
+        <p-tabPanel [header]="'ACESSOS.INFORMACOES_BASICAS' | translate">
 
-        <p-floatLabel>
-            <input pInputText id="email" name="email" [(ngModel)]="acessoEditando.email" required />
-            <label for="email">Email</label>
-        </p-floatLabel>
+            <div style="display: flex; gap: 2rem; align-items: flex-start;">
 
-        <p-floatLabel>
-            <p-dropdown 
-                id="perfil" 
-                appendTo="body" 
-                [(ngModel)]="acessoEditando.perfilId"
-                [options]="perfisOptions"
-                [showClear]="true"
-                [filter]="true"
-                [showClear]="true"
-                name="perfil" 
-                optionLabel="label" 
-                optionValue="value"
-                filterBy="label" 
-                placeholder="Selecione um perfil">
-            </p-dropdown>
-            <label for="perfil">Perfil</label>
-        </p-floatLabel>
+                <!-- Div da Esquerda - Foto de Perfil -->
+                <div style="flex: 0 0 300px; display: flex; flex-direction: column; align-items: center; gap: 1rem;">
+                    <div class="foto-perfil-container">
+                        <h6 style="margin: 0; color: var(--primary-color);">{{ 'ACESSOS.FOTO_PERFIL' | translate }}</h6>
 
-        @if (isEditando) {
-            <p-floatLabel>
-                <p-dropdown id="status" appendTo="body" [options]="statusOptions" 
-                    [(ngModel)]="acessoEditando.status" name="status">
-                </p-dropdown>
-                <label for="status">Situação Acesso</label>
-            </p-floatLabel>
-        }
-    </div>
+                        <div class="foto-preview" [class.com-foto]="fotoPerfilPreview">
+                            @if (fotoPerfilPreview) {
+                            <img [src]="fotoPerfilPreview" alt="Foto de perfil" class="foto-imagem" />
+                            } @else {
+                            <i class="pi pi-user" style="font-size: 3rem; color: var(--text-color-secondary);"></i>
+                            }
+                        </div>
 
-    @if (acessoEditando.status === false) {
-        <div class="itens-modal">
-            <p-floatLabel>
-                <textarea 
-                    id="justificativaInativacao" 
-                    rows="3" cols="70"
-                    [(ngModel)]="acessoEditando.justificativaInativacao" name="justificativaInativacao"
-                    pInputTextarea>
-                </textarea>
-                <label for="float-input">Justificativa Inativação</label>
-            </p-floatLabel>
-        </div>
-    }
+                        <div class="foto-acoes">
+                            <input type="file" id="fotoPerfil" name="fotoPerfil" accept="image/*"
+                                (change)="onFileSelected($event)" style="display: none;" />
+
+                            <label for="fotoPerfil" class="p-button p-button-sm p-button-outlined"
+                                style="cursor: pointer;">
+                                <i class="pi pi-upload"></i>
+                                {{ fotoPerfilPreview ? ('ACESSOS.ALTERAR_FOTO' | translate) : ('ACESSOS.ADICIONAR_FOTO'
+                                | translate) }}
+                            </label>
+
+                            @if (fotoPerfilPreview) {
+                            <button type="button" pButton icon="pi pi-crop" severity="secondary"
+                                class="p-button-sm p-button-outlined" (click)="abrirEditorFotoExistente()"
+                                [pTooltip]="'ACESSOS.EDITAR_FOTO' | translate">
+                            </button>
+
+                            <button type="button" pButton icon="pi pi-trash" severity="danger"
+                                class="p-button-sm p-button-text" (click)="removerFoto()"
+                                [pTooltip]="'ACESSOS.REMOVER_FOTO' | translate">
+                            </button>
+                            }
+                        </div>
+
+                        <small class="foto-info">
+                            {{ 'ACESSOS.FORMATOS_SUPORTADOS' | translate }}: JPG, PNG, GIF<br>
+                            {{ 'ACESSOS.TAMANHO_MAXIMO' | translate }}: 5MB
+                        </small>
+                    </div>
+                </div>
+
+                <div style="flex: 1; display: flex; flex-direction: column; gap: 1rem;">
+                    <div class="field grid field-grid field-grid--lg">
+                        <div style="flex: 1;">
+                            <p-floatLabel style="flex: 1;">
+                                <input pInputText id="nome" name="nome" [(ngModel)]="acessoEditando.nome" required />
+                                <label for="nome">{{ 'ACESSOS.NOME_COMPLETO' | translate }}</label>
+                            </p-floatLabel>
+                        </div>
+
+                        @if (isEditando){
+                        <div style="flex: 1; display: flex; justify-content: flex-end; gap: 1rem;">
+                            @if (acessoEditando.dataCriacao != null) {
+                            <p-floatLabel>
+                                <p-calendar [(ngModel)]="acessoEditando.dataCriacao" name="dataCadastro"
+                                    [showIcon]="true" dateFormat="dd/mm/yy" appendTo="body" disabled="true">
+                                </p-calendar>
+                                <label for="dataCadastro">{{ 'ACESSOS.DATA_CADASTRO' | translate }}</label>
+                            </p-floatLabel>
+                            }
+
+                            @if (acessoEditando.dataAlteracao != null) {
+                            <p-floatLabel>
+                                <p-calendar name="dataAlteracao" [(ngModel)]="acessoEditando.dataAlteracao"
+                                    [showIcon]="true" dateFormat="dd/mm/yy" appendTo="body" disabled="true">
+                                </p-calendar>
+                                <label for="dataAlteracao">{{ 'ACESSOS.DATA_ULTIMA_ALTERACAO' | translate }}</label>
+                            </p-floatLabel>
+                            }
+                        </div>
+                        }
+                    </div>
+
+                    <div class="field grid field-grid field-grid--lg">
+                        <div style="flex: 1;">
+                            <p-floatLabel style="flex: 1;">
+                                <p-dropdown appendTo="body" id="tipoAcesso" name="tipoAcesso" optionLabel="label"
+                                    optionValue="value" [(ngModel)]="acessoEditando.tipoAcesso"
+                                    [options]="tipoAcessoOptions" required>
+                                </p-dropdown>
+                                <label for="nome">{{ 'ACESSOS.TIPO_ACESSO' | translate }}</label>
+                            </p-floatLabel>
+                        </div>
+                        <div style="flex: 1;">
+                            <p-floatLabel style="flex: 1;">
+                                <p-dropdown appendTo="body" id="tipoPessoa" name="tipoPessoa" optionLabel="label"
+                                    optionValue="value" [(ngModel)]="acessoEditando.tipoPessoa"
+                                    [options]="tipoPessoaOptions" required>
+                                </p-dropdown>
+                                <label for="nome">{{ 'ACESSOS.TIPO_PESSOA' | translate }}</label>
+                            </p-floatLabel>
+                        </div>
+                        @if (acessoEditando.tipoPessoa === 0) {
+                        <div style="flex: 1;">
+                            <p-floatLabel style="flex: 1;">
+                                <p-inputMask [mask]="'999.999.999-99'" [(ngModel)]="acessoEditando.cpfCnpj">
+                                </p-inputMask>
+                                <label for="cpf">{{ 'ACESSOS.CPF' | translate }}</label>
+                            </p-floatLabel>
+                        </div>
+                        } @else {
+                        <div style="flex: 1;">
+                            <p-floatLabel style="flex: 1;">
+                                <p-inputMask [mask]="'99.999.999/9999-99'" [(ngModel)]="acessoEditando.cpfCnpj">
+                                </p-inputMask>
+                                <label for="Cnpj">{{ 'ACESSOS.CNPJ' | translate }}</label>
+                            </p-floatLabel>
+                        </div>
+                        }
+
+                        <div style="flex: 1;">
+                            <p-floatLabel style="flex: 1;">
+                                <p-inputMask [mask]="'(99) 9 9999-9999'" [(ngModel)]="acessoEditando.telefone">
+                                </p-inputMask>
+                                <label for="telefone">{{ 'ACESSOS.TELEFONE' | translate }}</label>
+                            </p-floatLabel>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </p-tabPanel>
+        <p-tabPanel [header]="'ACESSOS.CREDENCIAIS' | translate">
+            <div class="field grid field-grid field-grid--lg">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input pInputText id="usuario" name="usuario" required [disabled]="isEditando"
+                            [(ngModel)]="acessoEditando.usuario" />
+                        <label for="email">{{ 'ACESSOS.USUARIO' | translate }}</label>
+                    </p-floatLabel>
+                </div>
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input pInputText id="email" name="email" [(ngModel)]="acessoEditando.email" required />
+                        <label for="email">{{ 'ACESSOS.EMAIL' | translate }}</label>
+                    </p-floatLabel>
+                </div>
+                @if (!isEditando) {
+                <div style="flex: 1;">
+                    <p-floatLabel class="password-toggle">
+                        <input pInputText id="senha" name="senha" [(ngModel)]="acessoEditando.senha" required
+                            [type]="mostrarSenha ? 'text' : 'password'" />
+                        <label for="senha">{{ 'ACESSOS.SENHA_TEMPORARIA' | translate }}</label>
+                        <button type="button" pButton [icon]="mostrarSenha ? 'pi pi-eye-slash' : 'pi pi-eye'"
+                            (click)="mostrarSenha = !mostrarSenha" class="p-button-text p-button-plain">
+                        </button>
+                    </p-floatLabel>
+                </div>
+                }
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-dropdown id="perfil" appendTo="body" [(ngModel)]="acessoEditando.perfilId"
+                            [options]="perfisOptions" [showClear]="true" [filter]="true" name="perfil"
+                            optionLabel="label" optionValue="value" filterBy="label"
+                            [placeholder]="'ACESSOS.SELECIONE_PERFIL' | translate">
+                        </p-dropdown>
+                        <label for="perfil">{{ 'ACESSOS.PERFIL' | translate }}</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+            <div class="field grid field-grid field-grid--lg">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-checkbox [binary]="true" [(ngModel)]="deveAlterarSenha" disabled></p-checkbox>
+                        <label for="alterarSenhaPrimeiroAcesso" style="margin-left: 0.5rem; padding-top: 0.3%;">{{
+                            'ACESSOS.OBRIGAR_ALTERACAO_SENHA' | translate }}</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+        </p-tabPanel>
+        <p-tabPanel [header]="'ACESSOS.CONFIGURACOES' | translate">
+            <div class="field grid field-grid field-grid--sm">
+                @if (isEditando) {
+                    <div style="flex: 1;">
+                        <p-floatLabel style="flex: 1;">
+                            <p-dropdown id="status" appendTo="body" [options]="statusOptions"
+                                [(ngModel)]="acessoEditando.status" name="status" optionLabel="label" optionValue="value"
+                                (onChange)="onStatusChange()">
+                            </p-dropdown>
+                            <label for="status">{{ 'ACESSOS.SITUACAO_ACESSO' | translate }}</label>
+                        </p-floatLabel>
+                    </div>
+                }
+
+                @if (acessoEditando.status === StatusUsuarioEnum.Suspenso) {
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-dropdown id="tipoSuspensao" appendTo="body" [options]="tipoSuspensaoOptions"
+                            [(ngModel)]="acessoEditando.tipoSuspensao" name="tipoSuspensao"
+                            (onChange)="onTipoSuspensaoChange()">
+                        </p-dropdown>
+                        <label for="tipoSuspensao">{{ 'ACESSOS.TIPO_SUSPENSAO' | translate }}</label>
+                    </p-floatLabel>
+                </div>
+                }
+            </div>
+
+            @if (acessoEditando.status === StatusUsuarioEnum.Suspenso) {
+            <div class="field grid field-grid field-grid--sm">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-calendar id="dataInicioSuspensao" appendTo="body" dateFormat="dd/mm/yy" [showClear]="true"
+                            [(ngModel)]="acessoEditando.dataInicioSuspensao" [showIcon]="true">
+                        </p-calendar>
+                        <label for="dataInicioSuspensao">{{ 'ACESSOS.DATA_INICIO_SUSPENSAO' | translate }}</label>
+                    </p-floatLabel>
+                </div>
+
+                @if (acessoEditando.tipoSuspensao === TipoSuspensaoEnum.Temporaria) {
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-calendar id="dataFimSuspensao" appendTo="body" dateFormat="dd/mm/yy" [showClear]="true"
+                            [(ngModel)]="acessoEditando.dataFimSuspensao" [showIcon]="true">
+                        </p-calendar>
+                        <label for="dataFimSuspensao">{{ 'ACESSOS.DATA_FIM_SUSPENSAO' | translate }}</label>
+                    </p-floatLabel>
+                </div>
+                }
+            </div>
+
+            <div class="field grid field-grid field-grid--lg">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <textarea pInputTextarea id="motivoSuspensao" [(ngModel)]="acessoEditando.motivoSuspensao"
+                            name="motivoSuspensao" rows="3" style="width: 100%;"
+                            [placeholder]="'ACESSOS.MOTIVO_SUSPENSAO_PLACEHOLDER' | translate">
+                        </textarea>
+                        <label for="motivoSuspensao">{{ 'ACESSOS.MOTIVO_SUSPENSAO' | translate }}</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+            }
+
+            <div class="field grid field-grid field-grid--sm">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-calendar id="dataExpiracao" appendTo="body" dateFormat="dd/mm/yy" [showClear]="true"
+                            [(ngModel)]="acessoEditando.dataExpiracao" [showIcon]="true">
+                        </p-calendar>
+                        <label for="dataExpiracao">{{ 'ACESSOS.DATA_EXPIRACAO' | translate }}</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+
+            <div class="field grid field-grid field-grid--lg">
+                <div style="flex: 1;">
+                    <h5>{{ 'ACESSOS.HORARIO_ACESSO_PERMITIDO' | translate }}</h5>
+                    <div class="flex flex-wrap gap-3"
+                        style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;">
+                        @for (dia of diasSemana; track dia.value) {
+                        <div class="flex flex-column" style="width: 100%;">
+                            <label for="dia" style="color: var(--primary-color);">{{dia.label}}</label>
+
+                            <div class="field grid field-grid field-grid--lg">
+                                <div style="flex: 1;">
+                                    <p-dropdown [options]="horarios" [(ngModel)]="dia.horarioInicio" appendTo="body"
+                                        [showClear]="true" [placeholder]="'ACESSOS.INICIO' | translate"
+                                        (onChange)="atualizarHorarios()">
+                                    </p-dropdown>
+                                </div>
+
+                                <div style="flex: 1;">
+                                    <p-dropdown [options]="horarios" [(ngModel)]="dia.horarioFim"
+                                        [placeholder]="'ACESSOS.FIM' | translate" appendTo="body" [showClear]="true"
+                                        (onChange)="atualizarHorarios()">
+                                    </p-dropdown>
+                                </div>
+                            </div>
+                        </div>
+                        }
+                    </div>
+                    <small>{{ 'ACESSOS.DEIXE_BRANCO_SEM_RESTRICAO' | translate }}</small>
+                    <div class="field grid field-grid field-grid--lg">
+                        <div style="flex: 1;">
+                            <p-floatLabel style="flex: 1;">
+                                <p-button [label]="'ACESSOS.APLICAR_TODOS_DIAS' | translate" icon="pi pi-calendar"
+                                    severity="primary" [style]="{'margin-right': '1rem'}"
+                                    (onClick)="aplicarATodosOsDias()" styleClass="p-button-sm">
+                                </p-button>
+                                <p-button [label]="'ACESSOS.LIMPAR_TODOS' | translate" icon="pi pi-trash"
+                                    severity="danger" (onClick)="limparTodosHorarios()"
+                                    styleClass="p-button-sm p-button-text">
+                                </p-button>
+                            </p-floatLabel>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </p-tabPanel>
+        <p-tabPanel [header]="'ACESSOS.OBSERVACOES' | translate">
+            @if (isEditando) {
+            <div class="field grid field-grid field-grid--lg">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        {{ 'ACESSOS.ACESSO_ENCONTRA_SE' | translate }}
+                        <p-tag [value]="acessoEditando.status === StatusUsuarioEnum.Ativo ? ('ACESSOS.ATIVO' | translate) : 
+                                 acessoEditando.status === StatusUsuarioEnum.Inativo ? ('ACESSOS.INATIVO' | translate) : 
+                                 ('ACESSOS.SUSPENSO' | translate)" [severity]="acessoEditando.status === StatusUsuarioEnum.Ativo ? 'success' : 
+                                   acessoEditando.status === StatusUsuarioEnum.Inativo ? 'danger' : 'warning'" />
+
+                    </p-floatLabel>
+                </div>
+
+                <div style="flex: 1; display: flex; justify-content: flex-end; gap: 1rem;">
+                    <p-floatLabel>
+                        <p-calendar [(ngModel)]="acessoEditando.dataUltimoLogin" name="dataUltimoLogin"
+                            [showIcon]="true" dateFormat="dd/mm/yy" [showTime]="true" appendTo="body" disabled="true">
+                        </p-calendar>
+                        <label for="dataUltimoLogin">{{ 'ACESSOS.ULTIMO_LOGIN' | translate }}</label>
+                    </p-floatLabel>
+
+                    @if (acessoEditando.dataInativacao != null) {
+                    <p-floatLabel>
+                        <p-calendar [(ngModel)]="acessoEditando.dataInativacao" name="dataInativacao" [showIcon]="true"
+                            dateFormat="dd/mm/yy" appendTo="body" disabled="true">
+                        </p-calendar>
+                        <label for="dataCadastro">{{ 'ACESSOS.DATA_INATIVACAO' | translate }}</label>
+                    </p-floatLabel>
+                    }
+                </div>
+            </div>
+            }
+
+            @if (acessoEditando.status === StatusUsuarioEnum.Inativo) {
+            <div class="field grid field-grid field-grid--lg">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <textarea id="justificativaInativacao" [(ngModel)]="acessoEditando.justificativaInativacao"
+                            name="justificativaInativacao" type="text" pInputText style="width: 100%;">
+                        </textarea>
+                        <label for="justificativaInativacao">{{ 'ACESSOS.JUSTIFICATIVA_INATIVACAO' | translate }}</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+            }
+            <div class="field grid field-grid field-grid--lg">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <textarea id="observacoes" type="text" pInputText style="width: 100%;"
+                            [(ngModel)]="acessoEditando.observacoes">
+                        </textarea>
+                        <label for="observacoes">{{ 'ACESSOS.OBSERVACOES' | translate }}</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+        </p-tabPanel>
+    </p-tabView>
     <ng-template pTemplate="footer">
         <div class="actions">
-            <button pButton [outlined]="true" [raised]="true" severity="danger" label="Cancelar" 
+            <button pButton [outlined]="true" [raised]="true" severity="danger" [label]="'ACESSOS.CANCELAR' | translate"
                 (click)="fecharModal()" icon="pi pi-times">
             </button>
-            <button pButton [outlined]="false" [raised]="true" severity="success" 
-                [label]="isEditando ? 'Atualizar' : 'Salvar'" 
+            <button pButton [outlined]="false" [raised]="true" severity="success"
+                [label]="isEditando ? ('ACESSOS.ATUALIZAR' | translate) : ('ACESSOS.SALVAR' | translate)"
                 (click)="isEditando ? atualizarAcesso() : salvarAcesso()" icon="pi pi-check">
             </button>
         </div>
     </ng-template>
 </p-dialog>
+
+<!-- Diálogo de confirmação para exclusão -->
+<p-dialog [header]="modalTitleDelete" [(visible)]="displayConfirmation" [style]="{width: '30vw'}" [modal]="true"
+    [closable]="false">
+    <div class="confirmation-content">
+        <span *ngIf="acessoParaExcluir">
+            {{ 'ACESSOS.TEM_CERTEZA_EXCLUIR' | translate }} <b>{{ acessoParaExcluir.nome }}</b>?
+        </span>
+    </div>
+    <ng-template pTemplate="footer">
+        <div class="actions">
+            <button pButton pRipple type="button" [label]="'ACESSOS.CANCELAR' | translate" icon="pi pi-times"
+                (click)="cancelarInativacao()" class="p-button-text"></button>
+            <button pButton pRipple type="button" [label]="'COMMON.CONFIRM' | translate" icon="pi pi-check"
+                (click)="confirmarInativacaoDialog()" class="p-button-danger"></button>
+        </div>
+    </ng-template>
+</p-dialog>
+
+<!-- Modal de Edição de Foto -->
+<p-dialog [header]="'ACESSOS.EDITAR_FOTO' | translate" [(visible)]="displayFotoEditor"
+    [style]="{width: '70vw', height: '70vh'}" [modal]="true" [closable]="true">
+    <div class="foto-editor-container">
+        <!-- Canvas de Edição -->
+        <div class="canvas-container">
+            <canvas #canvasEditor class="canvas-editor" width="400" height="400"></canvas>
+        </div>
+
+        <!-- Controles Simplificados -->
+        <div class="controles-edicao">
+            <h6>{{ 'ACESSOS.CONTROLES' | translate }}</h6>
+
+            <!-- Controles de Zoom -->
+            <div class="controle-grupo">
+                <label>{{ 'ACESSOS.ZOOM' | translate }}</label>
+                <div class="botoes-controle">
+                    <button pButton type="button" icon="pi pi-minus" class="p-button-sm p-button-outlined"
+                        (click)="aplicarZoom('out')">
+                    </button>
+                    <span class="zoom-value">{{ (escala * 100).toFixed(0) }}%</span>
+                    <button pButton type="button" icon="pi pi-plus" class="p-button-sm p-button-outlined"
+                        (click)="aplicarZoom('in')">
+                    </button>
+                </div>
+            </div>
+
+            <!-- Controles de Rotação -->
+            <div class="controle-grupo">
+                <label>{{ 'ACESSOS.ROTACAO' | translate }}</label>
+                <div class="botoes-controle">
+                    <button pButton type="button" icon="pi pi-undo" class="p-button-sm p-button-outlined"
+                        (click)="rotacionarImagem('left')">
+                    </button>
+                    <span class="rotation-value">{{ rotacao }}°</span>
+                    <button pButton type="button" icon="pi pi-redo" class="p-button-sm p-button-outlined"
+                        (click)="rotacionarImagem('right')">
+                    </button>
+                </div>
+            </div>
+
+            <!-- Botão Resetar -->
+            <div class="controle-grupo">
+                <button pButton type="button" [label]="'ACESSOS.RESETAR_EDICAO' | translate" icon="pi pi-refresh"
+                    class="p-button-sm p-button-outlined" (click)="resetarEdicao()">
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+        <div class="actions">
+            <button pButton type="button" [label]="'ACESSOS.CANCELAR' | translate" icon="pi pi-times"
+                class="p-button-text" (click)="cancelarEdicao()">
+            </button>
+            <button pButton type="button" [label]="'COMMON.SALVAR' | translate" icon="pi pi-check"
+                class="p-button-success" (click)="salvarFotoEditada()">
+            </button>
+        </div>
+    </ng-template>
+</p-dialog>
+
+<p-confirmDialog 
+    styleClass="custom-confirm-dialog"
+    [acceptLabel]="'COMMON.CONFIRM' | translate"
+    [rejectLabel]="'COMMON.CANCEL' | translate"
+    acceptIcon="pi pi-check"
+    rejectIcon="pi pi-times">
+</p-confirmDialog>

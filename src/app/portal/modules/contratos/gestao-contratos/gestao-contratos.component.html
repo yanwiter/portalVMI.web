@@ -1,0 +1,947 @@
+<app-title-header title="Gestão de Contratos"></app-title-header>
+
+<div class="filters">
+    <p-accordion class="p-accordion-custom-header" styleClass="filters-accordion">
+        <p-accordionTab>
+            <ng-template pTemplate="header">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <span>{{ getFiltrosHeader() }}</span>
+
+                    @if (getActiveFilters().length > 0) {
+                    <ng-container>
+                        @for (filter of getActiveFilters(); track filter) {
+                        <p-tag [value]="filter.label + ': ' + filter.value" severity="contrast" styleClass="mr-1">
+                        </p-tag>
+                        }
+                    </ng-container>
+                    }
+                </div>
+            </ng-template>
+
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input pInputText id="codigoContrato" [(ngModel)]="filtros.codigoContrato"
+                            name="codigoContrato" />
+                        <label for="codigoContrato">Código Contrato</label>
+                    </p-floatLabel>
+                </div>
+
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-dropdown id="tipoContrato" appendTo="body" [options]="statusOptions"
+                            [(ngModel)]="filtros.tipoContrato" name="tipoContrato">
+                        </p-dropdown>
+                        <label for="tipoContrato">Tipo Contrato</label>
+                    </p-floatLabel>
+                </div>
+
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-inputNumber id="valorContrato" [(ngModel)]="filtros.valorContrato" name="valorContrato"
+                            mode="currency" currency="BRL" locale="pt-BR" inputStyle="text-align: right"
+                            (onInput)="onValorContratoChange()">
+                        </p-inputNumber>
+                        <label for="valorContrato">Valor</label>
+                    </p-floatLabel>
+                </div>
+
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-calendar id="dataInicio" [showTime]="false" [(ngModel)]="filtros.dataInicio"
+                            name="dataInicio" dateFormat="dd/mm/yy">
+                        </p-calendar>
+                        <label for="dataInicio">Data Início</label>
+                    </p-floatLabel>
+                </div>
+
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-calendar id="dataFim" [showTime]="false" [(ngModel)]="filtros.dataFim" name="dataFim"
+                            dateFormat="dd/mm/yy">
+                        </p-calendar>
+                        <label for="dataFim">Data Término</label>
+                    </p-floatLabel>
+                </div>
+
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-dropdown id="statusTeste" appendTo="body" [options]="statusOptions"
+                            [(ngModel)]="filtros.statusTeste" name="statusTeste">
+                        </p-dropdown>
+                        <label for="statusProduto">Situação Teste</label>
+                    </p-floatLabel>
+                </div>
+
+            </div>
+
+            <div class="actions">
+                <button pButton [outlined]="true" [raised]="true" severity="warning" label="Limpar" icon="pi pi-times"
+                    (click)="limparFiltros()">
+                </button>
+                <button pButton [outlined]="true" [raised]="true" severity="success" label="Filtrar" icon="pi pi-filter"
+                    (click)="filtrar()">
+                </button>
+            </div>
+        </p-accordionTab>
+    </p-accordion>
+</div>
+
+<div class="tables">
+    <p-table [value]="acessos" [paginator]="true" [lazy]="true" [showCurrentPageReport]="true" [rows]="rows"
+        [resizableColumns]="true" [totalRecords]="totalRecords" [rowsPerPageOptions]="rowsPerPage"
+        styleClass="p-datatable-striped p-datatable-gridlines custom-datatable" (onPage)="handlePageChange($event)"
+        (onLazyLoad)="loadTableData($event)" dataKey="id">
+        <ng-template pTemplate="caption">
+            <div style="display: flex; justify-content: flex-end; align-items: center;">
+                <div class="actions">
+                    <p-button icon="pi pi-plus" label="Incluir Contrato" class="exportButton"
+                        (onClick)="showDialog()" />
+                </div>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+            <tr>
+                <th id="codigo">Código</th>
+                <th id="tipo">Tipo</th>
+                <th id="valor">Valor</th>
+                <th id="dataInicio">Data Início</th>
+                <th id="dataTermino">Data Término</th>
+                <th id="status">Status</th>
+                <th id="acao">Ações</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-acesso let-rowIndex="rowIndex">
+            <tr>
+                <td>
+                    {{ acesso.nome }}
+                </td>
+                <td>
+                    {{ acesso.nomeCriadorUsuario }}
+                </td>
+                <td>
+                    {{ acesso.nomeCriadorUsuario }}
+                </td>
+                <td>
+                    {{ acesso.nomeCriadorUsuario }}
+                </td>
+                <td>
+                    {{ acesso.dataCriacao }}
+                </td>
+                <td>
+                    <p-tag [value]="acesso.status ? 'Ativo' : 'Inativo'"
+                        [severity]="acesso.status ? 'success' : 'danger'" />
+                </td>
+                <td>
+                    <div class="actions-table">
+                        <button pButton [outlined]="true" [raised]="true" severity="success" icon="pi pi-pencil"
+                            (click)="iniciarEdicao(acesso, rowIndex)" pTooltip="Editar">
+                        </button>
+
+                        <button pButton [outlined]="true" [raised]="true" severity="info" icon="pi pi-history"
+                            (click)="visualizarHistorico(acesso)" pTooltip="Visualizar Histórico">
+                        </button>
+
+                        <button pButton [outlined]="true" [raised]="true" severity="success" icon="pi pi-check"
+                            (click)="aprovarContrato(acesso)" 
+                            pTooltip="Aprovar Contrato">
+                        </button>
+
+                        <button pButton [outlined]="true" [raised]="true" severity="danger" icon="pi pi-times"
+                            (click)="reprovarContrato(acesso)" 
+                            [disabled]="!podeReprovar(acesso)"
+                            pTooltip="Reprovar Contrato">
+                        </button>
+
+                        <button pButton [outlined]="true" [raised]="true" severity="help" icon="pi pi-send"
+                        (click)="iniciarEdicao(acesso, rowIndex)" pTooltip="Enviar Contrato">
+                        </button>
+
+                        <button pButton [outlined]="true" [raised]="true" severity="warning" icon="pi pi-file-pdf"
+                            (click)="iniciarEdicao(acesso, rowIndex)" pTooltip="Gerar PDF">
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+
+<!-- Modal para incluir/editar Contrato -->
+<p-dialog [header]="modalTitle" [draggable]="false" [resizable]="false" [(visible)]="displayModal"
+    [style]="{width: '90vw'}" [modal]="true">
+    <p-tabView>
+        <p-tabPanel header="Dados Gerais">
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel>
+                        <input id="codigoContrato" type="text" pInputText style="width: 49%;">
+                        <label for="codigoContrato">Código Contrato</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <!-- [options]="tipoContratoOptions" [(ngModel)]="filtros.tipoContrato" -->
+                        <p-dropdown id="tipoContrato" appendTo="body" name="tipoContrato">
+                        </p-dropdown>
+                        <label for="tipoContrato">Tipo Contrato</label>
+                    </p-floatLabel>
+                </div>
+                <div style="flex: 1;">
+                    <p-floatLabel>
+                        <!--[options]="categoriasContrato" [(ngModel)]="contrato.categoria"-->
+                        <p-dropdown id="categoriaContrato" optionLabel="nome" name="categoriaContrato">
+                        </p-dropdown>
+                        <label for="categoriaContrato">Categoria do Contrato</label>
+                    </p-floatLabel>
+                </div>
+
+                <div style="flex: 1;">
+                    <p-floatLabel>
+                        <input id="vigencia" type="text" pInputText style="width: 100%;">
+                        <label for="vigencia">Vigência</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-calendar id="dataInicio" [showTime]="false" [(ngModel)]="dataExpedicao" name="dataCriacao"
+                            [showIcon]="true" appendTo="body" dateFormat="dd/mm/yy" [ngStyle]="{'width': '100%'}">
+                        </p-calendar>
+                        <label for="dataInicio">Data de Início</label>
+                    </p-floatLabel>
+                </div>
+
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-calendar id="dataTermino" [showTime]="false" [(ngModel)]="dataExpedicao" name="dataCriacao"
+                            [showIcon]="true" appendTo="body" dateFormat="dd/mm/yy" [ngStyle]="{'width': '100%'}">
+                        </p-calendar>
+                        <label for="dataTermino">Data de Término</label>
+                    </p-floatLabel>
+                </div>
+
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <!--[(ngModel)]="contrato.dataAssinatura"-->
+                        <p-calendar id="dataAssinatura" name="dataAssinatura" [showIcon]="true" dateFormat="dd/mm/yy"
+                            [required]="true">
+                        </p-calendar>
+                        <label for="dataAssinatura">Data de Assinatura</label>
+                    </p-floatLabel>
+                </div>
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <!-- [(ngModel)]="contrato.dataPublicacao"-->
+                        <p-calendar id="dataPublicacao" name="dataPublicacao" [showIcon]="true" dateFormat="dd/mm/yy">
+                        </p-calendar>
+                        <label for="dataPublicacao">Data de Publicação</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <label>Inativar Contrato</label>
+                    <p-floatLabel style="flex: 1;">
+                        <p-inputSwitch></p-inputSwitch>
+                    </p-floatLabel>
+                </div>
+
+                <div style="flex: 1;">
+                    <label>Cancelar Contrato</label>
+                    <p-floatLabel style="flex: 1;">
+                        <p-inputSwitch></p-inputSwitch>
+                    </p-floatLabel>
+                </div>
+
+                <div style="flex: 1;">
+                    <!--[(ngModel)]="contrato.renovacaoAutomatica"-->
+                    <label for="renovacaoAutomatica">Renovação Automática</label>
+                    <p-floatLabel style="flex: 1;">
+                        <p-inputSwitch></p-inputSwitch>
+                    </p-floatLabel>
+                </div>
+            </div>
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <!--[options]="setores" [(ngModel)]="contrato.setorResponsavel" -->
+                        <p-dropdown id="setorResponsavel" optionLabel="nome" name="setorResponsavel">
+                        </p-dropdown>
+                        <label for="setorResponsavel">Setor Responsável</label>
+                    </p-floatLabel>
+                </div>
+
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <!--[options]="prioridades" [(ngModel)]="contrato.prioridade" -->
+                        <p-dropdown id="prioridade" optionLabel="nome" name="prioridade">
+                        </p-dropdown>
+                        <label for="prioridade">Prioridade</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+
+            <!--*ngIf="contrato.renovacaoAutomatica"-->
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <!--[(ngModel)]="contrato.prazoRenovacao"-->
+                        <p-inputNumber name="prazoRenovacao" suffix=" dias" [min]="1" [max]="365">
+                        </p-inputNumber>
+                        <label for="prazoRenovacao">Prazo para Renovação</label>
+                    </p-floatLabel>
+                </div>
+
+                <div style="flex: 1;">
+                    <p-floatLabel>
+                        <!--[options]="notificacoesRenovacao" [(ngModel)]="contrato.notificacaoRenovacao" -->
+                        <p-dropdown name="notificacaoRenovacao">
+                        </p-dropdown>
+                        <label for="notificacaoRenovacao">Notificar Renovação</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+
+            <h4>Observações</h4>
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <textarea id="motivoCancelamentoContrato" type="text" pInputText
+                            style="width: 100%;"></textarea>
+                        <label for="motivoCancelamentoContrato">Motivo Cancelamento Contrato</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <textarea id="observacoesRepresentantes" type="text" pInputText style="width: 100%;"></textarea>
+                        <label for="observacoesRenocao">Observações Renovação Contrato</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <textarea id="descricaoContrato" type="text" pInputText style="width: 100%;"></textarea>
+                        <label for="descricaoContrato">Descrição do Contrato</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+        </p-tabPanel>
+
+        <p-tabPanel header="Partes Envolvidas">
+            <h4>Informações da Empresa</h4>
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel>
+                        <input id="cpfCNPJ" type="text" pInputText style="width: 55%;">
+                        <label for="cpfCNPJ">CPF/CNPJ</label>
+                    </p-floatLabel>
+                </div>
+
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <!-- [options]="tipoEmpresaOptions" [(ngModel)]="filtros.tipoEmpresa" -->
+                        <p-dropdown id="tipoEmpresa" appendTo="body" name="tipoEmpresa">
+                        </p-dropdown>
+                        <label for="tipoEmpresa">Tipo Empresa</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel>
+                        <input id="nomeRazaoSocial" type="text" pInputText style="width: 100%;">
+                        <label for="nomeRazaoSocial">Nome/Razão Social</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+
+            <h4>Representantes</h4>
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel>
+                        <input id="representanteEmpresa" type="text" pInputText style="width: 100%;">
+                        <label for="representanteEmpresa">Representante da Empresa</label>
+                    </p-floatLabel>
+                </div>
+
+                <div style="flex: 1;">
+                    <p-floatLabel>
+                        <input id="telefoneRepresentante" type="text" pInputText style="width: 100%;">
+                        <label for="telefoneRepresentante">Telefone Representante</label>
+                    </p-floatLabel>
+                </div>
+
+                <div style="flex: 1;">
+                    <p-floatLabel>
+                        <input id="emailRepresentante" type="text" pInputText style="width: 100%;">
+                        <label for="emailRepresentante">E-mail Representante</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <textarea id="observacoesRepresentantes" type="text" pInputText style="width: 100%;"></textarea>
+                        <label for="observacoesRepresentantes">Observações Representantes</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+        </p-tabPanel>
+
+        <p-tabPanel header="Financeiro">
+            <h4>Informações Financeiras</h4>
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-inputNumber id="valorContratoInicial" [(ngModel)]="filtros.valorContrato"
+                            name="valorContrato" mode="currency" currency="BRL" locale="pt-BR"
+                            inputStyle="text-align: right" (onInput)="onValorContratoChange()">
+                        </p-inputNumber>
+                        <label for="valorContratoInicial">Valor Inicial</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-dropdown id="formaPagamento" appendTo="body" name="formaPagamento">
+                        </p-dropdown>
+                        <label for="formaPagamento">Forma de Pagamento</label>
+                    </p-floatLabel>
+                </div>
+
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-dropdown id="tipoPagamento" appendTo="body" name="tipoPagamento">
+                        </p-dropdown>
+                        <label for="tipoPagamento">Tipo de Pagamento</label>
+                    </p-floatLabel>
+                </div>
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-dropdown id="numeroParcelas" appendTo="body" name="numeroParcelas">
+                        </p-dropdown>
+                        <label for="numeroParcelas">Número de Parcelas</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input id="valorMensal" type="text" pInputText style="width: 100%;">
+                        <label for="valorMensal">Valor Mensal</label>
+                    </p-floatLabel>
+                </div>
+
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-dropdown id="dataVencimento" appendTo="body" name="dataVencimento">
+                        </p-dropdown>
+                        <label for="dataVencimento">Data de Vencimento</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+            <h4>Reajustes</h4>
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input id="reajustePrevisto" type="text" pInputText style="width: 100%;">
+                        <label for="reajustePrevisto">Reajuste Previsto</label>
+                    </p-floatLabel>
+                </div>
+
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input id="indiceReajuste" type="text" pInputText style="width: 100%;">
+                        <label for="indiceReajuste">Índice de Reajuste</label>
+                    </p-floatLabel>
+                </div>
+
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-calendar id="dataProximoReajuste" [showTime]="false" [(ngModel)]="dataExpedicao"
+                            name="dataCriacao" [showIcon]="true" appendTo="body" dateFormat="dd/mm/yy"
+                            [ngStyle]="{'width': '100%'}">
+                        </p-calendar>
+                        <label for="dataProximoReajuste">Data Próximo Reajuste</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input id="periocidadeReajuste" type="text" pInputText style="width: 100%;">
+                        <label for="periocidadeReajuste">Periocidade de Reajuste</label>
+                    </p-floatLabel>
+                </div>
+
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-calendar id="dataUltimoReajuste" [showTime]="false" [(ngModel)]="dataExpedicao"
+                            name="dataCriacao" [showIcon]="true" appendTo="body" dateFormat="dd/mm/yy"
+                            [ngStyle]="{'width': '100%'}">
+                        </p-calendar>
+                        <label for="dataUltimoReajuste">Data Último Reajuste</label>
+                    </p-floatLabel>
+                </div>
+
+                <p-floatLabel style="flex: 1;">
+                    <p-inputNumber id="valorContratoInicial" [(ngModel)]="filtros.valorContrato" name="valorContrato"
+                        mode="currency" currency="BRL" locale="pt-BR" inputStyle="text-align: right"
+                        (onInput)="onValorContratoChange()">
+                    </p-inputNumber>
+                    <label for="valorContratoInicial">Valor Próximo Reajuste</label>
+                </p-floatLabel>
+            </div>
+            <h4>Outras Informações Financeiras</h4>
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input id="descontoNegociado" type="text" pInputText style="width: 100%;">
+                        <label for="descontoNegociado">Desconto Negociado</label>
+                    </p-floatLabel>
+                </div>
+
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input id="jurosNegociados" type="text" pInputText style="width: 100%;">
+                        <label for="jurosNegociados">Juros Negociados</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input id="multaPorAtraso" type="text" pInputText style="width: 100%;">
+                        <label for="multaPorAtraso">Multa por Atraso (%)</label>
+                    </p-floatLabel>
+                </div>
+
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input id="jurosPorAtraso" type="text" pInputText style="width: 100%;">
+                        <label for="jurosPorAtraso">Juros por Atraso (%)</label>
+                    </p-floatLabel>
+                </div>
+
+            </div>
+
+            <h4>Observações</h4>
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <textarea id="observacoesFinaceiras" type="text" pInputText style="width: 100%;"></textarea>
+                        <label for="observacoesFinaceiras">Observações Finaceiras</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+
+        </p-tabPanel>
+
+        <p-tabPanel header="Aditivos">
+            <div class="p-mb-4">
+                <button pButton icon="pi pi-plus" label="Adicionar Aditivo" class="p-button-sm"
+                    (click)="addAdditive()"></button>
+            </div>
+
+            <p-table [value]="contract.additives || []" [paginator]="true" [rows]="5">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Número</th>
+                        <th>Data</th>
+                        <th>Descrição</th>
+                        <th>Valor</th>
+                        <th>Vigência</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-additive let-i="rowIndex">
+                    <tr>
+                        <td>{{ additive.number }}</td>
+                        <td>{{ additive.date | date:'dd/MM/yyyy' }}</td>
+                        <td>{{ additive.description }}</td>
+                        <td>{{ additive.value | currency:'BRL':'symbol':'1.2-2' }}</td>
+                        <td>
+                            {{ additive.startDate | date:'dd/MM/yyyy' }} -
+                            {{ additive.endDate | date:'dd/MM/yyyy' }}
+                        </td>
+                        <td>
+                            <p-tag [value]="additive.status === 'pending' ? 'Pendente' : 'Aprovado'"
+                                [severity]="additive.status === 'pending' ? 'warning' : 'success'"></p-tag>
+                        </td>
+                        <td>
+                            <button pButton icon="pi pi-trash" class="p-button-rounded p-button-text p-button-danger"
+                                (click)="removeAdditive(i)"></button>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </p-tabPanel>
+
+        <p-tabPanel header="Cláusulas">
+            <div class="field grid">
+                <div class="col-12">
+                    <p-button icon="pi pi-plus" label="Adicionar Cláusula" (click)="adicionarClausula()"></p-button>
+                </div>
+            </div>
+
+            <p-table [value]="contrato.clausulas" [rows]="5" [paginator]="true" responsiveLayout="scroll">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Título</th>
+                        <th>Descrição</th>
+                        <th>Tipo</th>
+                        <th>Obrigatória</th>
+                        <th>Ações</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-clausula let-i="rowIndex">
+                    <tr>
+                        <td>{{clausula.titulo}}</td>
+                        <td>{{clausula.descricao | slice:0:100}}...</td>
+                        <td>{{clausula.tipo}}</td>
+                        <td>
+                            <p-tag [severity]="clausula.obrigatoria ? 'success' : 'warning'"
+                                [value]="clausula.obrigatoria ? 'Sim' : 'Não'">
+                            </p-tag>
+                        </td>
+                        <td>
+                            <button pButton icon="pi pi-pencil" pTooltip="Editar" class="p-button-rounded p-button-text"
+                                (click)="editarClausula(clausula)"></button>
+                            <button pButton icon="pi pi-trash" pTooltip="Remover"
+                                class="p-button-rounded p-button-text p-button-danger"
+                                (click)="removerClausula(i)"></button>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+
+            <h4>Penalidades</h4>
+
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel>
+                        <p-inputNumber [(ngModel)]="contrato.multaRescisao" name="multaRescisao" mode="currency"
+                            currency="BRL" locale="pt-BR">
+                        </p-inputNumber>
+                        <label for="multaRescisao">Multa por Rescisão</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <textarea name="condicoesRescisao" id="condicoesRescisao" type="text" pInputText
+                            style="width: 100%;"></textarea>
+                        <label for="condicoesRescisao">Condições para Rescisão</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+        </p-tabPanel>
+
+        <p-tabPanel header="Histórico">
+            <div class="timeline-container">
+                <div class="timeline-header">
+                    <h3 class="timeline-title">
+                        <i class="pi pi-history"></i>
+                        Histórico de Atividades
+                    </h3>
+                    <div class="timeline-stats">
+                        <span class="stat-item">
+                            <i class="pi pi-check-circle"></i>
+                            <span>{{ getAprovadosCount() }} Aprovados</span>
+                        </span>
+                        <span class="stat-item">
+                            <i class="pi pi-times-circle"></i>
+                            <span>{{ getReprovadosCount() }} Reprovados</span>
+                        </span>
+                        <span class="stat-item">
+                            <i class="pi pi-clock"></i>
+                            <span>{{ historicoContrato.length }} Total</span>
+                        </span>
+                    </div>
+                </div>
+                
+                <p-timeline [value]="historicoContrato" align="alternate" styleClass="custom-timeline timeline-animation">
+                    <ng-template pTemplate="content" let-event>
+                        <p-card [header]="event.tipo || 'Sem tipo'"
+                            [subheader]="(event.data ? (event.data | date:'dd/MM/yyyy HH:mm') : 'Sem data') || ''"
+                            [ngClass]="getTimelineEventClass(event.tipo)"
+                            styleClass="timeline-card">
+                            
+                            <div class="timeline-content">
+                                <div class="timeline-icon">
+                                    <i [class]="getTimelineIcon(event.tipo)"></i>
+                                </div>
+                                <div class="timeline-body">
+                                    <p class="timeline-description">{{event.descricao}}</p>
+                                    <div class="timeline-meta">
+                                        <span class="timeline-time">
+                                            <i class="pi pi-clock"></i>
+                                            {{event.data | date:'HH:mm'}}
+                                        </span>
+                                        <span class="timeline-date">
+                                            <i class="pi pi-calendar"></i>
+                                            {{event.data | date:'dd/MM/yyyy'}}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <ng-template pTemplate="footer">
+                                <div class="timeline-footer">
+                                    <div class="timeline-responsavel">
+                                        <div class="user-avatar">
+                                            <i class="pi pi-user"></i>
+                                        </div>
+                                        <div class="user-info">
+                                            <span class="user-name">{{event.responsavel}}</span>
+                                            <span class="user-role">{{getUserRole(event.responsavel)}}</span>
+                                        </div>
+                                    </div>
+                                    <div class="timeline-status">
+                                        <span [class]="getStatusBadgeClass(event.tipo)" class="status-badge">
+                                            {{event.tipo}}
+                                        </span>
+                                    </div>
+                                </div>
+                            </ng-template>
+                        </p-card>
+                    </ng-template>
+                    
+                    <ng-template pTemplate="opposite" let-event>
+                        <div class="timeline-date">
+                            <div class="date-card">
+                                <div class="date-day">{{event.data | date:'dd'}}</div>
+                                <div class="date-month">{{event.data | date:'MMM'}}</div>
+                                <div class="date-year">{{event.data | date:'yyyy'}}</div>
+                            </div>
+                        </div>
+                    </ng-template>
+                </p-timeline>
+                
+                <div class="timeline-actions">
+                    <button pButton 
+                        label="Exportar Histórico" 
+                        icon="pi pi-download" 
+                        class="p-button-outlined p-button-info">
+                    </button>
+                </div>
+            </div>
+        </p-tabPanel>
+
+        <p-tabPanel header="Observações e Anexos">
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <textarea id="observacoes" type="text" pInputText style="width: 100%;"></textarea>
+                        <label for="observacoes">Observações</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-fileUpload name="demo[]" url="https://www.primefaces.org/cdn/api/upload.php"
+                            (onUpload)="onUpload($event)" [multiple]="true" maxFileSize="1000000">
+                            <ng-template pTemplate="content">
+                                <ul *ngIf="uploadedFiles.length">
+                                    <li *ngFor="let file of uploadedFiles">
+                                        {{ file.name }} - {{ file.size }} bytes
+                                    </li>
+                                </ul>
+                            </ng-template>
+                        </p-fileUpload>
+                    </p-floatLabel>
+                </div>
+            </div>
+        </p-tabPanel>
+    </p-tabView>
+    <ng-template pTemplate="footer">
+        <button pButton [outlined]="true" [raised]="true" severity="danger" icon="pi pi-times" label="Cancelar"
+            (click)="displayModal =false" class="p-button-text">
+        </button>
+        <button pButton [outlined]="false" [raised]="true" severity="success" icon="pi pi-check" label="Salvar"
+            class="ml-2">
+        </button>
+    </ng-template>
+</p-dialog>
+
+<!-- Modal de Aprovação/Reprovação -->
+<p-dialog [header]="acaoSelecionada === 'aprovar' ? 'Aprovar Contrato' : 'Reprovar Contrato'" 
+    [draggable]="false" [resizable]="false" [(visible)]="displayModalAprovacao"
+    [style]="{width: '50vw'}" [modal]="true" styleClass="aprovacao-modal">
+    
+    <div class="field grid" *ngIf="contratoSelecionado">
+        <div class="col-12">
+            <h4>Contrato: {{ contratoSelecionado.nome }}</h4>
+            <p><strong>Status atual:</strong> {{ contratoSelecionado.status }}</p>
+        </div>
+    </div>
+
+    <div class="field grid">
+        <div class="col-12">
+            <p-floatLabel>
+                <textarea pInputTextarea [(ngModel)]="observacaoAprovacao" name="observacaoAprovacao" 
+                    rows="4" style="width: 100%;"></textarea>
+                <label for="observacaoAprovacao">
+                    {{ acaoSelecionada === 'aprovar' ? 'Observações da Aprovação' : 'Motivo da Reprovação' }}
+                </label>
+            </p-floatLabel>
+        </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+        <button pButton [outlined]="true" [raised]="true" severity="secondary" icon="pi pi-times" 
+            label="Cancelar" (click)="cancelarAcao()" class="p-button-text">
+        </button>
+        <button pButton [outlined]="false" [raised]="true" 
+            [severity]="acaoSelecionada === 'aprovar' ? 'success' : 'danger'" 
+            [icon]="acaoSelecionada === 'aprovar' ? 'pi pi-check' : 'pi pi-times'" 
+            [label]="acaoSelecionada === 'aprovar' ? 'Aprovar' : 'Reprovar'"
+            (click)="executarAcao()" 
+            [disabled]="acaoSelecionada === 'reprovar' && !observacaoAprovacao.trim()"
+            class="ml-2">
+        </button>
+    </ng-template>
+</p-dialog>
+
+<!-- Modal de Histórico -->
+<p-dialog header="Histórico do Contrato" [draggable]="false" [resizable]="false" 
+    [(visible)]="displayModalHistorico" [style]="{width: '80vw', maxWidth: '1200px'}" [modal]="true" styleClass="historico-modal">
+    
+    <div class="field grid" *ngIf="contratoSelecionado">
+        <div class="col-12">
+            <div class="contrato-info">
+                <h4><i class="pi pi-file-text"></i> Contrato: {{ contratoSelecionado.nome }}</h4>
+                <p class="contrato-details">
+                    <span class="detail-item">
+                        <i class="pi pi-calendar"></i>
+                        <strong>Status:</strong> {{ contratoSelecionado.status || 'N/A' }}
+                    </span>
+                    <span class="detail-item">
+                        <i class="pi pi-clock"></i>
+                        <strong>Última Atualização:</strong> {{ contratoSelecionado.dataAlteracao || 'N/A' }}
+                    </span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="field grid">
+        <div class="col-12">
+            <div class="timeline-container">
+                <h5 class="timeline-title">
+                    <i class="pi pi-history"></i>
+                    Histórico de Alterações
+                </h5>
+                <p-timeline [value]="historicoAprovacao" align="alternate" styleClass="custom-timeline timeline-animation">
+                    <ng-template pTemplate="content" let-item>
+                        <p-card [header]="getAcaoLabel(item.acao)"
+                            [subheader]="(item.dataAcao ? (item.dataAcao | date:'dd/MM/yyyy HH:mm') : 'Sem data') || ''"
+                            styleClass="timeline-card">
+                            
+                            <div class="timeline-content">
+                                <div class="timeline-icon">
+                                    <i class="pi pi-info-circle"></i>
+                                </div>
+                                <div class="timeline-body">
+                                    <p class="timeline-description">{{item.observacao}}</p>
+                                    <div class="timeline-meta">
+                                        <span class="timeline-time">
+                                            <i class="pi pi-clock"></i>
+                                            {{item.dataAcao | date:'HH:mm'}}
+                                        </span>
+                                        <span class="timeline-date">
+                                            <i class="pi pi-calendar"></i>
+                                            {{item.dataAcao | date:'dd/MM/yyyy'}}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <ng-template pTemplate="footer">
+                                <div class="timeline-footer">
+                                    <div class="timeline-responsavel">
+                                        <div class="user-avatar">
+                                            <i class="pi pi-user"></i>
+                                        </div>
+                                        <div class="user-info">
+                                            <span class="user-name">{{item.responsavelNome}}</span>
+                                            <span class="user-role">{{getUserRole(item.responsavelNome)}}</span>
+                                        </div>
+                                    </div>
+                                    <div class="timeline-status">
+                                        <span class="status-badge">
+                                            {{getAcaoLabel(item.acao)}}
+                                        </span>
+                                    </div>
+                                </div>
+                            </ng-template>
+                        </p-card>
+                    </ng-template>
+                    
+                    <ng-template pTemplate="opposite" let-item>
+                        <div class="timeline-date">
+                            <div class="date-card">
+                                <div class="date-day">{{item.dataAcao | date:'dd'}}</div>
+                                <div class="date-month">{{item.dataAcao | date:'MMM'}}</div>
+                                <div class="date-year">{{item.dataAcao | date:'yyyy'}}</div>
+                            </div>
+                        </div>
+                    </ng-template>
+                </p-timeline>
+            </div>
+        </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+        <div class="modal-footer-actions">
+            <button pButton [outlined]="true" [raised]="true" severity="info" icon="pi pi-download" 
+                label="Exportar Histórico" class="mr-2">
+            </button>
+            <button pButton [outlined]="true" [raised]="true" severity="secondary" icon="pi pi-times" 
+                label="Fechar" (click)="fecharHistorico()" class="p-button-text">
+            </button>
+        </div>
+    </ng-template>
+</p-dialog>

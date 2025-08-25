@@ -1,58 +1,60 @@
 <div class="full-screen">
   <div class="container">
     <div class="login-card">
-      <img src="../../../assets/vmi-medica-logo.svg" 
-           alt="VMI Médica" 
-           class="logo">
+      <div class="form-group">
+        <img src="../../../assets/logo-ketra.png" 
+        alt="VMI Médica" 
+        class="logo">
+        <h6 class="h6-menu">Portal PGA</h6>
+      </div>
       
       <form (ngSubmit)="onSubmit()">
         <div class="form-group">
           <input type="email" 
-                [(ngModel)]="email" 
-                name="email" 
-                placeholder="E-mail" 
-                required>
-        </div>
-        
-        <div class="form-group">
+            [(ngModel)]="email" 
+            name="email" 
+            placeholder="{{ 'AUTH.USERNAME' | translate }}" 
+            required>
+
           <div class="form-group" style="position: relative;">
             <input pInputText id="senha" name="senha" required 
               [(ngModel)]="password" 
-              placeholder="Senha" 
+              placeholder="{{ 'AUTH.PASSWORD' | translate }}" 
               [type]="mostrarSenha ? 'text' : 'password'"
               style="padding-right: 40px;" />
             
             <button type="button" pButton 
               [icon]="mostrarSenha ? 'pi pi-eye-slash' : 'pi pi-eye'" 
               (click)="mostrarSenha = !mostrarSenha"
-              class="p-button-text p-button-plain"
-              style="position: absolute; right: 5px; top: 40%; transform: translateY(-50%);">
+              class="p-button-text p-button-plain button-password">
             </button>
           </div>
         </div>
         
         <div class="forgot-password">
-          <a (click)="esqueciSenha()" style="cursor: pointer;">Esqueci minha senha</a>
+          <a (click)="esqueciSenha()" style="cursor: pointer;">{{ 'AUTH.FORGOT_PASSWORD' | translate }}</a>
         </div>
         
         <div class="checkbox-group">
-          <label>
+          <div class="radio-container">
             <input type="radio" 
-                  [(ngModel)]="userType" 
-                  name="userType" 
-                  value="colaborador"> 
-            Colaborador
-          </label>
-          <label>
+              class="custom-radio"
+              [(ngModel)]="userType" 
+              name="userType"
+              value="colaborador">
+            <label>Colaborador</label>
+          </div>
+          <div class="radio-container">
             <input type="radio" 
-                  [(ngModel)]="userType" 
-                  name="userType" 
-                  value="fornecedor"> 
-            Fornecedor
-          </label>
+              class="custom-radio"
+              [(ngModel)]="userType" 
+              name="userType" 
+              value="fornecedor">
+            <label>Fornecedor</label>
+          </div>
         </div>
         
-        <button type="submit" class="btn-primary">Entrar</button>
+        <button type="submit" class="btn-primary">{{ 'AUTH.LOGIN' | translate }}</button>
       </form>
     </div>
   </div>

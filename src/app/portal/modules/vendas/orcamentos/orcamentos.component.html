@@ -1,0 +1,170 @@
+<div class="orcamentos-container">
+  <div class="header-section">
+    <div class="title-section">
+      <h1>{{ 'ORCAMENTOS' | translate }}</h1>
+      <p>{{ 'ORCAMENTOS_DESC' | translate }}</p>
+    </div>
+    <div class="actions-section">
+      <p-button 
+        icon="pi pi-plus" 
+        [label]="'NOVO_ORCAMENTO' | translate"
+        (onClick)="openNewOrcamento()"
+        class="p-button-success">
+      </p-button>
+    </div>
+  </div>
+
+  <!-- Lista de Orçamentos -->
+  <p-card [header]="'ORCAMENTOS' | translate">
+    <p-table [value]="orcamentos" [paginator]="true" [rows]="10" 
+             [showCurrentPageReport]="true" 
+             currentPageReportTemplate="{{ 'SHOWING' | translate }} {first} {{ 'TO' | translate }} {last} {{ 'OF' | translate }} {totalRecords} {{ 'ENTRIES' | translate }}"
+             [rowsPerPageOptions]="[5, 10, 25]">
+      
+      <ng-template pTemplate="header">
+        <tr>
+          <th>{{ 'NUMERO' | translate }}</th>
+          <th>{{ 'CLIENTE' | translate }}</th>
+          <th>{{ 'DATA_CRIACAO' | translate }}</th>
+          <th>{{ 'DATA_VALIDADE' | translate }}</th>
+          <th>{{ 'VALOR_TOTAL' | translate }}</th>
+          <th>{{ 'STATUS' | translate }}</th>
+          <th>{{ 'RESPONSAVEL' | translate }}</th>
+          <th>{{ 'ACOES' | translate }}</th>
+        </tr>
+      </ng-template>
+      
+      <ng-template pTemplate="body" let-orcamento>
+        <tr>
+          <td>{{ orcamento.numero }}</td>
+          <td>{{ orcamento.cliente }}</td>
+          <td>{{ orcamento.dataCriacao | date:'dd/MM/yyyy' }}</td>
+          <td>{{ orcamento.dataValidade | date:'dd/MM/yyyy' }}</td>
+          <td>{{ orcamento.valorTotal | currency:'BRL' }}</td>
+          <td>
+            <span class="status-badge" [ngClass]="getStatusClass(orcamento.status)">
+              <i [class]="getStatusIcon(orcamento.status)"></i>
+              {{ orcamento.status | titlecase }}
+            </span>
+          </td>
+          <td>{{ orcamento.responsavel }}</td>
+          <td>
+            <div class="action-buttons">
+              <p-button 
+                icon="pi pi-eye" 
+                [label]="'VISUALIZAR' | translate"
+                class="p-button-info p-button-sm">
+              </p-button>
+              <p-button 
+                icon="pi pi-pencil" 
+                [label]="'EDITAR' | translate"
+                (onClick)="editOrcamento(orcamento)"
+                class="p-button-primary p-button-sm">
+              </p-button>
+              <p-button 
+                icon="pi pi-trash" 
+                [label]="'EXCLUIR' | translate"
+                (onClick)="deleteOrcamento(orcamento)"
+                class="p-button-danger p-button-sm">
+              </p-button>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-card>
+</div>
+
+<!-- Dialog para criar/editar orçamento -->
+<p-dialog 
+  [(visible)]="displayDialog" 
+  [header]="(isNewOrcamento ? 'NOVO_ORCAMENTO' : 'EDITAR_ORCAMENTO') | translate"
+  [modal]="true" 
+  [style]="{width: '800px'}"
+  [draggable]="false" 
+  [resizable]="false">
+  
+  <div class="dialog-content" *ngIf="selectedOrcamento">
+    <div class="form-row">
+      <div class="form-field">
+        <label for="numero">{{ 'NUMERO' | translate }} *</label>
+        <input 
+          id="numero"
+          type="text" 
+          pInputText 
+          [(ngModel)]="selectedOrcamento.numero"
+          class="w-full">
+      </div>
+      <div class="form-field">
+        <label for="cliente">{{ 'CLIENTE' | translate }} *</label>
+        <input 
+          id="cliente"
+          type="text" 
+          pInputText 
+          [(ngModel)]="selectedOrcamento.cliente"
+          class="w-full">
+      </div>
+    </div>
+    
+    <div class="form-row">
+      <div class="form-field">
+        <label for="dataCriacao">{{ 'DATA_CRIACAO' | translate }}</label>
+        <p-calendar 
+          id="dataCriacao"
+          [(ngModel)]="selectedOrcamento.dataCriacao"
+          dateFormat="dd/mm/yy"
+          class="w-full">
+        </p-calendar>
+      </div>
+      <div class="form-field">
+        <label for="dataValidade">{{ 'DATA_VALIDADE' | translate }}</label>
+        <p-calendar 
+          id="dataValidade"
+          [(ngModel)]="selectedOrcamento.dataValidade"
+          dateFormat="dd/mm/yy"
+          class="w-full">
+        </p-calendar>
+      </div>
+    </div>
+    
+    <div class="form-row">
+      <div class="form-field">
+        <label for="valorTotal">{{ 'VALOR_TOTAL' | translate }} *</label>
+        <p-inputNumber 
+          id="valorTotal"
+          [(ngModel)]="selectedOrcamento.valorTotal"
+          [min]="0"
+          [showButtons]="true"
+          prefix="R$ "
+          class="w-full">
+        </p-inputNumber>
+      </div>
+      <div class="form-field">
+        <label for="responsavel">{{ 'RESPONSAVEL' | translate }} *</label>
+        <input 
+          id="responsavel"
+          type="text" 
+          pInputText 
+          [(ngModel)]="selectedOrcamento.responsavel"
+          class="w-full">
+      </div>
+    </div>
+  </div>
+  
+  <ng-template pTemplate="footer">
+    <p-button 
+      [label]="'CANCELAR' | translate"
+      icon="pi pi-times" 
+      (onClick)="displayDialog = false"
+      class="p-button-text">
+    </p-button>
+    <p-button 
+      [label]="'SALVAR' | translate"
+      icon="pi pi-check" 
+      (onClick)="saveOrcamento()"
+      class="p-button-success">
+    </p-button>
+  </ng-template>
+</p-dialog>
+
+<p-toast></p-toast> 

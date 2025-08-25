@@ -1,0 +1,222 @@
+<div class="contas-pagar-container">
+  <div class="header">
+    <div class="title-section">
+      <h1>{{ 'CONTAS_PAGAR' | translate }}</h1>
+      <p>{{ 'CONTAS_PAGAR_DESC' | translate }}</p>
+    </div>
+    <div class="actions">
+      <p-button 
+        [label]="'NOVA_CONTA' | translate"
+        icon="pi pi-plus"
+        (onClick)="openNew()"
+        styleClass="p-button-success">
+      </p-button>
+    </div>
+  </div>
+
+  <!-- Cards de Resumo -->
+  <div class="summary-cards">
+    <p-card class="summary-card">
+      <div class="card-content">
+        <div class="icon">
+          <i class="pi pi-dollar"></i>
+        </div>
+        <div class="info">
+          <h3>{{ 'TOTAL_PAGAR' | translate }}</h3>
+          <span class="number">{{ getTotalPagar() | currency:'BRL' }}</span>
+        </div>
+      </div>
+    </p-card>
+
+    <p-card class="summary-card">
+      <div class="card-content">
+        <div class="icon">
+          <i class="pi pi-check-circle"></i>
+        </div>
+        <div class="info">
+          <h3>{{ 'TOTAL_PAGO' | translate }}</h3>
+          <span class="number">{{ getTotalPago() | currency:'BRL' }}</span>
+        </div>
+      </div>
+    </p-card>
+
+    <p-card class="summary-card">
+      <div class="card-content">
+        <div class="icon">
+          <i class="pi pi-exclamation-triangle"></i>
+        </div>
+        <div class="info">
+          <h3>{{ 'TOTAL_VENCIDO' | translate }}</h3>
+          <span class="number">{{ getTotalVencido() | currency:'BRL' }}</span>
+        </div>
+      </div>
+    </p-card>
+  </div>
+
+  <!-- Tabela de Contas a Pagar -->
+  <p-card [header]="'LISTA_CONTAS_PAGAR' | translate" class="table-card">
+    <p-table 
+      [value]="contasPagar" 
+      [paginator]="true" 
+      [rows]="10"
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="{{ 'SHOWING' | translate }} {first} {{ 'TO' | translate }} {last} {{ 'OF' | translate }} {totalRecords} {{ 'ENTRIES' | translate }}"
+      [rowsPerPageOptions]="[10,25,50]"
+      styleClass="p-datatable-sm">
+      
+      <ng-template pTemplate="header">
+        <tr>
+          <th>{{ 'NUMERO' | translate }}</th>
+          <th>{{ 'FORNECEDOR' | translate }}</th>
+          <th>{{ 'VALOR' | translate }}</th>
+          <th>{{ 'DATA_VENCIMENTO' | translate }}</th>
+          <th>{{ 'CATEGORIA' | translate }}</th>
+          <th>{{ 'STATUS' | translate }}</th>
+          <th>{{ 'ACOES' | translate }}</th>
+        </tr>
+      </ng-template>
+      
+      <ng-template pTemplate="body" let-conta>
+        <tr>
+          <td>{{ conta.numero }}</td>
+          <td>{{ conta.fornecedor }}</td>
+          <td>{{ conta.valor | currency:'BRL' }}</td>
+          <td>{{ conta.dataVencimento | date:'dd/MM/yyyy' }}</td>
+          <td>{{ conta.categoria }}</td>
+          <td>
+            <p-tag 
+              [value]="conta.status" 
+              [severity]="getStatusSeverity(conta.status)">
+            </p-tag>
+          </td>
+          <td>
+            <div class="action-buttons">
+              <p-button 
+                [label]="'EDITAR' | translate"
+                icon="pi pi-pencil"
+                styleClass="p-button-sm p-button-outlined"
+                (onClick)="editConta(conta)">
+              </p-button>
+              <p-button 
+                [label]="'EXCLUIR' | translate"
+                icon="pi pi-trash"
+                styleClass="p-button-sm p-button-outlined p-button-danger"
+                (onClick)="deleteConta(conta)">
+              </p-button>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-card>
+
+  <!-- Dialog para Criar/Editar -->
+  <p-dialog
+    [(visible)]="displayDialog"
+    [header]="(isNewConta ? 'NOVA_CONTA' : 'EDITAR_CONTA') | translate"
+    [modal]="true"
+    [style]="{width: '50vw'}"
+    [draggable]="false"
+    [resizable]="false">
+    
+    <div class="form-grid">
+      <div class="form-field">
+        <label for="numero">{{ 'NUMERO' | translate }} *</label>
+        <input 
+          pInputText 
+          id="numero"
+          [(ngModel)]="selectedConta!.numero"
+          required>
+      </div>
+
+      <div class="form-field">
+        <label for="fornecedor">{{ 'FORNECEDOR' | translate }} *</label>
+        <input 
+          pInputText 
+          id="fornecedor"
+          [(ngModel)]="selectedConta!.fornecedor"
+          required>
+      </div>
+
+      <div class="form-field">
+        <label for="valor">{{ 'VALOR' | translate }} *</label>
+        <p-inputNumber
+          id="valor"
+          [(ngModel)]="selectedConta!.valor"
+          [min]="0"
+          [showButtons]="true"
+          mode="currency"
+          currency="BRL">
+        </p-inputNumber>
+      </div>
+
+      <div class="form-field">
+        <label for="dataVencimento">{{ 'DATA_VENCIMENTO' | translate }} *</label>
+        <p-calendar
+          id="dataVencimento"
+          [(ngModel)]="selectedConta!.dataVencimento"
+          dateFormat="dd/mm/yy"
+          [showIcon]="true">
+        </p-calendar>
+      </div>
+
+      <div class="form-field">
+        <label for="categoria">{{ 'CATEGORIA' | translate }}</label>
+        <input 
+          pInputText 
+          id="categoria"
+          [(ngModel)]="selectedConta!.categoria">
+      </div>
+
+      <div class="form-field">
+        <label for="status">{{ 'STATUS' | translate }}</label>
+        <p-dropdown
+          id="status"
+          [(ngModel)]="selectedConta!.status"
+          [options]="[
+            {label: 'PENDENTE', value: 'PENDENTE'},
+            {label: 'PAGO', value: 'PAGO'},
+            {label: 'VENCIDO', value: 'VENCIDO'}
+          ]"
+          optionLabel="label"
+          placeholder="{{ 'SELECIONE_STATUS' | translate }}">
+        </p-dropdown>
+      </div>
+
+      <div class="form-field">
+        <label for="formaPagamento">{{ 'FORMA_PAGAMENTO' | translate }}</label>
+        <input 
+          pInputText 
+          id="formaPagamento"
+          [(ngModel)]="selectedConta!.formaPagamento">
+      </div>
+
+      <div class="form-field full-width">
+        <label for="observacoes">{{ 'OBSERVACOES' | translate }}</label>
+        <textarea 
+          pInputTextarea 
+          id="observacoes"
+          [(ngModel)]="selectedConta!.observacoes"
+          [rows]="3">
+        </textarea>
+      </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+      <p-button 
+        [label]="'CANCELAR' | translate"
+        icon="pi pi-times"
+        styleClass="p-button-text"
+        (onClick)="cancel()">
+      </p-button>
+      <p-button 
+        [label]="'SALVAR' | translate"
+        icon="pi pi-check"
+        styleClass="p-button-success"
+        (onClick)="saveConta()">
+      </p-button>
+    </ng-template>
+  </p-dialog>
+
+  <p-toast></p-toast>
+</div> 

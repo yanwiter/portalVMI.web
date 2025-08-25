@@ -1,153 +1,499 @@
-<app-title-header title="Dashboard"></app-title-header>
+<app-title-header title="{{ translate('DASHBOARD.TITLE') }}"></app-title-header>
 
-    <div class="dashboard-content">
-        <div class="overview-cards">
-            <p-card class="stat-card">
-                <div class="stat-content">
-                    <i class="pi pi-chart-bar stat-icon"></i>
-                    <div>
-                        <h3>1,245</h3>
-                        <p>Processos hoje</p>
-                    </div>
-                </div>
-            </p-card>
-
-            <p-card class="stat-card">
-                <div class="stat-content">
-                    <i class="pi pi-check-circle stat-icon"></i>
-                    <div>
-                        <h3>924</h3>
-                        <p>Concluídos</p>
-                    </div>
-                </div>
-            </p-card>
-
-            <p-card class="stat-card">
-                <div class="stat-content">
-                    <i class="pi pi-exclamation-triangle stat-icon"></i>
-                    <div>
-                        <h3>56</h3>
-                        <p>Alertas</p>
-                    </div>
-                </div>
-            </p-card>
-
-            <p-card class="stat-card">
-                <div class="stat-content">
-                    <i class="pi pi-users stat-icon"></i>
-                    <div>
-                        <h3>42</h3>
-                        <p>Clientes / Fornecedores ativos</p>
-                    </div>
-                </div>
-            </p-card>
-        </div>
-
-        <div class="charts-grid">
-            <div class="chart-row">
-                <div class="chart-container">
-                    <p-card>
-                        <div class="chart-placeholder">
-                            <div class="chart-header">
-                                <h4>Produção Planejada x Realizada</h4>
-                                <div class="chart-controls">
-                                    <p-calendar [(ngModel)]="barChartDateRange" selectionMode="range"
-                                        [readonlyInput]="true" [showIcon]="true" dateFormat="dd/mm/yy"
-                                        placeholder="Selecione o período"
-                                        (ngModelChange)="updateBarChart()"></p-calendar>
-                                </div>
-                            </div>
-                            <p-chart type="bar" [data]="data" [options]="chartOptionsForBar" width="100%"
-                                height="350px"></p-chart>
-                        </div>
-                    </p-card>
-
-                </div>
-
-                <div class="chart-container">
-                    <p-card>
-                        <div class="chart-placeholder">
-                            <div class="chart-header">
-                                <h4>Porte de Clientes</h4>
-                                <div class="chart-controls">
-                                    <p-calendar [(ngModel)]="barChartDateRange" selectionMode="range"
-                                        [readonlyInput]="true" [showIcon]="true" dateFormat="dd/mm/yy"
-                                        placeholder="Selecione o período"
-                                        (ngModelChange)="updateBarChart()"></p-calendar>
-                                </div>
-                            </div>
-                            <p-chart type="doughnut" [data]="productionData" [options]="chartOptions" width="100%"
-                                height="350px"></p-chart>
-                        </div>
-                    </p-card>
-                </div>
-            </div>
-
-            <div class="chart-row">
-                <div class="chart-container">
-                    <p-card>
-                        <div class="chart-placeholder">
-                            <div class="chart-header">
-                                <h4>Ordem de Produção</h4>
-                                <div class="chart-controls">
-                                    <p-calendar [(ngModel)]="barChartDateRange" selectionMode="range"
-                                        [readonlyInput]="true" [showIcon]="true" dateFormat="dd/mm/yy"
-                                        placeholder="Selecione o período"
-                                        (ngModelChange)="updateBarChart()"></p-calendar>
-                                </div>
-                            </div>
-                            <p-chart type="pie" [data]="orderData" [options]="chartOptions" width="100%"
-                                height="350px"></p-chart>
-                        </div>
-                    </p-card>
-                </div>
-
-                <div class="chart-container">
-                    <p-card>
-                        <div style="min-height: 400px;">
-                        <div class="chart-placeholder">
-                            <h4>Equipamentos</h4>
-                            <div class="progress-grid">
-                                <div class="progress-item">
-                                    <div class="progress-info">
-                                        <span class="percent-value">43%</span>
-                                        <p-progressBar [value]="43" [showValue]="false"
-                                            class="custom-progress progress-1"></p-progressBar>
-                                    </div>
-                                    <span class="equipamento-name">Arcos cirúrgicos</span>
-                                </div>
-
-                                <div class="progress-item">
-                                    <div class="progress-info">
-                                        <span class="percent-value">92%</span>
-                                        <p-progressBar [value]="92" [showValue]="false"
-                                            class="custom-progress progress-2"></p-progressBar>
-                                    </div>
-                                    <span class="equipamento-name">Mamógrafos</span>
-                                </div>
-
-                                <div class="progress-item">
-                                    <div class="progress-info">
-                                        <span class="percent-value">65%</span>
-                                        <p-progressBar [value]="65" [showValue]="false"
-                                            class="custom-progress progress-3"></p-progressBar>
-                                    </div>
-                                    <span class="equipamento-name">Raio-x Fixos</span>
-                                </div>
-
-                                <div class="progress-item">
-                                    <div class="progress-info">
-                                        <span class="percent-value">51%</span>
-                                        <p-progressBar [value]="51" [showValue]="false"
-                                            class="custom-progress progress-4"></p-progressBar>
-                                    </div>
-                                    <span class="equipamento-name">Ressonância Magnética</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    </p-card>
-                </div>
-            </div>
-        </div>
+<div class="dashboard-geral" [class.theme-dark]="isDarkTheme">
+  <!-- Cabeçalho do Dashboard -->
+  <div class="dashboard-header">
+    <div class="header-content">
+      <h1 class="dashboard-title">
+        <i class="pi {{ dashboardIcon }}"></i>
+        {{ translate('DASHBOARD.TITLE') }} {{ dashboardTitle }}
+      </h1>
+      <div class="header-controls">
+        <p-floatLabel>
+          <p-dropdown 
+            id="tipo" 
+            appendTo="body" 
+            [options]="dashboardsOptions" 
+            [(ngModel)]="selectedDashboards"
+            name="tipo" 
+            [style]="{'width':'200px'}">
+          </p-dropdown>
+          <label for="tipo">{{ translate('DASHBOARD.SELECT_DASHBOARD') }}</label>
+        </p-floatLabel>
+      </div>
     </div>
+  </div>
+
+  <!-- Dashboard de Produção -->
+  @if (selectedDashboards == 1) {
+    <!-- Métricas Principais -->
+    <div class="metricas-grid">
+      <div class="metrica-card">
+        <div class="metrica-icon">
+          <i class="pi pi-chart-bar" style="color: #3498db;"></i>
+        </div>
+        <div class="metrica-content">
+          <h3 class="metrica-valor" [appCounterAnimation]="1245" [duration]="1500">0</h3>
+          <p class="metrica-label">{{ translate('DASHBOARD.PROCESSES_TODAY') }}</p>
+        </div>
+      </div>
+
+      <div class="metrica-card">
+        <div class="metrica-icon">
+          <i class="pi pi-check-circle" style="color: #27ae60;"></i>
+        </div>
+        <div class="metrica-content">
+          <h3 class="metrica-valor" [appCounterAnimation]="924" [duration]="1500">0</h3>
+          <p class="metrica-label">{{ translate('DASHBOARD.COMPLETED') }}</p>
+        </div>
+      </div>
+
+      <div class="metrica-card">
+        <div class="metrica-icon">
+          <i class="pi pi-exclamation-triangle" style="color: #e74c3c;"></i>
+        </div>
+        <div class="metrica-content">
+          <h3 class="metrica-valor" [appCounterAnimation]="56" [duration]="1500">0</h3>
+          <p class="metrica-label">{{ translate('DASHBOARD.ALERTS') }}</p>
+        </div>
+      </div>
+
+      <div class="metrica-card">
+        <div class="metrica-icon">
+          <i class="pi pi-users" style="color: #9b59b6;"></i>
+        </div>
+        <div class="metrica-content">
+          <h3 class="metrica-valor" [appCounterAnimation]="42" [duration]="1500">0</h3>
+          <p class="metrica-label">{{ translate('DASHBOARD.ACTIVE_CLIENTS_SUPPLIERS') }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gráficos -->
+    <div class="graficos-grid">
+      <div class="grafico-card">
+        <div class="grafico-header">
+          <h3>{{ translate('DASHBOARD.PRODUCTION_PLANNED_VS_ACTUAL') }}</h3>
+          <div class="grafico-controls">
+            <p-calendar 
+              [ngStyle]="{'width': '200px'}" 
+              [(ngModel)]="barChartDateRange"
+              [readonlyInput]="true" 
+              [showIcon]="true" 
+              [showClear]="true" 
+              selectionMode="range"
+              dateFormat="dd/mm/yy" 
+              [placeholder]="translate('DASHBOARD.SELECT_PERIOD')"
+              (ngModelChange)="updateBarChart()">
+            </p-calendar>
+          </div>
+        </div>
+        <div class="grafico-content">
+          <p-chart type="bar" [data]="data" [options]="chartOptionsForBar" width="100%" height="300px"></p-chart>
+        </div>
+      </div>
+
+      <div class="grafico-card">
+        <div class="grafico-header">
+          <h3>{{ translate('DASHBOARD.CLIENT_SIZE') }}</h3>
+          <div class="grafico-controls">
+            <p-calendar 
+              [ngStyle]="{'width': '200px'}" 
+              [(ngModel)]="barChartDateRange"
+              [showClear]="true" 
+              [readonlyInput]="true" 
+              [showIcon]="true" 
+              dateFormat="dd/mm/yy"
+              selectionMode="range" 
+              [placeholder]="translate('DASHBOARD.SELECT_PERIOD')"
+              (ngModelChange)="updateBarChart()">
+            </p-calendar>
+          </div>
+        </div>
+        <div class="grafico-content">
+          <p-chart type="doughnut" [data]="productionData" [options]="chartOptions" width="100%" height="300px"></p-chart>
+        </div>
+      </div>
+
+      <div class="grafico-card">
+        <div class="grafico-header">
+          <h3>{{ translate('DASHBOARD.PRODUCTION_ORDER') }}</h3>
+          <div class="grafico-controls">
+            <p-calendar 
+              [ngStyle]="{'width': '200px'}" 
+              [(ngModel)]="barChartDateRange"
+              [readonlyInput]="true" 
+              [showIcon]="true" 
+              dateFormat="dd/mm/yy" 
+              [showClear]="true"
+              selectionMode="range" 
+              [placeholder]="translate('DASHBOARD.SELECT_PERIOD')"
+              (ngModelChange)="updateBarChart()">
+            </p-calendar>
+          </div>
+        </div>
+        <div class="grafico-content">
+          <p-chart type="pie" [data]="orderData" [options]="chartOptions" width="100%" height="300px"></p-chart>
+        </div>
+      </div>
+
+      <div class="grafico-card">
+        <div class="grafico-header">
+          <h3>{{ translate('DASHBOARD.EQUIPMENT') }}</h3>
+          <div class="grafico-controls">
+            <p-calendar 
+              [ngStyle]="{'width': '200px'}" 
+              [(ngModel)]="barChartDateRange"
+              [readonlyInput]="true" 
+              [showIcon]="true" 
+              dateFormat="dd/mm/yy" 
+              [showClear]="true"
+              selectionMode="range" 
+              [placeholder]="translate('DASHBOARD.SELECT_PERIOD')"
+              (ngModelChange)="updateBarChart()">
+            </p-calendar>
+          </div>
+        </div>
+        <div class="grafico-content">
+          <div class="progress-grid">
+            <div class="progress-item">
+              <div class="progress-info">
+                <span class="percent-value">43%</span>
+                <p-progressBar [value]="43" [showValue]="false" class="custom-progress progress-1"></p-progressBar>
+              </div>
+              <span class="equipamento-name">{{ translate('DASHBOARD.SURGICAL_ARCS') }}</span>
+            </div>
+
+            <div class="progress-item">
+              <div class="progress-info">
+                <span class="percent-value">92%</span>
+                <p-progressBar [value]="92" [showValue]="false" class="custom-progress progress-2"></p-progressBar>
+              </div>
+              <span class="equipamento-name">{{ translate('DASHBOARD.MAMMOGRAPHS') }}</span>
+            </div>
+
+            <div class="progress-item">
+              <div class="progress-info">
+                <span class="percent-value">65%</span>
+                <p-progressBar [value]="65" [showValue]="false" class="custom-progress progress-3"></p-progressBar>
+              </div>
+              <span class="equipamento-name">{{ translate('DASHBOARD.FIXED_XRAY') }}</span>
+            </div>
+
+            <div class="progress-item">
+              <div class="progress-info">
+                <span class="percent-value">51%</span>
+                <p-progressBar [value]="51" [showValue]="false" class="custom-progress progress-4"></p-progressBar>
+              </div>
+              <span class="equipamento-name">{{ translate('DASHBOARD.MAGNETIC_RESONANCE') }}</span>
+            </div>
+
+            <div class="progress-item">
+              <div class="progress-info">
+                <span class="percent-value">65%</span>
+                <p-progressBar [value]="65" [showValue]="false" class="custom-progress progress-2"></p-progressBar>
+              </div>
+              <span class="equipamento-name">{{ translate('DASHBOARD.FIXED_XRAY') }}</span>
+            </div>
+
+            <div class="progress-item">
+              <div class="progress-info">
+                <span class="percent-value">51%</span>
+                <p-progressBar [value]="51" [showValue]="false" class="custom-progress progress-1"></p-progressBar>
+              </div>
+              <span class="equipamento-name">{{ translate('DASHBOARD.MAGNETIC_RESONANCE') }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Dashboard de Contratos -->
+  @if (selectedDashboards == 2) {
+    <!-- Métricas Principais -->
+    <div class="metricas-grid">
+      <div class="metrica-card">
+        <div class="metrica-icon">
+          <i class="pi pi-chart-bar" style="color: #3498db;"></i>
+        </div>
+        <div class="metrica-content">
+          <h3 class="metrica-valor" [appCounterAnimation]="1245" [duration]="1500">0</h3>
+          <p class="metrica-label">{{ translate('DASHBOARD.TOTAL_CONTRACTS_VALUE') }}</p>
+        </div>
+      </div>
+
+      <div class="metrica-card">
+        <div class="metrica-icon">
+          <i class="pi pi-dollar" style="color: #27ae60;"></i>
+        </div>
+        <div class="metrica-content">
+          <h3 class="metrica-valor" [appCounterAnimation]="924" [duration]="1500" [prefix]="'R$ '" [decimalPlaces]="2">0</h3>
+          <p class="metrica-label">{{ translate('DASHBOARD.TOTAL_VALUE') }}</p>
+        </div>
+      </div>
+
+      <div class="metrica-card">
+        <div class="metrica-icon">
+          <i class="pi pi-clone" style="color: #e74c3c;"></i>
+        </div>
+        <div class="metrica-content">
+          <h3 class="metrica-valor" [appCounterAnimation]="56" [duration]="1500">0</h3>
+          <p class="metrica-label">{{ translate('DASHBOARD.ACTIVE_CONTRACTS') }}</p>
+        </div>
+      </div>
+
+      <div class="metrica-card">
+        <div class="metrica-icon">
+          <i class="pi pi-check-circle" style="color: #9b59b6;"></i>
+        </div>
+        <div class="metrica-content">
+          <h3 class="metrica-valor" [appCounterAnimation]="42" [duration]="1500">0</h3>
+          <p class="metrica-label">{{ translate('DASHBOARD.FINISHED') }}</p>
+        </div>
+      </div>
+
+      <div class="metrica-card">
+        <div class="metrica-icon">
+          <i class="pi pi-ban" style="color: #f39c12;"></i>
+        </div>
+        <div class="metrica-content">
+          <h3 class="metrica-valor" [appCounterAnimation]="420" [duration]="1500">0</h3>
+          <p class="metrica-label">{{ translate('DASHBOARD.CANCELLED') }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gráficos -->
+    <div class="graficos-grid">
+      <div class="grafico-card">
+        <div class="grafico-header">
+          <h3>{{ translate('DASHBOARD.STATUS') }}</h3>
+          <div class="grafico-controls">
+            <p-calendar 
+              [ngStyle]="{'width': '200px'}" 
+              [(ngModel)]="barChartDateRange"
+              [showClear]="true" 
+              [readonlyInput]="true" 
+              [showIcon]="true" 
+              dateFormat="dd/mm/yy"
+              selectionMode="range" 
+              [placeholder]="translate('DASHBOARD.SELECT_PERIOD')"
+              (ngModelChange)="updateBarChart()">
+            </p-calendar>
+          </div>
+        </div>
+        <div class="grafico-content">
+          <p-chart type="doughnut" [data]="contratosData" [options]="chartOptionsContratos" width="100%" height="300px"></p-chart>
+        </div>
+      </div>
+
+      <div class="grafico-card">
+        <div class="grafico-header">
+          <h3>{{ translate('DASHBOARD.TOTAL_CONTRACTS') }}</h3>
+          <div class="grafico-controls">
+            <p-calendar 
+              [ngStyle]="{'width': '200px'}" 
+              [(ngModel)]="barChartDateRange"
+              [readonlyInput]="true" 
+              [showIcon]="true" 
+              [showClear]="true" 
+              selectionMode="range"
+              dateFormat="dd/mm/yy" 
+              [placeholder]="translate('DASHBOARD.SELECT_PERIOD')"
+              (ngModelChange)="updateBarChart()">
+            </p-calendar>
+          </div>
+        </div>
+        <div class="grafico-content">
+          <p-chart type="bar" [data]="dataContratos" [options]="chartOptionsContratos" width="100%" height="300px"></p-chart>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Dashboard de Clientes/Fornecedores -->
+  @if (selectedDashboards == 3) {
+    <!-- Métricas Principais -->
+    <div class="metricas-grid">
+      <div class="metrica-card">
+        <div class="metrica-icon">
+          <i class="pi pi-users" style="color: #3498db;"></i>
+        </div>
+        <div class="metrica-content">
+          <h3 class="metrica-valor" [appCounterAnimation]="totalClientesFornecedores" [duration]="1500">0</h3>
+          <p class="metrica-label">{{ translate('DASHBOARD.TOTAL_REGISTERED') }}</p>
+        </div>
+      </div>
+
+      <div class="metrica-card">
+        <div class="metrica-icon">
+          <i class="pi pi-user-plus" style="color: #27ae60;"></i>
+        </div>
+        <div class="metrica-content">
+          <h3 class="metrica-valor" [appCounterAnimation]="clientesAtivos" [duration]="1500">0</h3>
+          <p class="metrica-label">{{ translate('DASHBOARD.ACTIVE_CLIENTS') }}</p>
+        </div>
+      </div>
+
+      <div class="metrica-card">
+        <div class="metrica-icon">
+          <i class="pi pi-box" style="color: #e74c3c;"></i>
+        </div>
+        <div class="metrica-content">
+          <h3 class="metrica-valor" [appCounterAnimation]="fornecedoresAtivos" [duration]="1500">0</h3>
+          <p class="metrica-label">{{ translate('DASHBOARD.ACTIVE_SUPPLIERS') }}</p>
+        </div>
+      </div>
+
+      <div class="metrica-card">
+        <div class="metrica-icon">
+          <i class="pi pi-user-minus" style="color: #f39c12;"></i>
+        </div>
+        <div class="metrica-content">
+          <h3 class="metrica-valor" [appCounterAnimation]="cadastrosInativos" [duration]="1500">0</h3>
+          <p class="metrica-label">{{ translate('DASHBOARD.INACTIVE_REGISTRATIONS') }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gráficos -->
+    <div class="graficos-grid">
+      <div class="grafico-card">
+        <div class="grafico-header">
+          <h3>{{ translate('DASHBOARD.DISTRIBUTION_BY_TYPE') }}</h3>
+          <div class="grafico-controls">
+            <p-dropdown 
+              [options]="periodoOptions" 
+              [(ngModel)]="periodoSelecionado"
+              (onChange)="atualizarDadosClientesFornecedores()"
+              [style]="{'width': '200px'}">
+            </p-dropdown>
+          </div>
+        </div>
+        <div class="grafico-content">
+          <p-chart type="pie" [data]="tipoCadastroData" [options]="chartOptions" width="100%" height="300px"></p-chart>
+        </div>
+      </div>
+
+      <div class="grafico-card">
+        <div class="grafico-header">
+          <h3>{{ translate('DASHBOARD.REGISTRATION_STATUS') }}</h3>
+          <div class="grafico-controls">
+            <p-dropdown 
+              [options]="periodoOptions" 
+              [(ngModel)]="periodoSelecionado"
+              (onChange)="atualizarDadosClientesFornecedores()"
+              [style]="{'width': '200px'}">
+            </p-dropdown>
+          </div>
+        </div>
+        <div class="grafico-content">
+          <p-chart type="doughnut" [data]="statusCadastroData" [options]="chartOptions" width="100%" height="300px"></p-chart>
+        </div>
+      </div>
+
+      <div class="grafico-card">
+        <div class="grafico-header">
+          <h3>{{ translate('DASHBOARD.COMPANY_SIZE') }}</h3>
+          <div class="grafico-controls">
+            <p-dropdown 
+              [options]="periodoOptions" 
+              [(ngModel)]="periodoSelecionado"
+              (onChange)="atualizarDadosClientesFornecedores()"
+              [style]="{'width': '200px'}">
+            </p-dropdown>
+          </div>
+        </div>
+        <div class="grafico-content">
+          <p-chart type="bar" [data]="porteEmpresaData" [options]="chartOptionsContratos" width="100%" height="300px"></p-chart>
+        </div>
+      </div>
+
+      <div class="grafico-card">
+        <div class="grafico-header">
+          <h3>{{ translate('DASHBOARD.NEW_REGISTRATIONS') }}</h3>
+          <div class="grafico-controls">
+            <p-calendar 
+              [(ngModel)]="dateRange" 
+              selectionMode="range" 
+              dateFormat="dd/mm/yy"
+              [placeholder]="translate('DASHBOARD.SELECT_PERIOD')" 
+              (onSelect)="atualizarDadosClientesFornecedores()"
+              [style]="{'width': '200px'}">
+            </p-calendar>
+          </div>
+        </div>
+        <div class="grafico-content">
+          <p-chart type="line" [data]="novosCadastrosData" [options]="chartOptionsContratos" width="100%" height="300px"></p-chart>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lista de Últimos Cadastros -->
+    <div class="listas-grid">
+      <div class="lista-card">
+        <div class="lista-header">
+          <h3>
+            <i class="pi pi-users"></i>
+            {{ translate('DASHBOARD.RECENT_REGISTRATIONS') }}
+          </h3>
+        </div>
+        <div class="lista-content">
+          <p-table 
+            [value]="ultimosCadastros" 
+            [paginator]="true" 
+            [rows]="5" 
+            [showCurrentPageReport]="true"
+            styleClass="p-datatable-striped p-datatable-gridlines">
+            <ng-template pTemplate="header">
+              <tr>
+                <th>{{ translate('DASHBOARD.NAME_SOCIAL_REASON') }}</th>
+                <th>{{ translate('DASHBOARD.TYPE') }}</th>
+                <th>{{ translate('DASHBOARD.CPF_CNPJ') }}</th>
+                <th>{{ translate('DASHBOARD.REGISTRATION_DATE') }}</th>
+                <th>{{ translate('DASHBOARD.STATUS') }}</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-cadastro>
+              <tr>
+                <td>{{cadastro.razaoSocial}}</td>
+                <td>
+                  <p-tag 
+                    [value]="cadastro.tipoCadastro === 0 ? translate('DASHBOARD.CLIENT') : translate('DASHBOARD.SUPPLIER')"
+                    [severity]="cadastro.tipoCadastro === 0 ? 'success' : 'info'">
+                  </p-tag>
+                </td>
+                <td>{{formatDocument(cadastro.cpfCnpj)}}</td>
+                <td>{{cadastro.dataInclusao | date:'dd/MM/yyyy'}}</td>
+                <td>
+                  <p-tag 
+                    [value]="cadastro.statusCadastro ? translate('DASHBOARD.ACTIVE') : translate('DASHBOARD.INACTIVE')"
+                    [severity]="cadastro.statusCadastro ? 'success' : 'danger'">
+                  </p-tag>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Outros Dashboards -->
+  @if (selectedDashboards == 4) {
+    <app-dashboard-estoque></app-dashboard-estoque>
+  }
+  @if (selectedDashboards == 5) {
+    <app-dashboard-executivo></app-dashboard-executivo>
+  }
+  @if (selectedDashboards == 6) {
+    <app-dashboard-cliente></app-dashboard-cliente>
+  }
+  @if (selectedDashboards == 7) {
+    <app-dashboard-fornecedor></app-dashboard-fornecedor>
+  }
+  @if (selectedDashboards == 8) {
+    <app-dashboard-contrato></app-dashboard-contrato>
+  }
+</div>

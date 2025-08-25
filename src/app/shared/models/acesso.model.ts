@@ -6,6 +6,31 @@ export class AcessoRouteModel implements IApiRouteBase {
 }
 
 export interface AcessoModel {
-    id: number;
+    id: string;
     nome: string;
+    email: string;
+    senha: string;
+    idPerfil?: string;
+    perfilNome?: string;
+    status: number;
+    tipoAcesso: number;
+    tipoPessoa: number;
+    telefone?: string;
+    cpfCnpj?: string;
+    usuario?: string;
+    dataExpiracao?: Date | string | null;
+    observacoes?: string;
+    fotoPerfil?: string;
+    tipoSuspensao?: number;
+    dataInicioSuspensao?: Date | string | null;
+    dataFimSuspensao?: Date | string | null;
+    motivoSuspensao?: string;
+    idRespSuspensao?: string;
+    nomeRespSuspensao?: string;
+    dataSuspensao?: Date | string | null;
+    dataCriacao?: Date | string | null;
+    ultimaAlteracao?: Date | string | null;
+    dataInativacao?: Date | string | null;
+    status_usuario?: boolean;
+    horariosAcesso?: any[];
 }

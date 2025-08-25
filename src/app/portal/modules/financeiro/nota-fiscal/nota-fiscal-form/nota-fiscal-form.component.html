@@ -1,0 +1,188 @@
+<form [formGroup]="form" class="nota-fiscal-form">
+  <div class="form-grid">
+    <!-- Dados Básicos -->
+    <div class="form-section">
+      <h6>Dados Básicos</h6>
+      
+      <div class="form-row">
+        <div class="form-field">
+          <label for="numero">Número *</label>
+          <input pInputText id="numero" formControlName="numero" placeholder="Número da NF" />
+        </div>
+        
+        <div class="form-field">
+          <label for="serie">Série *</label>
+          <input pInputText id="serie" formControlName="serie" placeholder="Série da NF" />
+        </div>
+        
+        <div class="form-field">
+          <label for="dataEmissao">Data de Emissão *</label>
+          <p-calendar id="dataEmissao" formControlName="dataEmissao" dateFormat="dd/mm/yy" />
+        </div>
+        
+        <div class="form-field">
+          <label for="dataVencimento">Data de Vencimento *</label>
+          <p-calendar id="dataVencimento" formControlName="dataVencimento" dateFormat="dd/mm/yy" />
+        </div>
+      </div>
+      
+      <div class="form-row">
+        <div class="form-field">
+          <label for="tipoOperacao">Tipo de Operação *</label>
+          <p-dropdown id="tipoOperacao" [options]="tipoOperacaoOptions" formControlName="tipoOperacao" 
+                     optionLabel="label" optionValue="value" placeholder="Selecione o tipo" />
+        </div>
+        
+        <div class="form-field">
+          <label for="naturezaOperacao">Natureza da Operação *</label>
+          <input pInputText id="naturezaOperacao" formControlName="naturezaOperacao" placeholder="Natureza da operação" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Dados do Cliente -->
+    <div class="form-section">
+      <h6>Dados do Cliente</h6>
+      
+      <div class="form-row">
+        <div class="form-field">
+          <label for="clienteId">Cliente *</label>
+          <p-dropdown id="clienteId" [options]="clientes" formControlName="clienteId" 
+                     optionLabel="nome" optionValue="id" placeholder="Selecione o cliente"
+                     (onChange)="onClienteChange($event)" />
+        </div>
+        
+        <div class="form-field">
+          <label for="clienteNome">Nome do Cliente *</label>
+          <input pInputText id="clienteNome" formControlName="clienteNome" placeholder="Nome do cliente" readonly />
+        </div>
+        
+        <div class="form-field">
+          <label for="clienteCnpjCpf">CNPJ/CPF *</label>
+          <input pInputText id="clienteCnpjCpf" formControlName="clienteCnpjCpf" placeholder="CNPJ/CPF" readonly />
+        </div>
+      </div>
+    </div>
+
+    <!-- Itens da Nota Fiscal -->
+    <div class="form-section">
+      <h6>Itens da Nota Fiscal</h6>
+      
+      <div class="itens-header">
+        <p-button *ngIf="canEdit" label="Adicionar Item" icon="pi pi-plus" (onClick)="adicionarItem()" />
+      </div>
+      
+      <p-table [value]="form.get('itens')?.value || []" [scrollable]="true" scrollHeight="300px">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Código</th>
+            <th>Descrição</th>
+            <th>Qtd</th>
+            <th>Valor Unit.</th>
+            <th>Valor Total</th>
+            <th>CFOP</th>
+            <th>NCM</th>
+            <th>Ações</th>
+          </tr>
+        </ng-template>
+        
+        <ng-template pTemplate="body" let-item let-i="rowIndex">
+          <tr>
+            <td>{{ item.produtoCodigo }}</td>
+            <td>{{ item.produtoDescricao }}</td>
+            <td>{{ item.quantidade }}</td>
+            <td>{{ formatarMoeda(item.valorUnitario) }}</td>
+            <td>{{ formatarMoeda(item.valorTotal) }}</td>
+            <td>{{ item.cfop }}</td>
+            <td>{{ item.ncm }}</td>
+            <td>
+              <div class="acoes-item">
+                <p-button *ngIf="canEdit" icon="pi pi-pencil" severity="info" size="small" 
+                         pTooltip="Editar" (onClick)="editarItem(item)" />
+                <p-button *ngIf="canEdit" icon="pi pi-trash" severity="danger" size="small" 
+                         pTooltip="Remover" (onClick)="removerItem(i)" />
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+        
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="8" class="text-center">Nenhum item adicionado</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+
+    <!-- Totais -->
+    <div class="form-section">
+      <h6>Totais</h6>
+      
+      <div class="totais-grid">
+        <div class="total-item">
+          <label>Valor Total:</label>
+          <span class="valor">{{ formatarMoeda(form.get('valorTotal')?.value || 0) }}</span>
+        </div>
+        
+        <div class="total-item">
+          <label>Base ICMS:</label>
+          <span class="valor">{{ formatarMoeda(form.get('valorBaseIcms')?.value || 0) }}</span>
+        </div>
+        
+        <div class="total-item">
+          <label>Valor ICMS:</label>
+          <span class="valor">{{ formatarMoeda(form.get('valorIcms')?.value || 0) }}</span>
+        </div>
+        
+        <div class="total-item">
+          <label>Valor IPI:</label>
+          <span class="valor">{{ formatarMoeda(form.get('valorIpi')?.value || 0) }}</span>
+        </div>
+        
+        <div class="total-item">
+          <label>Valor PIS:</label>
+          <span class="valor">{{ formatarMoeda(form.get('valorPis')?.value || 0) }}</span>
+        </div>
+        
+        <div class="total-item">
+          <label>Valor COFINS:</label>
+          <span class="valor">{{ formatarMoeda(form.get('valorCofins')?.value || 0) }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Observações -->
+    <div class="form-section">
+      <h6>Observações</h6>
+      
+      <div class="form-field">
+        <label for="observacoes">Observações</label>
+        <textarea pInputTextarea id="observacoes" formControlName="observacoes" 
+                  rows="3" placeholder="Observações adicionais"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ações -->
+  <div class="form-acoes">
+    <p-button *ngIf="canEdit" label="Salvar" icon="pi pi-check" (onClick)="onSalvar()" [loading]="loading" />
+    <p-button label="Cancelar" icon="pi pi-times" severity="secondary" (onClick)="onCancelar()" />
+  </div>
+</form>
+
+<!-- Dialog para Item -->
+<p-dialog [(visible)]="displayItemDialog" [modal]="true" [style]="{width: '70vw'}" 
+          [draggable]="false" [resizable]="false">
+  <ng-template pTemplate="header">
+    <h5>{{ itemSelecionado?.id ? 'Editar' : 'Adicionar' }} Item</h5>
+  </ng-template>
+  
+  <ng-template pTemplate="content">
+    <app-item-nota-fiscal-form 
+      [item]="itemSelecionado"
+      [produtos]="produtos"
+      (salvar)="salvarItem()"
+      (cancelar)="displayItemDialog = false">
+    </app-item-nota-fiscal-form>
+  </ng-template>
+</p-dialog> 

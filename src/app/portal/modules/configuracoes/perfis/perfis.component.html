@@ -1,4 +1,4 @@
-<app-title-header title="Controle de Perfis"></app-title-header>
+<app-title-header title="{{ 'PERFIS.TITLE' | translate }}"></app-title-header>
 
 <div class="filters">
     <p-accordion class="p-accordion-custom-header">
@@ -6,40 +6,37 @@
             <ng-template pTemplate="header">
                 <div style="display: flex; align-items: center; gap: 0.5rem;">
                     <span>{{ getFiltrosHeader() }}</span>
-                    
+
                     @if (getActiveFilters().length > 0) {
-                        <ng-container>
-                            @for (filter of getActiveFilters(); track filter) {
-                                <p-tag 
-                                    [value]="filter.label + ': ' + filter.value" 
-                                    severity="contrast"
-                                    styleClass="mr-1">
-                                </p-tag>
-                            }
-                        </ng-container>
+                    <ng-container>
+                        @for (filter of getActiveFilters(); track filter) {
+                        <p-tag [value]="filter.label + ': ' + filter.value" severity="contrast" styleClass="mr-1">
+                        </p-tag>
+                        }
+                    </ng-container>
                     }
                 </div>
             </ng-template>
             <div class="itens-filters">
                 <p-floatLabel>
                     <input pInputText id="nome" [(ngModel)]="filtros.nome" name="nome" />
-                    <label for="nome">Nome Perfil</label>
+                    <label for="nome">{{ 'PERFIS.NOME_PERFIL' | translate }}</label>
                 </p-floatLabel>
-            
+
                 <p-floatLabel>
-                    <p-dropdown id="status" appendTo="body" [options]="statusOptions" 
-                        [(ngModel)]="filtros.status" name="status">
+                    <p-dropdown id="status" appendTo="body" [options]="statusOptions" [(ngModel)]="filtros.status"
+                        name="status">
                     </p-dropdown>
-                    <label for="status">Situação Perfil</label>
+                    <label for="status">{{ 'PERFIS.SITUACAO_PERFIL' | translate }}</label>
                 </p-floatLabel>
             </div>
 
             <div class="actions">
-                <button pButton [outlined]="true" [raised]="true" severity="warning" label="Limpar"
-                    icon="pi pi-times" (click)="limparFiltros()">
+                <button pButton [outlined]="true" [raised]="true" severity="warning" [label]="'PERFIS.LIMPAR' | translate" icon="pi pi-times"
+                    (click)="limparFiltros()">
                 </button>
-                <button pButton [outlined]="true" [raised]="true" severity="success" label="Filtrar"
-                    icon="pi pi-filter" (click)="filtrar()">
+                <button pButton [outlined]="true" [raised]="true" severity="success" [label]="'PERFIS.FILTRAR' | translate" icon="pi pi-filter"
+                    (click)="filtrar()">
                 </button>
             </div>
         </p-accordionTab>
@@ -47,74 +44,57 @@
 </div>
 
 <div class="tables">
-     <p-table [value]="perfis" [paginator]="true" [lazy]="true" [showCurrentPageReport]="true" [rows]="rows" [resizableColumns]="true" [totalRecords]="totalRecords" [rowsPerPageOptions]="rowsPerPage"
-             styleClass="p-datatable-striped p-datatable-gridlines" (onPage)="handlePageChange($event)" (onLazyLoad)="loadTableData($event)" dataKey="id">
+    <p-table [value]="perfis" [paginator]="true" [lazy]="true" [showCurrentPageReport]="true" [rows]="rows"
+        [resizableColumns]="true" [reorderableColumns]="true" [columnResizeMode]="'fit'" [totalRecords]="totalRecords"
+        [rowsPerPageOptions]="rowsPerPage" styleClass="p-datatable-striped p-datatable-gridlines"
+        (onPage)="handlePageChange($event)" (onLazyLoad)="loadTableData($event)" (onColReorder)="onColReorder($event)"
+        dataKey="id">
         <ng-template pTemplate="caption">
             <div style="display: flex; justify-content: flex-end; align-items: center;">
                 <div class="actions">
-                    <button pButton [outlined]="true" [raised]="true" severity="success" label="Exportar"
-                        icon="pi pi-file-export">
+                    <button pButton [outlined]="true" [raised]="true" severity="success" [label]="'PERFIS.EXPORTAR' | translate"
+                        icon="pi pi-file-excel" (click)="exportarParaExcel()" pTooltip="Exportar para Excel"
+                        tooltipPosition="top">
                     </button>
-                    <p-button icon="pi pi-plus" label="Incluir Perfil" class="exportButton"
-                        (onClick)="showDialog()"/>
+                    <p-button *ngIf="canCreate" icon="pi pi-plus" [label]="'PERFIS.INCLUIR_PERFIL' | translate" class="exportButton" (onClick)="showDialog()" />
+                    <p-button icon="pi pi-cog" styleClass="p-button-text" (click)="toggleColumnConfig($event)" />
                 </div>
             </div>
         </ng-template>
         <ng-template pTemplate="header">
             <tr>
-                <th id="login">Nome</th>
-                <th id="Descricao">Descrição</th>
-                <th id="status">Status Perfil</th>
-                <th id="dataCriação">Dt. Criação</th>
-                <th id="criadoPor">Resp. Criação</th>
-                <th id="dataAlteracao">Dt. Últ. Modificação</th>
-                <th id="alteradoPor">Resp. Últ. Modificação</th>
-                <th id="justificativaInativacao">Justificativa Inativação</th>
-                <th id="acao">Ações</th>
+                <th id="reorderableColumn" *ngFor="let col of columns" pReorderableColumn="col.field"
+                    [hidden]="!col.visible">
+                    {{col.header}}
+                </th>
+                <th id="acao" *ngIf="showActionsColumn">{{ 'COMMON.ACTIONS' | translate }}</th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-perfil let-rowIndex="rowIndex">
             <tr>
-                <td>
-                    {{ perfil.nome }}
+                <td *ngFor="let col of columns" [hidden]="!col.visible">
+                    <ng-container [ngSwitch]="col.field">
+                        <ng-container *ngSwitchCase="'statusPerfil'">
+                            <p-tag [value]="getStatusLabel(perfil.statusPerfil)" 
+                                       [severity]="getStatusSeverity(perfil.statusPerfil)" />
+                        </ng-container>
+                        <ng-container *ngSwitchDefault>
+                            {{ perfil[col.field] }}
+                        </ng-container>
+                    </ng-container>
                 </td>
-                <td>
-                    {{ perfil.descricao }}
-                </td>
-                <td>
-                    @if (!perfil.editing) {
-                        <p-tag 
-                            [value]="perfil.status ? 'Ativo' : 'Inativo'"
-                            [severity]="perfil.status ? 'success' : 'danger'" />
-                    }
-                </td>
-                <td>
-                    {{ perfil.dataInclusao }}
-                </td>
-                <td>
-                    {{ perfil.nomeRespInclusao }}
-                </td>
-                <td>
-                    {{ perfil.dataUltimaModificacao }}
-                </td>
-                <td>
-                    {{ perfil.nomeRespUltimaModificacao }}
-                </td>
-                <td>
-                    {{ perfil.justificativaInativacao }}
-                </td>
-                <td>
+                <td *ngIf="showActionsColumn">
                     <div class="actions-table">
-                        @if (!perfil.editing) {
-                            <button pButton [outlined]="true" [raised]="true"
-                                severity="success" icon="pi pi-pencil" (click)="iniciarEdicao(perfil, rowIndex)">
-                            </button>
+                        @if (!perfil.editing && canEdit) {
+                        <button pButton [outlined]="true" [raised]="true" severity="success" icon="pi pi-pencil"
+                            (click)="iniciarEdicao(perfil, rowIndex)">
+                        </button>
                         }
-                
-                        @if (!perfil.editing) {
-                            <button pButton [outlined]="true" [raised]="true"
-                                severity="danger" icon="pi pi-trash" (click)="confirmarExclusao(perfil)">
-                            </button>
+
+                        @if (!perfil.editing && canDelete) {
+                        <button pButton [outlined]="true" [raised]="true" severity="danger" icon="pi pi-trash"
+                            (click)="confirmarExclusao(perfil)">
+                        </button>
                         }
                     </div>
                 </td>
@@ -123,94 +103,171 @@
     </p-table>
 </div>
 
+<p-overlayPanel #op>
+    <app-column-config [columns]="columns" (preferencesSaved)="saveColumnPreferences()"></app-column-config>
+</p-overlayPanel>
+
 <!-- Modal para incluir/editar Perfil -->
-<p-dialog [header]="modalTitle" [(visible)]="displayModal" [style]="{width: '50vw'}" [modal]="true">
+<p-dialog [header]="modalTitle" [(visible)]="displayModal" [style]="{width: '90vw', height: '90vh'}" [modal]="true">
     <form>
-        <h4>Informações</h4>
-        <div class="itens-modal">
-            <p-floatLabel>
-                <input pInputText id="nome" [(ngModel)]="perfilEditando.nome" name="nome" required />
-                <label for="nome">Nome Perfil</label>
-            </p-floatLabel>
+        <h4>{{ 'PERFIS.INFORMACOES' | translate }}</h4>
 
-            <p-floatLabel>
-                <input pInputText id="descricao" [(ngModel)]="perfilEditando.descricao" name="descricao" />
-                <label for="descricao">Descrição Perfil</label>
-            </p-floatLabel>
+        <div class="field grid"
+            style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
 
-            @if (isEditando) {
-            <p-floatLabel>
-                <p-dropdown id="status" appendTo="body" [options]="statusOptions" 
-                    [(ngModel)]="perfilEditando.status" name="status" (onChange)="onStatusChange()">
-                </p-dropdown>
-                <label for="status">Situação Perfil</label>
-            </p-floatLabel>
-        }
-        </div>
-
-        @if (perfilEditando.status === false) {
-            <div class="itens-modal">
-                <p-floatLabel>
-                    <textarea 
-                        id="justificativaInativacao" 
-                        rows="3" cols="70"
-                        [(ngModel)]="perfilEditando.justificativaInativacao" name="justificativaInativacao"
-                        pInputTextarea>
-                    </textarea>
-                    <label for="float-input">Justificativa Inativação</label>
+            <div style="flex: 1;">
+                <p-floatLabel style="flex: 1;">
+                    <input pInputText type="text" pInputText style="width: 100%;" [(ngModel)]="perfilEditando.nome"
+                        name="nome" required />
+                    <label for="nomePerfil">{{ 'PERFIS.NOME_PERFIL' | translate }}</label>
                 </p-floatLabel>
             </div>
+
+            <div style="flex: 1;">
+                <p-floatLabel style="flex: 1;">
+                    <input id="descricao" [(ngModel)]="perfilEditando.descricao" name="descricaoPerfil" pInputText
+                        type="text" pInputText style="width: 100%;" />
+                    <label for="cpfCnpj">{{ 'PERFIS.DESCRICAO_PERFIL' | translate }}</label>
+                </p-floatLabel>
+            </div>
+
+            @if (isEditando) {
+            <div style="flex: 1;">
+                <p-floatLabel style="flex: 1;">
+                    <p-dropdown id="statusPerfil" appendTo="body" [options]="statusOptions"
+                        [(ngModel)]="perfilEditando.status" name="statusPerfil" (onChange)="onStatusChange()">
+                    </p-dropdown>
+                    <label for="tipoPessoa">{{ 'PERFIS.SITUACAO_PERFIL' | translate }}</label>
+                </p-floatLabel>
+            </div>
+            }
+        </div>
+
+
+        @if (perfilEditando.status === StatusPerfilEnum.Inativo) {
+        <div class="field grid"
+            style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+            <div style="flex: 1;">
+                <p-floatLabel style="flex: 1;">
+                    <textarea [(ngModel)]="perfilEditando.justificativaInativacao" id="justificativaInativacao"
+                        name="justificativaInativacao" type="text" pInputText style="width: 100%;"></textarea>
+                    <label for="justificativaInativacao">{{ 'PERFIS.JUSTIFICATIVA_INATIVACAO' | translate }}</label>
+                </p-floatLabel>
+            </div>
+        </div>
         }
 
-        <h4>Acessos</h4>
-        <div class="itens-modal">
-            <p-pickList 
-            [source]="sourcePerfis"
-            [target]="targetPerfis"
-            [dragdrop]="true"
-            [responsive]="true"
-            [sourceStyle]="{ height: '30rem', width: '20rem' }"
-            [targetStyle]="{ height: '30rem', width: '20rem' }"
-            [showSourceControls]="false"
-            [showTargetControls]="false"
-            sourceHeader="Disponíveis" 
-            targetHeader="Selecionados"
-            filterBy="rotina"
-            sourceFilterPlaceholder="Procure por itens disponíveis" 
-            targetFilterPlaceholder="Procure por itens selecionados" 
-            breakpoint="1400px">
-            <ng-template let-acesso pTemplate="item">
-                <div class="flex flex-wrap p-2 align-items-center gap-3">
-                    <div class="flex-1 flex flex-column gap-2">
-                        <span class="font-bold">
-                            {{ 'Rotina: ' + acesso.rotina }}
-                        </span>
-                        <div class="flex align-products-center gap-2">
-                            <span>
-                                {{ 'Módulo: ' + acesso.modulo }}
+        @if (perfilEditando.status === StatusPerfilEnum.Suspenso) {
+        <div class="field grid"
+            style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+            <div style="flex: 1;">
+                <p-floatLabel style="flex: 1;">
+                    <p-dropdown id="tipoSuspensao" appendTo="body" [options]="tipoSuspensaoOptions"
+                        [(ngModel)]="perfilEditando.tipoSuspensao" name="tipoSuspensao" (onChange)="onTipoSuspensaoChange()">
+                    </p-dropdown>
+                    <label for="tipoSuspensao">{{ 'PERFIS.TIPO_SUSPENSAO' | translate }}</label>
+                </p-floatLabel>
+            </div>
+        </div>
+
+        <div class="field grid"
+            style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+            <div style="flex: 1;">
+                <p-floatLabel style="flex: 1;">
+                    <p-calendar id="dataInicioSuspensao" [(ngModel)]="perfilEditando.dataInicioSuspensao" 
+                        name="dataInicioSuspensao" [showIcon]="true" dateFormat="dd/mm/yy" 
+                        [showButtonBar]="true" [style]="{ width: '100%' }">
+                    </p-calendar>
+                    <label for="dataInicioSuspensao">{{ 'PERFIS.DATA_INICIO_SUSPENSAO' | translate }}</label>
+                </p-floatLabel>
+            </div>
+
+            @if (perfilEditando.tipoSuspensao === TipoSuspensaoEnum.Temporaria) {
+            <div style="flex: 1;">
+                <p-floatLabel style="flex: 1;">
+                    <p-calendar id="dataFimSuspensao" [(ngModel)]="perfilEditando.dataFimSuspensao" 
+                        name="dataFimSuspensao" [showIcon]="true" dateFormat="dd/mm/yy" 
+                        [showButtonBar]="true" [style]="{ width: '100%' }">
+                    </p-calendar>
+                    <label for="dataFimSuspensao">{{ 'PERFIS.DATA_FIM_SUSPENSAO' | translate }}</label>
+                </p-floatLabel>
+            </div>
+            }
+        </div>
+
+        <div class="field grid"
+            style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+            <div style="flex: 1;">
+                <p-floatLabel style="flex: 1;">
+                    <textarea [(ngModel)]="perfilEditando.motivoSuspensao" id="motivoSuspensao"
+                        name="motivoSuspensao" type="text" pInputText style="width: 100%;" rows="3"></textarea>
+                    <label for="motivoSuspensao">{{ 'PERFIS.MOTIVO_SUSPENSAO' | translate }}</label>
+                </p-floatLabel>
+            </div>
+        </div>
+        }
+
+        <h4>{{ 'PERFIS.ACESSOS' | translate }}</h4>
+        <div class="field grid"
+            style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+            <div style="flex: 1;">
+                <p-pickList [source]="sourcePerfis" [target]="targetPerfis" [dragdrop]="true" [responsive]="true"
+                    [sourceStyle]="{ height: '30rem'  }" [targetStyle]="{ height: '30rem' }"
+                    [showSourceControls]="false" [showTargetControls]="false" [sourceHeader]="'PERFIS.DISPONIVEIS' | translate"
+                    [targetHeader]="'PERFIS.SELECIONADOS' | translate" filterBy="rotina"
+                    [sourceFilterPlaceholder]="'PERFIS.PROCURAR_DISPONIVEIS' | translate"
+                    [targetFilterPlaceholder]="'PERFIS.PROCURAR_SELECIONADOS' | translate" breakpoint="1400px">
+                    <ng-template let-acesso pTemplate="item">
+                        <div class="flex flex-wrap p-2 align-items-center gap-5">
+                            <div class="flex-1 flex flex-column gap-2">
+                                <span class="font-bold">
+                                    {{ 'PERFIS.ROTINA' | translate }}: {{ acesso.rotina }}
+                                </span>
+                                <div class="flex align-products-center gap-2">
+                                    <span>
+                                        {{ 'PERFIS.MODULO' | translate }}: {{ acesso.modulo }}
+                                    </span>
+                                </div>
+                            </div>
+                            <span class="font-bold text-900" style="display: flex; align-items: center; gap: 0.5rem;">
+                                {{ 'PERFIS.TIPO_ACESSO' | translate }}:
+                                <p-tag [style]="{ width: '15rem' }" [value]="getAccessLabel(acesso.acesso)"
+                                    [severity]="getSeverity(acesso.acesso)" />
                             </span>
                         </div>
-                    </div>
-                    <span class="font-bold text-900">
-                        Tipo Acesso:
-                        <p-tag [value]="getAccessLabel(acesso.acesso)" [severity]="getSeverity(acesso.acesso)" />
-                    </span>
-                </div>
-            </ng-template>
-        </p-pickList>
+                    </ng-template>
+                </p-pickList>
+            </div>
         </div>
     </form>
 
     <ng-template pTemplate="footer">
         <div class="actions-right">
-            <button pButton [outlined]="true" [raised]="true" severity="danger" label="Cancelar" 
-                    (click)="displayModal = false" icon="pi pi-times">
+            <button pButton [outlined]="true" [raised]="true" severity="danger" [label]="'PERFIS.CANCELAR' | translate"
+                (click)="displayModal = false" icon="pi pi-times">
             </button>
-            <button pButton [outlined]="false" [raised]="true" severity="success" 
-                [label]="isEditando ? 'Salvar' : 'Incluir'" 
-                (click)="isEditando ? salvarAlteracaoPerfil() : incluirPerfil()"
-                icon="pi pi-check">
+            <button pButton [outlined]="false" [raised]="true" severity="success"
+                [label]="isEditando ? ('PERFIS.SALVAR' | translate) : ('PERFIS.INCLUIR' | translate)"
+                (click)="isEditando ? salvarAlteracaoPerfil() : incluirPerfil()" icon="pi pi-check">
             </button>
+        </div>
+    </ng-template>
+</p-dialog>
+
+<!-- Diálogo de confirmação para exclusão -->
+<p-dialog [header]="modalTitleDelete" [(visible)]="displayConfirmation" [style]="{width: '30vw'}" [modal]="true"
+    [closable]="false">
+    <div class="confirmation-content">
+        <span *ngIf="perfilParaExcluir">
+            {{ 'PERFIS.TEM_CERTEZA_EXCLUIR_PERFIL' | translate }} <b>{{ perfilParaExcluir.nome }}</b>?
+        </span>
+    </div>
+    <ng-template pTemplate="footer">
+        <div class="actions">
+            <button pButton pRipple type="button" [label]="'PERFIS.CANCELAR' | translate" icon="pi pi-times" (click)="cancelarExclusao()"
+                class="p-button-text"></button>
+            <button pButton pRipple type="button" [label]="'PERFIS.CONFIRMAR' | translate" icon="pi pi-check"
+                (click)="confirmarExclusaoDialog()" class="p-button-danger"></button>
         </div>
     </ng-template>
 </p-dialog>

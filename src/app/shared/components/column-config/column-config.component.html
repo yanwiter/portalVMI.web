@@ -1,0 +1,632 @@
+<div class="column-config-container">
+  <!-- Cabeçalho do componente -->
+  <div class="config-header">
+    <div class="header-content">
+      <div class="header-icon">
+        <i class="pi pi-table"></i>
+      </div>
+      <div class="header-text">
+        <h4>{{ 'COLUMN_CONFIG.TITLE' | translate }}</h4>
+        <small>{{ 'COLUMN_CONFIG.SUBTITLE' | translate }}</small>
+      </div>
+    </div>
+    
+    <!-- Botões de ação rápida -->
+    <div class="header-actions">
+      <button 
+        pButton 
+        type="button" 
+        icon="pi pi-list" 
+        class="p-button-text p-button-sm"
+        pTooltip="{{ 'COLUMN_CONFIG.MANAGE_PREFERENCES' | translate }}"
+        (click)="openPreferencesModal()">
+      </button>
+      <button 
+        pButton 
+        type="button" 
+        icon="pi pi-save" 
+        class="p-button-text p-button-sm"
+        pTooltip="{{ 'COLUMN_CONFIG.SAVE_AS_PREFERENCE' | translate }}"
+        (click)="openSavePreferenceModal()">
+      </button>
+    </div>
+  </div>
+
+  <!-- Controles de seleção rápida -->
+  <div class="quick-actions">
+    <div class="select-all-controls">
+      <p-checkbox 
+        [binary]="true" 
+        [(ngModel)]="selectAllChecked"
+        (onChange)="selectAllChecked ? selectAllColumns() : deselectAllColumns()"
+        [inputId]="'select-all'">
+      </p-checkbox>
+      <label for="select-all" class="select-all-label">{{ 'COLUMN_CONFIG.SELECT_ALL' | translate }}</label>
+    </div>
+    
+    <div class="action-buttons">
+      <button 
+        pButton 
+        type="button" 
+        label="{{ 'COLUMN_CONFIG.RESTORE_DEFAULT' | translate }}" 
+        icon="pi pi-refresh"
+        class="p-button-outlined p-button-sm"
+        (click)="restoreDefault()">
+      </button>
+    </div>
+  </div>
+
+  <!-- Lista de colunas com drag and drop -->
+  <div class="columns-list" cdkDropList (cdkDropListDropped)="onDrop($event)">
+    <div *ngIf="!columns || columns.length === 0" class="no-columns-message">
+      <i class="pi pi-info-circle"></i>
+      <span>{{ 'COLUMN_CONFIG.NO_COLUMNS_AVAILABLE' | translate }}</span>
+    </div>
+    
+    <!-- Lista de colunas -->
+    <div 
+      *ngFor="let col of columns; let i = index" 
+      class="column-item"
+      cdkDrag
+      [class.dragging]="isDragging"
+      (cdkDragStarted)="onDragStart()"
+      (cdkDragEnded)="onDragEnd()">
+      
+      <!-- Handle de arraste -->
+      <div class="drag-handle" cdkDragHandle>
+        <i class="pi pi-bars"></i>
+      </div>
+      
+      <!-- Checkbox da coluna -->
+      <div class="column-checkbox">
+        <p-checkbox 
+          [binary]="true" 
+          [(ngModel)]="col.visible" 
+          [inputId]="col.field"
+          (onChange)="onColumnChange()">
+        </p-checkbox>
+      </div>
+      
+      <!-- Informações da coluna -->
+      <div class="column-info">
+        <label [for]="col.field" class="column-label">{{col.header}}</label>
+        <small class="column-field">{{col.field}}</small>
+      </div>
+      
+      <!-- Indicadores de propriedades -->
+      <div class="column-properties">
+        <span *ngIf="col.sortable" class="property-badge sortable" [title]="'COLUMN_CONFIG.SORTABLE' | translate">
+          <i class="pi pi-sort"></i>
+        </span>
+        <span *ngIf="col.filterable" class="property-badge filterable" [title]="'COLUMN_CONFIG.FILTERABLE' | translate">
+          <i class="pi pi-filter"></i>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rodapé com informações -->
+  <div class="config-footer">
+    <div class="footer-info">
+              <span class="visible-count">{{getVisibleColumnsCount()}} {{ 'COLUMN_CONFIG.VISIBLE_COLUMNS' | translate: { count: columns.length } }}</span>
+      <small class="auto-save-status" [class.saving]="isSaving" [class.unsaved]="hasUnsavedChanges">
+        <i class="pi" [class.pi-save]="!isSaving && !hasUnsavedChanges" [class.pi-spin]="isSaving" [class.pi-spinner]="isSaving" [class.pi-exclamation-circle]="hasUnsavedChanges"></i>
+        {{isSaving ? ('COLUMN_CONFIG.SAVING' | translate) : hasUnsavedChanges ? ('COLUMN_CONFIG.UNSAVED_CHANGES' | translate) : ('COLUMN_CONFIG.AUTO_SAVE_ACTIVE' | translate)}}
+      </small>
+    </div>
+    
+    <div class="footer-actions">
+      <button 
+        pButton 
+        type="button" 
+        label="{{ 'COLUMN_CONFIG.APPLY' | translate }}" 
+        icon="pi pi-check"
+        class="p-button-primary p-button-sm"
+        (click)="applyAndSave()">
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de Gerenciamento de Preferências -->
+<p-dialog 
+  [(visible)]="showPreferencesModal" 
+  [modal]="true" 
+  [closable]="true"
+  [draggable]="false"
+  [resizable]="false"
+  header="{{ 'COLUMN_CONFIG.MANAGE_COLUMN_PREFERENCES' | translate }}"
+  [style]="{width: '800px', maxHeight: '85vh'}"
+  [closeOnEscape]="true"
+  (onHide)="closePreferencesModal()"
+  [baseZIndex]="10001"
+  class="preferences-modal">
+  
+  <div class="preferences-content">
+    <!-- Preferências Favoritas -->
+    <div *ngIf="favoritePreferences.length > 0" class="preferences-section">
+      <h5 class="section-title">
+        <i class="pi pi-heart-fill" style="color: var(--pink-500);"></i>
+        {{ 'COLUMN_CONFIG.FAVORITES' | translate }}
+        <span class="section-count">({{favoritePreferences.length}})</span>
+      </h5>
+      <div class="preferences-grid">
+        <div 
+          *ngFor="let pref of favoritePreferences" 
+          class="preference-card favorite"
+          [class.current]="currentPreference?.id === pref.id">
+          <div class="preference-header">
+            <div class="preference-icon" [style.color]="getPreferenceColor(pref)">
+              <i [class]="getPreferenceIcon(pref)"></i>
+            </div>
+            <div class="preference-info">
+              <h6 class="preference-name">{{pref.namePreference}}</h6>
+              <small *ngIf="pref.description" class="preference-description">{{pref.description}}</small>
+              <small class="preference-date">{{pref.updatedAt | date:'dd/MM/yyyy HH:mm'}}</small>
+            </div>
+            <div class="preference-badges">
+              <span *ngIf="pref.isDefault" class="badge default" [title]="'COLUMN_CONFIG.DEFAULT' | translate">
+                <i class="pi pi-star-fill"></i>
+              </span>
+              <span *ngIf="pref.isPinned" class="badge pinned" [title]="'COLUMN_CONFIG.PINNED' | translate">
+                <i class="pi pi-thumbtack"></i>
+              </span>
+            </div>
+          </div>
+          <div class="preference-actions">
+            <button 
+              pButton 
+              type="button" 
+              icon="pi pi-play" 
+              class="p-button-text p-button-sm"
+              pTooltip="Aplicar"
+              (click)="applyPreference(pref)">
+            </button>
+            <button 
+              pButton 
+              type="button" 
+              icon="pi pi-copy" 
+              class="p-button-text p-button-sm"
+              pTooltip="{{ 'COLUMN_CONFIG.DUPLICATE' | translate }}"
+              (click)="openDuplicateModal(pref)">
+            </button>
+            <button 
+              pButton 
+              type="button" 
+              icon="pi pi-heart" 
+              class="p-button-text p-button-sm p-button-danger"
+              pTooltip="{{ 'COLUMN_CONFIG.REMOVE_FROM_FAVORITES' | translate }}"
+              (click)="toggleFavorite(pref)">
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Preferência Padrão -->
+    <div *ngIf="defaultPreference" class="preferences-section">
+      <h5 class="section-title">
+        <i class="pi pi-star-fill" style="color: var(--primary-color);"></i>
+        {{ 'COLUMN_CONFIG.DEFAULT_PREFERENCE' | translate }}
+        <span class="section-count">(1)</span>
+      </h5>
+      <div class="preferences-grid">
+        <div 
+          class="preference-card default"
+          [class.current]="currentPreference?.id === defaultPreference.id">
+          <div class="preference-header">
+            <div class="preference-icon" [style.color]="getPreferenceColor(defaultPreference)">
+              <i [class]="getPreferenceIcon(defaultPreference)"></i>
+            </div>
+            <div class="preference-info">
+              <h6 class="preference-name">{{defaultPreference.namePreference}}</h6>
+              <small *ngIf="defaultPreference.description" class="preference-description">{{defaultPreference.description}}</small>
+              <small class="preference-date">{{defaultPreference.updatedAt | date:'dd/MM/yyyy HH:mm'}}</small>
+              <small class="preference-author">{{ 'COLUMN_CONFIG.BY' | translate }} {{defaultPreference.createdBy}}</small>
+            </div>
+            <div class="preference-badges">
+              <span class="badge default" [title]="'COLUMN_CONFIG.DEFAULT' | translate">
+                <i class="pi pi-star-fill"></i>
+              </span>
+              <span *ngIf="defaultPreference.isFavorite" class="badge favorite" [title]="'COLUMN_CONFIG.FAVORITE' | translate">
+                <i class="pi pi-heart-fill"></i>
+              </span>
+              <span *ngIf="defaultPreference.isPinned" class="badge pinned" [title]="'COLUMN_CONFIG.PINNED' | translate">
+                <i class="pi pi-thumbtack"></i>
+              </span>
+            </div>
+          </div>
+          <div class="preference-actions">
+            <button 
+              pButton 
+              type="button" 
+              icon="pi pi-play" 
+              class="p-button-text p-button-sm"
+              pTooltip="Aplicar"
+              (click)="applyPreference(defaultPreference)">
+            </button>
+            <button 
+              pButton 
+              type="button" 
+              icon="pi pi-copy" 
+              class="p-button-text p-button-sm"
+              pTooltip="{{ 'COLUMN_CONFIG.DUPLICATE' | translate }}"
+              (click)="openDuplicateModal(defaultPreference)">
+            </button>
+            <button 
+              pButton 
+              type="button" 
+              icon="pi pi-heart" 
+              class="p-button-text p-button-sm"
+              [class.p-button-success]="defaultPreference.isFavorite"
+              pTooltip="{{ 'COLUMN_CONFIG.ADD_TO_FAVORITES' | translate }}"
+              (click)="toggleFavorite(defaultPreference)">
+            </button>
+            <button 
+              pButton 
+              type="button" 
+              icon="pi pi-thumbtack" 
+              class="p-button-text p-button-sm"
+              [class.p-button-warning]="defaultPreference.isPinned"
+              pTooltip="{{ 'COLUMN_CONFIG.PIN' | translate }}"
+              (click)="togglePinned(defaultPreference)">
+            </button>
+            <button 
+              pButton 
+              type="button" 
+              icon="pi pi-star" 
+              class="p-button-text p-button-sm p-button-primary"
+              pTooltip="{{ 'COLUMN_CONFIG.ALREADY_DEFAULT' | translate }}"
+              disabled>
+            </button>
+            <button 
+              pButton 
+              type="button" 
+              icon="pi pi-trash" 
+              class="p-button-text p-button-danger p-button-sm"
+              pTooltip="{{ 'COLUMN_CONFIG.REMOVE' | translate }}"
+              (click)="deletePreference(defaultPreference)">
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Preferências Fixadas -->
+    <div *ngIf="pinnedPreferences.length > 0" class="preferences-section">
+      <h5 class="section-title">
+        <i class="pi pi-thumbtack" style="color: var(--orange-500);"></i>
+        {{ 'COLUMN_CONFIG.PINNED' | translate }}
+        <span class="section-count">({{pinnedPreferences.length}})</span>
+      </h5>
+      <div class="preferences-grid">
+        <div 
+          *ngFor="let pref of pinnedPreferences" 
+          class="preference-card pinned"
+          [class.current]="currentPreference?.id === pref.id">
+          <div class="preference-header">
+            <div class="preference-icon" [style.color]="getPreferenceColor(pref)">
+              <i [class]="getPreferenceIcon(pref)"></i>
+            </div>
+            <div class="preference-info">
+              <h6 class="preference-name">{{pref.namePreference}}</h6>
+              <small *ngIf="pref.description" class="preference-description">{{pref.description}}</small>
+              <small class="preference-date">{{pref.updatedAt | date:'dd/MM/yyyy HH:mm'}}</small>
+            </div>
+            <div class="preference-badges">
+              <span *ngIf="pref.isDefault" class="badge default" [title]="'COLUMN_CONFIG.DEFAULT' | translate">
+                <i class="pi pi-star-fill"></i>
+              </span>
+              <span *ngIf="pref.isFavorite" class="badge favorite" [title]="'COLUMN_CONFIG.FAVORITE' | translate">
+                <i class="pi pi-heart-fill"></i>
+              </span>
+            </div>
+          </div>
+          <div class="preference-actions">
+            <button 
+              pButton 
+              type="button" 
+              icon="pi pi-play" 
+              class="p-button-text p-button-sm"
+              pTooltip="Aplicar"
+              (click)="applyPreference(pref)">
+            </button>
+            <button 
+              pButton 
+              type="button" 
+              icon="pi pi-copy" 
+              class="p-button-text p-button-sm"
+              pTooltip="Duplicar"
+              (click)="openDuplicateModal(pref)">
+            </button>
+                         <button 
+               pButton 
+               type="button" 
+               icon="pi pi-thumbtack" 
+               class="p-button-text p-button-sm p-button-warning"
+               pTooltip="{{ 'COLUMN_CONFIG.UNPIN' | translate }}"
+               (click)="togglePinned(pref)">
+             </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Todas as Preferências -->
+    <div class="preferences-section">
+      <h5 class="section-title">
+        <i class="pi pi-cog"></i>
+        {{ 'COLUMN_CONFIG.ALL_PREFERENCES' | translate }}
+        <span class="section-count">({{preferences.length}})</span>
+      </h5>
+      
+      <!-- Filtros e busca -->
+      <div class="preferences-filters">
+        <div class="search-box">
+          <span class="p-input-icon-left">
+            <i class="pi pi-search"></i>
+            <input 
+              pInputText 
+              type="text" 
+              placeholder="{{ 'COLUMN_CONFIG.SEARCH_PREFERENCES' | translate }}"
+              [(ngModel)]="searchTerm"
+              class="w-full">
+          </span>
+        </div>
+        <div class="filter-buttons">
+          <button 
+            pButton 
+            type="button" 
+            label="{{ 'COLUMN_CONFIG.FAVORITES_FILTER' | translate }}" 
+            icon="pi pi-heart"
+            [class.p-button-outlined]="!showOnlyFavorites"
+            class="p-button-sm"
+            (click)="toggleShowOnlyFavorites()">
+          </button>
+          <button 
+            pButton 
+            type="button" 
+            label="{{ 'COLUMN_CONFIG.PINNED_FILTER' | translate }}" 
+            icon="pi pi-thumbtack"
+            [class.p-button-outlined]="!showOnlyPinned"
+            class="p-button-sm"
+            (click)="toggleShowOnlyPinned()">
+          </button>
+          <button 
+            *ngIf="searchTerm || showOnlyFavorites || showOnlyPinned"
+            pButton 
+            type="button" 
+            label="{{ 'COLUMN_CONFIG.CLEAR_FILTERS' | translate }}" 
+            icon="pi pi-times"
+            class="p-button-text p-button-sm"
+            (click)="clearFilters()">
+          </button>
+        </div>
+      </div>
+      
+      <div class="preferences-grid">
+        <div 
+          *ngFor="let pref of filteredPreferences" 
+          class="preference-card"
+          [class.current]="currentPreference?.id === pref.id"
+          [class.favorite]="pref.isFavorite"
+          [class.pinned]="pref.isPinned"
+          [class.default]="pref.isDefault">
+          <div class="preference-header">
+            <div class="preference-icon" [style.color]="getPreferenceColor(pref)">
+              <i [class]="getPreferenceIcon(pref)"></i>
+            </div>
+            <div class="preference-info">
+              <h6 class="preference-name">{{pref.namePreference}}</h6>
+              <div class="preference-meta">
+                <small *ngIf="pref.description" class="preference-description">{{pref.description}}</small>
+                <small class="preference-date">{{pref.updatedAt | date:'dd/MM/yyyy HH:mm'}}</small>
+                <small class="preference-author">{{ 'COLUMN_CONFIG.BY' | translate }} {{pref.createdBy}}</small>
+              </div>
+            </div>
+            <div class="preference-badges">
+              <span *ngIf="pref.isDefault" class="badge default" title="Padrão">
+                <i class="pi pi-star-fill"></i>
+              </span>
+              <span *ngIf="pref.isFavorite" class="badge favorite" title="Favorita">
+                <i class="pi pi-heart-fill"></i>
+              </span>
+              <span *ngIf="pref.isPinned" class="badge pinned" title="Fixada">
+                <i class="pi pi-thumbtack"></i>
+              </span>
+            </div>
+          </div>
+          <div class="preference-actions">
+            <button 
+              pButton 
+              type="button" 
+              icon="pi pi-play" 
+              class="p-button-text p-button-sm"
+              pTooltip="{{ 'COLUMN_CONFIG.APPLY_PREFERENCE' | translate }}"
+              (click)="applyPreference(pref)">
+            </button>
+            <button 
+              pButton 
+              type="button" 
+              icon="pi pi-copy" 
+              class="p-button-text p-button-sm"
+              pTooltip="{{ 'COLUMN_CONFIG.DUPLICATE' | translate }}"
+              (click)="openDuplicateModal(pref)">
+            </button>
+            <button 
+              pButton 
+              type="button" 
+              icon="pi pi-heart" 
+              class="p-button-text p-button-sm"
+              [class.p-button-success]="pref.isFavorite"
+              pTooltip="{{ 'COLUMN_CONFIG.ADD_TO_FAVORITES' | translate }}"
+              (click)="toggleFavorite(pref)">
+            </button>
+            <button 
+              pButton 
+              type="button" 
+              icon="pi pi-thumbtack" 
+              class="p-button-text p-button-sm"
+              [class.p-button-warning]="pref.isPinned"
+              pTooltip="{{ 'COLUMN_CONFIG.PIN' | translate }}"
+              (click)="togglePinned(pref)">
+            </button>
+            <button 
+              pButton 
+              type="button" 
+              icon="pi pi-star" 
+              class="p-button-text p-button-sm"
+              [class.p-button-primary]="pref.isDefault"
+              pTooltip="{{ 'COLUMN_CONFIG.SET_AS_DEFAULT' | translate }}"
+              (click)="setAsDefault(pref)">
+            </button>
+            <button 
+              pButton 
+              type="button" 
+              icon="pi pi-trash" 
+              class="p-button-text p-button-danger p-button-sm"
+              pTooltip="{{ 'COLUMN_CONFIG.REMOVE' | translate }}"
+              (click)="deletePreference(pref)">
+            </button>
+          </div>
+        </div>
+        
+        <!-- Mensagem quando não há preferências -->
+        <div *ngIf="filteredPreferences.length === 0" class="no-preferences-message">
+          <i class="pi pi-info-circle"></i>
+          <span>{{searchTerm || showOnlyFavorites || showOnlyPinned ? ('COLUMN_CONFIG.NO_PREFERENCES_FOUND' | translate) : ('COLUMN_CONFIG.NO_PREFERENCES_CREATED' | translate)}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Footer do modal com botão para fechar -->
+  <ng-template pTemplate="footer">
+    <div class="dialog-footer">
+      <button 
+        pButton 
+        type="button" 
+        label="{{ 'COMMON.CLOSE' | translate }}" 
+        icon="pi pi-times"
+        class="p-button-text"
+        (click)="closePreferencesModal()">
+      </button>
+    </div>
+  </ng-template>
+</p-dialog>
+
+<!-- Modal para Salvar Preferência -->
+<p-dialog 
+  [(visible)]="showSavePreferenceModal" 
+  [modal]="true" 
+  [closable]="true"
+  [draggable]="false"
+  [resizable]="false"
+  header="{{ 'COLUMN_CONFIG.SAVE_PREFERENCE' | translate }}"
+  [style]="{width: '500px'}"
+  [closeOnEscape]="true"
+  (onHide)="closeSavePreferenceModal()"
+  [baseZIndex]="10002">
+  
+  <div class="save-preference-content">
+    <div class="form-group">
+      <label for="preferenceName">{{ 'COLUMN_CONFIG.PREFERENCE_NAME' | translate }} *</label>
+      <input 
+        id="preferenceName"
+        pInputText 
+        type="text" 
+        [(ngModel)]="newPreferenceName" 
+        placeholder="{{ 'COLUMN_CONFIG.PREFERENCE_NAME_PLACEHOLDER' | translate }}"
+        class="w-full"
+        maxlength="50">
+    </div>
+    
+    <div class="form-group">
+      <label for="preferenceDescription">{{ 'COLUMN_CONFIG.PREFERENCE_DESCRIPTION' | translate }}</label>
+      <textarea 
+        id="preferenceDescription"
+        pInputTextarea 
+        [(ngModel)]="newPreferenceDescription" 
+        placeholder="{{ 'COLUMN_CONFIG.PREFERENCE_DESCRIPTION_PLACEHOLDER' | translate }}"
+        class="w-full"
+        rows="3"
+        maxlength="200">
+      </textarea>
+    </div>
+  </div>
+  
+  <ng-template pTemplate="footer">
+    <div class="dialog-footer">
+      <button 
+        pButton 
+        type="button" 
+        label="{{ 'COMMON.CANCEL' | translate }}" 
+        icon="pi pi-times"
+        class="p-button-text"
+        (click)="closeSavePreferenceModal()">
+      </button>
+      <button 
+        pButton 
+        type="button" 
+        label="{{ 'COMMON.SAVE' | translate }}" 
+        icon="pi pi-check"
+        class="p-button-primary"
+        (click)="saveAsPreference()">
+      </button>
+    </div>
+  </ng-template>
+</p-dialog>
+
+<!-- Modal para Duplicar Preferência -->
+<p-dialog 
+  [(visible)]="showDuplicateModal" 
+  [modal]="true" 
+  [closable]="true"
+  [draggable]="false"
+  [resizable]="false"
+  header="{{ 'COLUMN_CONFIG.DUPLICATE_PREFERENCE' | translate }}"
+  [style]="{width: '500px'}"
+  [closeOnEscape]="true"
+  (onHide)="closeDuplicateModal()"
+  [baseZIndex]="10003">
+  
+  <div class="duplicate-preference-content">
+    <div class="form-group">
+      <label for="duplicatePreferenceName">{{ 'COLUMN_CONFIG.DUPLICATE_PREFERENCE_NAME' | translate }} *</label>
+      <input 
+        id="duplicatePreferenceName"
+        pInputText 
+        type="text" 
+        [(ngModel)]="duplicatePreferenceName" 
+        placeholder="{{ 'COLUMN_CONFIG.DUPLICATE_PREFERENCE_PLACEHOLDER' | translate }}"
+        class="w-full"
+        maxlength="50">
+    </div>
+    
+    <div class="info-box">
+      <i class="pi pi-info-circle"></i>
+      <span>{{ 'COLUMN_CONFIG.DUPLICATE_INFO' | translate: { name: selectedPreferenceToDuplicate?.namePreference } }}</span>
+    </div>
+  </div>
+  
+  <ng-template pTemplate="footer">
+    <div class="dialog-footer">
+      <button 
+        pButton 
+        type="button" 
+        label="{{ 'COMMON.CANCEL' | translate }}" 
+        icon="pi pi-times"
+        class="p-button-text"
+        (click)="closeDuplicateModal()">
+      </button>
+      <button 
+        pButton 
+        type="button" 
+        label="{{ 'COLUMN_CONFIG.DUPLICATE' | translate }}" 
+        icon="pi pi-copy"
+        class="p-button-primary"
+        (click)="duplicatePreference()">
+      </button>
+    </div>
+  </ng-template>
+</p-dialog>

@@ -1,0 +1,403 @@
+<app-title-header title="Produtos"></app-title-header>
+
+<div class="filters">
+    <p-accordion class="p-accordion-custom-header">
+        <p-accordionTab>
+            <ng-template pTemplate="header">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <span>{{ getFiltrosHeader() }}</span>
+
+                    @if (getActiveFilters().length > 0) {
+                    <ng-container>
+                        @for (filter of getActiveFilters(); track filter) {
+                        <p-tag [value]="filter.label + ': ' + filter.value" severity="contrast" styleClass="mr-1">
+                        </p-tag>
+                        }
+                    </ng-container>
+                    }
+                </div>
+            </ng-template>
+
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input pInputText id="codigoProduto" [(ngModel)]="filtros.nome" name="nome"
+                            style="width: 100%;" />
+                        <label for="codigoProduto">Código Produto</label>
+                    </p-floatLabel>
+                </div>
+
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-dropdown id="tipoProduto" appendTo="body" [options]="statusOptions"
+                            [(ngModel)]="filtros.status" name="status">
+                        </p-dropdown>
+                        <label for="tipoProduto">Tipo Produto</label>
+                    </p-floatLabel>
+                </div>
+
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-dropdown id="statusProduto" appendTo="body" [options]="statusOptions"
+                            [(ngModel)]="filtros.status" name="status">
+                        </p-dropdown>
+                        <label for="status">Status Produto</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button pButton [outlined]="true" [raised]="true" severity="warning" label="Limpar" icon="pi pi-times"
+                    (click)="limparFiltros()">
+                </button>
+                <button pButton [outlined]="true" [raised]="true" severity="success" label="Filtrar" icon="pi pi-filter"
+                    (click)="filtrar()">
+                </button>
+            </div>
+        </p-accordionTab>
+    </p-accordion>
+</div>
+
+<div class="tables">
+    <p-table [value]="acessos" [paginator]="true" [lazy]="true" [showCurrentPageReport]="true" [rows]="rows"
+        [resizableColumns]="true" [totalRecords]="totalRecords" [rowsPerPageOptions]="rowsPerPage"
+        styleClass="p-datatable-striped p-datatable-gridlines" (onPage)="handlePageChange($event)"
+        (onLazyLoad)="loadTableData($event)" dataKey="id">
+        <ng-template pTemplate="caption">
+            <div style="display: flex; justify-content: flex-end; align-items: center;">
+                <div class="actions">
+                    <button pButton [outlined]="true" [raised]="true" severity="success" label="Exportar"
+                        icon="pi pi-file-excel" (click)="exportarParaExcel()" pTooltip="Exportar para Excel"
+                        tooltipPosition="top">
+                    </button>
+                    <p-button icon="pi pi-plus" label="Incluir Produtos" class="exportButton"
+                        (onClick)="showDialog()" />
+                </div>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+            <tr>
+                <th id="codigo">Código</th>
+                <th id="tipoProduto">Tipo</th>
+                <th id="perfis">Descrição</th>
+                <th id="status">Status Produto</th>
+                <th id="acao">Ações</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-acesso let-rowIndex="rowIndex">
+            <tr>
+                <td>
+                    {{ acesso.nome }}
+                </td>
+                <td>
+                    {{ acesso.email }}
+                </td>
+                <td>
+                    {{ acesso.perfilNome }}
+                </td>
+                <td>
+                    <p-tag [value]="acesso.status ? 'Ativo' : 'Inativo'"
+                        [severity]="acesso.status ? 'success' : 'danger'" />
+                </td>
+                <td>
+                    <div class="actions-table">
+                        @if (!acesso.editing) {
+                        <button pButton [outlined]="true" [raised]="true" severity="success" icon="pi pi-pencil"
+                            (click)="iniciarEdicao(acesso, rowIndex)">
+                        </button>
+                        }
+
+                        @if (!acesso.editing) {
+                        <button pButton [outlined]="true" [raised]="true" severity="danger" icon="pi pi-trash"
+                            (click)="confirmarExclusao(acesso)">
+                        </button>
+                        }
+
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+
+<!-- Modal para incluir/editar produto -->
+<p-dialog [header]="modalTitle" [(visible)]="displayModal" [style]="{width: '90vw'}" [modal]="true">
+    <p-tabView #tabView>
+        <p-tabPanel header="Informações Básicas">
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 30%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input type="text" pInputText style="width: 100%;" />
+                        <label for="codigoProduto">Código Produto</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input type="text" pInputText style="width: 100%;" />
+                        <label for="nomeProduto">Nome Produto</label>
+                    </p-floatLabel>
+                </div>
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input type="text" pInputText style="width: 100%;" />
+                        <label for="tipoProduto">Tipo Produto</label>
+                    </p-floatLabel>
+                </div>
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input type="text" pInputText style="width: 100%;" />
+                        <label for="categoriaProduto">Categoria Produto</label>
+                    </p-floatLabel>
+                </div>
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input type="text" pInputText style="width: 100%;" />
+                        <label for="marcaProduto">Marca Produto</label>
+                    </p-floatLabel>
+                </div>
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input type="text" pInputText style="width: 100%;" />
+                        <label for="unidadeMedida">Unidade Medida</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <textarea id="descricaoProduto" type="text" pInputText style="width: 100%;"></textarea>
+                        <label for="descricaoProduto">Descrição do Produto</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+        </p-tabPanel>
+
+        <p-tabPanel header="Dados Comerciais">
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input type="text" pInputText style="width: 100%;" />
+                        <label for="precoCusto">Preço de Custo</label>
+                    </p-floatLabel>
+                </div>
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input type="text" pInputText style="width: 100%;" />
+                        <label for="precoVenda">Preço de venda</label>
+                    </p-floatLabel>
+                </div>
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input type="text" pInputText style="width: 100%;" />
+                        <label for="margemLucro">Margem de Lucro (%)</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input type="text" pInputText style="width: 100%;" />
+                        <label for="tributacao">Tributação</label>
+                    </p-floatLabel>
+                </div>
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input type="text" pInputText style="width: 100%;" />
+                        <label for="ncm">NCM</label>
+                    </p-floatLabel>
+                </div>
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input type="text" pInputText style="width: 100%;" />
+                        <label for="cest">CEST</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+            <div class="field col-12">
+                <p-checkbox label="Controla Estoque?" binary="true"></p-checkbox>
+            </div>
+        </p-tabPanel>
+
+        <p-tabPanel header="Estoque">
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input type="text" pInputText style="width: 100%;" disabled />
+                        <label for="estoqueAtual">Estoque Atual</label>
+                    </p-floatLabel>
+                </div>
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input type="text" pInputText style="width: 100%;" />
+                        <label for="estoqueMinimo">Estoque Mínimo</label>
+                    </p-floatLabel>
+                </div>
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input type="text" pInputText style="width: 100%;" disabled />
+                        <label for="estoqueMaximo">Estoque Máximo</label>
+                    </p-floatLabel>
+                </div>
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input type="text" pInputText style="width: 100%;" disabled />
+                        <label for="localizacao">Localização</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+
+            <h5>Fornecedores</h5>
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-table [responsive]="true">
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th>Fornecedor</th>
+                                <th>Código no Fornecedor</th>
+                                <th>Preço</th>
+                                <th>Prazo Entrega</th>
+                                <th>Ações</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-fornecedor>
+                            <tr>
+                                <td>1</td>
+                                <td>2</td>
+                                <td>3</td>
+                                <td>4</td>
+                                <td>
+                                    <button pButton icon="pi pi-pencil" class="p-button-rounded p-button-text"></button>
+                                    <button pButton icon="pi pi-trash" class="p-button-rounded p-button-text"></button>
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+            </div>
+            <div class="field grid"
+                style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                </div>
+                <div>
+                    <button pButton [outlined]="true" [raised]="true" severity="success" label="Incluir Fornecedor"
+                        icon="pi pi-plus" tooltipPosition="top">
+                    </button>
+                </div>
+            </div>
+        </p-tabPanel>
+
+        <p-tabPanel header="Dados Técnicos">
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-inputNumber id="peso" suffix=" kg" [minFractionDigits]="3" [maxFractionDigits]="3">
+                        </p-inputNumber>
+                        <label for="peso">Peso</label>
+                    </p-floatLabel>
+                </div>
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-inputNumber [minFractionDigits]="1" [maxFractionDigits]="1" class="mr-2"></p-inputNumber>
+                        <label for="largura">Largura</label>
+                    </p-floatLabel>
+                </div>
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-inputNumber [minFractionDigits]="1" [maxFractionDigits]="1" class="mr-2"></p-inputNumber>
+                        <label for="altura">Altura</label>
+                    </p-floatLabel>
+                </div>
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-inputNumber [minFractionDigits]="1" [maxFractionDigits]="1"></p-inputNumber>
+                        <label for="comprimento">Comprimento</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input type="text" pInputText style="width: 100%;"/>
+                        <label for="material">Material</label>
+                    </p-floatLabel>
+                </div>
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input type="text" pInputText style="width: 100%;"/>
+                        <label for="cor">Cor</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <textarea id="especificacoesTecnicas" type="text" pInputText style="width: 100%;"></textarea>
+                        <label for="especificacoesTecnicas">Especificações Técnicas</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <textarea id="instrucoesUso" type="text" pInputText style="width: 100%;"></textarea>
+                        <label for="instrucoesUso">Instruções de Uso</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+        </p-tabPanel>
+
+        <p-tabPanel header="Observações e Anexos">
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <textarea id="observacoes" type="text" pInputText style="width: 100%;"></textarea>
+                        <label for="observacoes">Observações</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+        </p-tabPanel>
+    </p-tabView>
+    <ng-template pTemplate="footer">
+        <!--         <button pButton [outlined]="true" [raised]="true" severity="danger" icon="pi pi-times" label="Cancelar"
+            (click)="displayModal = false" class="p-button-text">
+        </button>
+        <button pButton [outlined]="false" [raised]="true" severity="success" icon="pi pi-check" label="Salvar"
+            class="ml-2" (click)="salvarClienteFornecedor()">
+        </button> -->
+    </ng-template>
+</p-dialog>
+
+<!-- Diálogo de confirmação para exclusão -->
+<p-dialog [header]="modalTitleDelete" [(visible)]="displayConfirmation" [style]="{width: '30vw'}" [modal]="true"
+    [closable]="false">
+    <div class="confirmation-content">
+        <span *ngIf="acessoParaExcluir">
+            Tem certeza que deseja excluir o usuário <b>{{ acessoParaExcluir.nome }}</b>?
+        </span>
+    </div>
+    <ng-template pTemplate="footer">
+        <div class="actions">
+            <button pButton pRipple type="button" label="Cancelar" icon="pi pi-times" (click)="cancelarInativacao()"
+                class="p-button-text"></button>
+            <button pButton pRipple type="button" label="Confirmar" icon="pi pi-check"
+                (click)="confirmarInativacaoDialog()" class="p-button-danger"></button>
+        </div>
+    </ng-template>
+</p-dialog>

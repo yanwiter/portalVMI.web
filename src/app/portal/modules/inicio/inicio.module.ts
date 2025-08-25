@@ -6,15 +6,34 @@ import { SharedModule } from '../../../shared/modules/shared.module';
 import { InicioComponent } from './inicio/inicio.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { InicioRoutingModule } from './inicio.routing.module';
+import { DashboardEstoqueComponent } from './dashboard/dashboard-estoque/dashboard-estoque.component';
+import { DashboardExecutivoComponent } from './dashboard/dashboard-executivo/dashboard-executivo.component';
+import { DashboardClienteComponent } from './dashboard/dashboard-cliente/dashboard-cliente.component';
+import { DashboardFornecedorComponent } from './dashboard/dashboard-fornecedor/dashboard-fornecedor.component';
+import { DashboardContratoComponent } from './dashboard/dashboard-contrato/dashboard-contrato.component';
 
+// Services
+import { MessageService } from 'primeng/api';
 
 @NgModule({
   declarations: [
     InicioComponent,
-    DashboardComponent
+    DashboardComponent,
+    DashboardEstoqueComponent,
+    DashboardExecutivoComponent,
+    DashboardClienteComponent,
+    DashboardFornecedorComponent,
+    DashboardContratoComponent
   ],
   imports: [
-   InicioRoutingModule,CommonModule, FormsModule, PrimeNGModule, SharedModule
+   InicioRoutingModule,
+   CommonModule, 
+   FormsModule, 
+   PrimeNGModule, 
+   SharedModule
+  ],
+  providers: [
+    MessageService
   ]
 })
 export class InicioModule { }

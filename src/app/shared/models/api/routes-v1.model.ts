@@ -4,6 +4,13 @@ import { ClientesFornecedoresRouteModel } from "../clientesFornecedores.model";
 import { LoginRouteModel } from "../login.model";
 import { PerfilRouteModel } from "../perfil.model";
 import { UsuarioRouteModel } from "../usuario.model";
+import { NotaFiscalRouteModel } from "../notaFiscalRoute.model";
+import { ProdutoRouteModel } from "../produtoRoute.model";
+import { PontoRouteModel } from "../pontoRoute.model";
+import { SessaoRouteModel } from "../sessaoRoute.model";
+import { ContratoRouteModel } from "../contrato.model";
+import { EstoqueRouteModel } from "../estoqueRoute.model";
+import { ColumnPreferenceRouteModel } from "../columnPreference.model";
 import { ApiRoutesBase, IApiEndpoints } from "./routes.model";
 import { Injectable } from "@angular/core";
 
@@ -16,7 +23,14 @@ export class ApiEndpoints implements IApiEndpoints {
   perfilRoutes: PerfilRouteModel;
   usuarioRoutes: UsuarioRouteModel;
   acessoRoutes: AcessoRouteModel;
-  clientesAndFornecedoresRoutes: ClientesFornecedoresRouteModel
+  clientesAndFornecedoresRoutes: ClientesFornecedoresRouteModel;
+  notaFiscalRoutes: NotaFiscalRouteModel;
+  produtoRoutes: ProdutoRouteModel;
+  pontoRoutes: PontoRouteModel;
+  sessaoRoutes: SessaoRouteModel;
+  contratoRoutes: ContratoRouteModel;
+  estoqueRoutes: EstoqueRouteModel;
+  columnPreferenceRoutes: ColumnPreferenceRouteModel;
 
   constructor() {
 
@@ -25,6 +39,13 @@ export class ApiEndpoints implements IApiEndpoints {
     this.usuarioRoutes = new UsuarioRouteModel();
     this.acessoRoutes = new AcessoRouteModel();
     this.clientesAndFornecedoresRoutes = new ClientesFornecedoresRouteModel();
+    this.notaFiscalRoutes = new NotaFiscalRouteModel();
+    this.produtoRoutes = new ProdutoRouteModel();
+    this.pontoRoutes = new PontoRouteModel();
+    this.sessaoRoutes = new SessaoRouteModel();
+    this.contratoRoutes = new ContratoRouteModel();
+    this.estoqueRoutes = new EstoqueRouteModel();
+    this.columnPreferenceRoutes = new ColumnPreferenceRouteModel();
 
   }
 }

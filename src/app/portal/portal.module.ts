@@ -7,6 +7,8 @@ import { FormsModule } from "@angular/forms";
 import { PrimeNGModule } from "../shared/modules/primeNG.module";
 import { SharedModule } from "../shared/modules/shared.module";
 import { DialogService } from "primeng/dynamicdialog";
+import { ConfirmationService } from "primeng/api";
+import { AppHeaderComponent } from "../shared/components/app-header/app-header.component";
 
 @NgModule({
   declarations: [PortalComponent],
@@ -16,8 +18,9 @@ import { DialogService } from "primeng/dynamicdialog";
     CommonModule,
     PrimeNGModule,
     SharedModule,
-    FormsModule
+    FormsModule,
+    AppHeaderComponent
   ],
-  providers: [DialogService],
+  providers: [DialogService, ConfirmationService],
 })
 export class PortalModule { }

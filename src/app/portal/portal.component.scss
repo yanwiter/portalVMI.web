@@ -1,150 +1,188 @@
 :host {
-
   .portal-content {
     display: flex;
     flex-direction: column;
-    height: 100%;
-    background-color: var(--gray-50);
+    min-height: 100vh;
+    width: 100%;
+    background-color: var(--surface-ground);
+    transition: background-color 0.3s ease;
   }
 
-  .sidebar-content-itens {
-    border-radius: 10px;
-    margin: 4px;
+  .navbar-content {
+    margin-bottom: 1rem;
+  }
+
+  .main-content {
+    background-color: var(--surface-ground);
     width: 100%;
-    height: 99%;
-    overflow: auto;
+    height: calc(100vh - 30px);
+    display: flex;
+    flex-direction: row;
+    position: relative;
+    gap: 0;
+  }
+
+  .sidebar-content-itens-collapsed {
+    border-radius: 12px;
+    margin: 8px;
+    margin-bottom: 8px;
+    width: 70px;
+    height: calc(100% - 16px);
+    background: var(--surface-card);
+    box-shadow: 0 4px 12px var(--shadow-color);
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .sidebar-content-itens-expanded {
+    border-radius: 12px;
+    margin: 8px;
+    margin-bottom: 8px;
+    width: 280px;
+    height: calc(100% - 16px);
+    background: var(--surface-card);
+    box-shadow: 0 4px 12px var(--shadow-color);
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .sidebar-content {
-    margin: 10px;
-    margin-top: 1%;
-    width: 22%;
-    height: calc(89vh - 2%);
-    border-radius: 10px;
-    display: flex;
+    transform: translateX(0);
     transition: transform 0.3s ease-in-out;
   }
-
+  
   .sidebar-content.hidden {
     transform: translateX(-100%);
   }
 
   .router-outlet-content {
-    border-radius: 10px;
-    margin: 16px;
-    margin-top: 0.3%;
-    width: calc(100% - 32px);
-    height: calc(99% - 16px);
+    border-radius: 12px;
+    margin: 8px;
+    margin-bottom: 8px;
+    height: calc(100% - 16px);
+    flex: 1;
     overflow: auto;
     background: var(--surface-card);
-    border: 1px solid rgba(0, 0, 0, 0.125);
+    box-shadow: 0 4px 12px var(--shadow-color);
+    transition: all 0.3s ease;
   }
 
-  .main-content {
-    margin: 10px;
-    margin-top: 3%;
-    background-color: var(--gray-50);
-    width: 99%;
-    height: calc(92vh - 2%);
-    border-radius: 10px;
-    display: flex;
-    flex-direction: row;
+  .footer-content {
+    background-color: transparent;
+    width: 100%;
+    color: var(--text-color);
+    font-family: var(--font-family);
     position: relative;
+    min-height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease;
   }
 
   .footer-link {
-    text-align: center;
-    width: 100%;
-    height: 1%;
-    color: var(--text-color);
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
-    font-size: xx-small;
-    letter-spacing: 0.9px;
-    position: absolute;
-    padding: 0;
-    bottom: 0;
-    left: 0;
+    background-color: transparent;
+    color: var(--text-color-secondary);
+    font-family: var(--font-family);
+    font-size: 11px;
+    letter-spacing: 0.3px;
     text-decoration: none;
-  
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 4px 12px;
+    transition: all 0.3s ease;
+
     &:hover {
-      color: var(--primary-color); 
+      color: var(--primary-color);
+      background-color: var(--surface-hover);
       text-decoration: none;
+      transform: translateY(-1px);
     }
   }
 
-  @media (max-width: 1024px) {
-    .logo-menu {
-      width: 150px;
-    }
-
-    .sidenav-control {
-      width: 5vw;
-    }
-
-    .sidebar-toggle-btn {
-      width: 5vw;
-    }
-
-    .main-content {
-      margin: 8px;
-      margin-top: 2%;
-      height: calc(90vh - 5%);
-      width: 100%;
-    }
-
-    .router-outlet-content {
-      margin: 8px;
-      margin-top: 1%;
-      width: calc(100% - 16px);
-      height: calc(98% - 8px);
-    }
-  }
-
+  // Responsividade
   @media (max-width: 768px) {
-    .logo-menu {
-      width: 120px;
-    }
-
-    .sidenav-control {
-      width: 8vw;
-    }
-
-    .sidebar-toggle-btn {
-      width: 8vw;
-    }
-
     .main-content {
-      margin: 5px;
-      height: calc(85vh - 5%);
+      flex-direction: column;
+      height: calc(100vh - 40px);
     }
 
-    .router-outlet-content {
-      margin: 8px;
-      height: calc(95% - 8px);
-    }
-  }
-
-  @media (max-width: 480px) {
-    .logo-menu {
-      width: 100px;
-    }
-
-    .sidenav-control {
-      width: 12vw;
-    }
-
-    .sidebar-toggle-btn {
-      width: 12vw;
-    }
-
-    .main-content {
-      margin: 2px;
-      height: calc(80vh - 5%);
+    .sidebar-content-itens-collapsed,
+    .sidebar-content-itens-expanded {
+      width: 100%;
+      height: auto;
+      min-height: 60px;
+      margin: 4px;
     }
 
     .router-outlet-content {
       margin: 4px;
-      height: calc(90% - 4px);
+      height: calc(100% - 80px);
+    }
+
+    .footer-content {
+      min-height: 25px;
+    }
+  }
+
+  .theme-dark & {
+    .portal-content {
+      background-color: var(--surface-ground);
+    }
+
+    .main-content {
+      background-color: var(--surface-ground);
+    }
+
+    .sidebar-content-itens-collapsed,
+    .sidebar-content-itens-expanded {
+      background: var(--surface-card);
+      border-color: var(--surface-border);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .router-outlet-content {
+      background: var(--surface-card);
+      border-color: var(--surface-border);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .footer-content {
+      background-color: var(--surface-ground);
+      border-color: var(--surface-border);
+    }
+
+    .footer-link:hover {
+      background-color: transparent;
+    }
+  }
+
+  .theme-light & {
+    .portal-content {
+      background-color: var(--surface-ground);
+    }
+
+    .main-content {
+      background-color: var(--surface-ground);
+    }
+
+    .sidebar-content-itens-collapsed,
+    .sidebar-content-itens-expanded {
+      background: var(--surface-card);
+      border-color: var(--surface-border);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .router-outlet-content {
+      background: var(--surface-card);
+      border-color: var(--surface-border);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .footer-content {
+      background-color: var(--surface-ground);
     }
   }
 }

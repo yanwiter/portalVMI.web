@@ -1,0 +1,372 @@
+<div class="main-container">
+    <!-- Tree na extrema esquerda -->
+    <div class="tree-sidebar">
+        <div class="tree-header">
+            <h3>Documentos</h3>
+            <div class="tree-controls">
+                <button pButton type="button" icon="pi pi-plus" class="p-button-sm p-button-outlined"
+                    pTooltip="Expandir Tudo" (click)="expandAll()">
+                </button>
+                <button pButton type="button" icon="pi pi-minus" class="p-button-sm p-button-outlined"
+                    pTooltip="Colapsar Tudo" (click)="collapseAll()">
+                </button>
+            </div>
+        </div>
+
+        <div class="tree-content">
+            <p-tree [value]="files" [selectionMode]="'single'" [(selection)]="selectedFiles"
+                (onNodeSelect)="onNodeSelect($event)" (onNodeUnselect)="onNodeUnselect($event)" 
+                (onNodeExpand)="onNodeExpand($event)" (onNodeCollapse)="onNodeCollapse($event)" class="custom-tree">
+            </p-tree>
+        </div>
+    </div>
+
+    <!-- Área de detalhes à direita -->
+    <div class="details-panel" *ngIf="selectedFiles && selectedFiles.length > 0">
+        <!-- Breadcrumb acima da tabela -->
+        <div class="breadcrumb-section" *ngIf="breadcrumbItems && breadcrumbItems.length > 0">
+            <p-breadcrumb [model]="breadcrumbItems" styleClass="custom-breadcrumb"></p-breadcrumb>
+        </div>
+
+        <div class="table-container">
+            <!-- Controles de filtro -->
+            <div class="filter-controls">
+                <div class="filter-info">
+                    <span class="filter-count">
+                        Mostrando {{ filteredFiles.length }} de {{ getFlattenedFiles().length }} arquivos
+                        <span *ngIf="generalSearch" class="search-highlight">
+                            • Busca: "{{ generalSearch }}"
+                        </span>
+                        <span *ngIf="getActiveColumnFiltersCount() > 0" class="filter-highlight">
+                            • {{ getActiveColumnFiltersCount() }} filtro(s) de coluna ativo(s)
+                        </span>
+                    </span>
+                </div>
+                
+                <div class="controls-right">
+                    <!-- Input de busca geral -->
+                    <div class="search-input-container">
+                        <i class="pi pi-search search-icon"></i>
+                        <input pInputText type="text" [(ngModel)]="generalSearch"
+                            class="general-search-input" (input)="onGeneralSearchChange()">
+                        <button pButton *ngIf="generalSearch" type="button" icon="pi pi-times"
+                            class="p-button-sm p-button-outlined p-button-danger custom-small-button" (click)="clearGeneralSearch()"
+                            pTooltip="Limpar busca">
+                        </button>
+                    </div>
+                    
+                    <div class="filter-buttons">
+                        <button pButton type="button" pTooltip="Itens" tooltipPosition="left" icon="pi pi-sync"
+                        class="p-button-sm p-button-outlined p-button-info custom-small-button"
+                        (click)="showAdvancedFilters()">
+                    </button>
+                        <button pButton type="button" pTooltip="Itens" tooltipPosition="left" icon="pi pi-info"
+                            class="p-button-sm p-button-outlined p-button-info custom-small-button"
+                            (click)="showAdvancedFilters()">
+                        </button>
+                        <button pButton type="button" pTooltip="Filtro Avançado" tooltipPosition="left" icon="pi pi-cog"
+                            class="p-button-sm p-button-outlined p-button-info custom-small-button"
+                            (click)="showAdvancedFilters()">
+                        </button>
+<!--                         <button pButton *ngIf="hasActiveFilters()" type="button" icon="pi pi-times"
+                            class="p-button-sm p-button-outlined p-button-danger custom-small-button" (click)="clearFilters()">
+                        </button> -->
+                    </div>
+                </div>
+            </div>
+
+            <p-table [value]="filteredFiles" [scrollable]="true" scrollHeight="670px"
+                [tableStyle]="{'min-width': '50rem'}" styleClass="p-datatable-sm">
+
+                <!-- Header com checkbox para selecionar todos -->
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width: 50px">
+                            <p-checkbox [binary]="true" [ngModel]="selectAll" (onChange)="toggleSelectAll($event)">
+                            </p-checkbox>
+                        </th>
+                        <th class="text-center">
+                            <div class="filter-header">
+                                <div class="column-header">
+                                    <span>Tipo Arquivo</span>
+                                </div>
+                            </div>
+                        </th>
+                        <th>
+                            <div class="filter-header">
+                                <div class="column-header">
+                                    <span>Nome</span>
+                                    <button type="button" class="filter-toggle-btn"
+                                        [class.active]="isColumnFilterVisible('nome')"
+                                        (click)="toggleColumnFilter('nome')" pTooltip="Mostrar/Ocultar filtro">
+                                        <i class="pi pi-filter"></i>
+                                    </button>
+                                </div>
+                                <input pInputText *ngIf="isColumnFilterVisible('nome')" type="text"
+                                    [(ngModel)]="filters.nome" placeholder="Filtrar nome..."
+                                    class="p-inputtext-sm filter-input">
+                            </div>
+                        </th>
+                        <th>
+                            <div class="filter-header">
+                                <div class="column-header">
+                                    <span>Criação</span>
+                                    <button type="button" class="filter-toggle-btn"
+                                        [class.active]="isColumnFilterVisible('criacao')"
+                                        (click)="toggleColumnFilter('criacao')" pTooltip="Mostrar/Ocultar filtro">
+                                        <i class="pi pi-filter"></i>
+                                    </button>
+                                </div>
+                                <input pInputText *ngIf="isColumnFilterVisible('criacao')" type="text"
+                                    [(ngModel)]="filters.criacao" placeholder="Filtrar data..."
+                                    class="p-inputtext-sm filter-input">
+                            </div>
+                        </th>
+                        <th>
+                            <div class="filter-header">
+                                <div class="column-header">
+                                    <span>Descrição</span>
+                                    <button type="button" class="filter-toggle-btn"
+                                        [class.active]="isColumnFilterVisible('descricao')"
+                                        (click)="toggleColumnFilter('descricao')" pTooltip="Mostrar/Ocultar filtro">
+                                        <i class="pi pi-filter"></i>
+                                    </button>
+                                </div>
+                                <input pInputText *ngIf="isColumnFilterVisible('descricao')" type="text"
+                                    [(ngModel)]="filters.descricao" placeholder="Filtrar descrição..."
+                                    class="p-inputtext-sm filter-input">
+                            </div>
+                        </th>
+                        <th>
+                            <div class="filter-header">
+                                <div class="column-header">
+                                    <span>Estado</span>
+                                    <button type="button" class="filter-toggle-btn"
+                                        [class.active]="isColumnFilterVisible('estado')"
+                                        (click)="toggleColumnFilter('estado')" pTooltip="Mostrar/Ocultar filtro">
+                                        <i class="pi pi-filter"></i>
+                                    </button>
+                                </div>
+                                <input pInputText *ngIf="isColumnFilterVisible('estado')" type="text"
+                                    [(ngModel)]="filters.estado" placeholder="Filtrar estado..."
+                                    class="p-inputtext-sm filter-input">
+                            </div>
+                        </th>
+                        <th>
+                            <div class="filter-header">
+                                <div class="column-header">
+                                    <span>Upload</span>
+                                    <button type="button" class="filter-toggle-btn"
+                                        [class.active]="isColumnFilterVisible('upload')"
+                                        (click)="toggleColumnFilter('upload')" pTooltip="Mostrar/Ocultar filtro">
+                                        <i class="pi pi-filter"></i>
+                                    </button>
+                                </div>
+                                <input pInputText *ngIf="isColumnFilterVisible('upload')" type="text"
+                                    [(ngModel)]="filters.upload" placeholder="Filtrar upload..."
+                                    class="p-inputtext-sm filter-input">
+                            </div>
+                        </th>
+                        <th>
+                            <div class="filter-header">
+                                <div class="column-header">
+                                    <span>Nome do Arquivo</span>
+                                    <button type="button" class="filter-toggle-btn"
+                                        [class.active]="isColumnFilterVisible('nomeArquivo')"
+                                        (click)="toggleColumnFilter('nomeArquivo')" pTooltip="Mostrar/Ocultar filtro">
+                                        <i class="pi pi-filter"></i>
+                                    </button>
+                                </div>
+                                <input pInputText *ngIf="isColumnFilterVisible('nomeArquivo')" type="text"
+                                    [(ngModel)]="filters.nomeArquivo" placeholder="Filtrar arquivo..."
+                                    class="p-inputtext-sm filter-input">
+                            </div>
+                        </th>
+                    </tr>
+                </ng-template>
+
+                <!-- Linhas da tabela -->
+                <ng-template pTemplate="body" let-file let-rowIndex="rowIndex">
+                    <tr>
+                        <td>
+                            <p-checkbox [binary]="true" [ngModel]="file.selected"
+                                (onChange)="toggleFileSelection(file, $event)">
+                            </p-checkbox>
+                        </td>
+                        <td>
+                            <div class="file-type">
+                                <i [class]="getItemIcon(file)" class="file-icon"></i>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="file-name">
+                                {{ file.label }}
+                            </div>
+                        </td>
+                        <td>
+                            <span class="creation-date">{{ getCreationDate(file) }}</span>
+                        </td>
+                        <td>
+                            <span class="description">{{ getDescription(file) }}</span>
+                        </td>
+                        <td>
+                            <span class="status-tag">{{ getStatus(file) }}</span>
+                        </td>
+                        <td>
+                            <span class="upload-info">{{ getUploadInfo(file) }}</span>
+                        </td>
+                        <td>
+                            <span class="filename">{{ getFilename(file) }}</span>
+                        </td>
+                    </tr>
+                </ng-template>
+
+                <!-- Mensagem quando não há dados -->
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="8" class="text-center p-4">
+                            <div *ngIf="filteredFiles.length === 0 && getFlattenedFiles().length > 0">
+                                <i class="pi pi-filter" style="font-size: 2rem; color: #ccc; margin-bottom: 10px;"></i>
+                                <p>Nenhum arquivo encontrado com os filtros aplicados</p>
+                                <button pButton type="button" label="Limpar Filtros" icon="pi pi-times"
+                                    class="p-button-sm p-button-outlined" (click)="clearFilters()">
+                                </button>
+                            </div>
+                            <div *ngIf="getFlattenedFiles().length === 0">
+                                Nenhum arquivo disponível
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+
+    <!-- Mensagem quando nenhum item está selecionado -->
+    <div class="no-selection" *ngIf="!selectedFiles || selectedFiles.length === 0">
+        <div class="no-selection-content">
+            <i class="pi pi-folder-open" style="font-size: 3rem; color: #ccc;"></i>
+            <h3>Nenhum item foi selecionado</h3>
+            <p>Clique em um item na árvore para ver seus detalhes</p>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Filtros Avançados -->
+<p-dialog header="Filtros Avançados" [(visible)]="showAdvancedFiltersModal" [modal]="true" [style]="{width: '90%'}"
+    [draggable]="false" [resizable]="false" styleClass="advanced-filters-modal">
+
+    <div class="advanced-filters-content">
+        <!-- Controles de filtros dinâmicos -->
+        <div class="filter-controls-header">
+            <h4>Filtros Dinâmicos</h4>
+            <button pButton type="button" label="Adicionar Filtro" icon="pi pi-plus"
+                class="p-button-sm p-button-outlined p-button-success" (click)="addFilter()">
+            </button>
+        </div>
+
+        <!-- Lista de filtros dinâmicos -->
+        <div class="dynamic-filters-list" *ngIf="advancedFilters.filters.length > 0">
+            <div class="filter-item"
+                *ngFor="let filter of advancedFilters.filters; let i = index; trackBy: trackByFilterId">
+                <div class="filter-header">
+                    <span class="filter-number">Filtro #{{ i + 1 }}</span>
+                    <button pButton type="button" icon="pi pi-trash"
+                        class="p-button-sm p-button-outlined p-button-danger" (click)="removeFilter(filter.id)"
+                        pTooltip="Remover filtro">
+                    </button>
+                </div>
+
+                <div class="filter-content">
+                    <!-- Campo -->
+                    <div class="filter-field">
+                        <label>Campo</label>
+                        <p-dropdown [options]="availableFields" [(ngModel)]="filter.field" optionLabel="label"
+                            optionValue="key" appendTo="body" placeholder="Selecione o campo"
+                            styleClass="field-dropdown">
+                        </p-dropdown>
+                    </div>
+
+                    <!-- Operador -->
+                    <div class="filter-field" *ngIf="filter.field">
+                        <label>Operador</label>
+                        <p-dropdown [options]="getFieldOperators(filter.field)" [(ngModel)]="filter.operator"
+                            optionLabel="label" optionValue="value" appendTo="body" placeholder="Selecione o operador"
+                            styleClass="operator-dropdown">
+                        </p-dropdown>
+                    </div>
+
+                    <!-- Valor -->
+                    <div class="filter-field" *ngIf="filter.field && filter.operator">
+                        <label>Valor</label>
+
+                        <!-- Campo de texto -->
+                        <input pInputText *ngIf="getFieldType(filter.field) === 'text'" type="text"
+                            [(ngModel)]="filter.value" placeholder="Digite o valor" class="filter-value-input">
+
+                        <!-- Seletor de opções -->
+                        <p-dropdown *ngIf="getFieldType(filter.field) === 'selection'"
+                            [options]="getFieldOptions(filter.field)" [(ngModel)]="filter.value" optionLabel="label"
+                            optionValue="value" appendTo="body" placeholder="Selecione o valor"
+                            styleClass="value-dropdown">
+                        </p-dropdown>
+
+                        <!-- Seletor de data -->
+                        <p-calendar *ngIf="getFieldType(filter.field) === 'date'" [(ngModel)]="filter.value"
+                            placeholder="Selecione a data" dateFormat="dd/mm/yy" appendTo="body"
+                            styleClass="date-input">
+                        </p-calendar>
+                    </div>
+
+                    <!-- Ativar/Desativar -->
+                    <div class="filter-field">
+                        <label>Status</label>
+                        <p-checkbox [binary]="true" [(ngModel)]="filter.enabled"
+                            [label]="filter.enabled ? 'Ativo' : 'Inativo'">
+                        </p-checkbox>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mensagem quando não há filtros -->
+        <div class="no-filters" *ngIf="advancedFilters.filters.length === 0">
+            <i class="pi pi-filter" style="font-size: 3rem; color: #ccc; margin-bottom: 15px;"></i>
+            <p>Nenhum filtro configurado</p>
+            <p>Clique em "Adicionar Filtro" para começar</p>
+        </div>
+
+        <!-- Regras Gerais -->
+        <div class="filter-section" *ngIf="advancedFilters.filters.length > 0">
+            <h5>Regras Gerais</h5>
+            <div class="filter-row">
+                <div class="filter-field">
+                    <label>Lógica de Filtros</label>
+                    <p-dropdown [options]="logicOptions" [(ngModel)]="advancedFilters.logic"
+                        placeholder="Selecione a lógica" styleClass="logic-dropdown">
+                    </p-dropdown>
+                </div>
+
+                <div class="filter-field">
+                    <label>Case Sensitive</label>
+                    <p-checkbox [binary]="true" [(ngModel)]="advancedFilters.caseSensitive" [label]="'Ativo'">
+                    </p-checkbox>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+        <div class="modal-footer">
+            <button pButton type="button" label="Limpar Todos" icon="pi pi-trash"
+                class="p-button-outlined p-button-danger" (click)="clearAdvancedFilters()">
+            </button>
+            <button pButton type="button" label="Cancelar" icon="pi pi-times"
+                class="p-button-outlined p-button-secondary" (click)="hideAdvancedFilters()">
+            </button>
+            <button pButton type="button" label="Aplicar Filtros" icon="pi pi-check" class="p-button-primary"
+                (click)="applyAdvancedFilters()">
+            </button>
+        </div>
+    </ng-template>
+</p-dialog>

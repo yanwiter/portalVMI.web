@@ -1,1 +1,275 @@
 <app-title-header title="Histórico de Produtos"></app-title-header>
+
+<div class="filters">
+    <p-accordion class="p-accordion-custom-header">
+        <p-accordionTab>
+            <ng-template pTemplate="header">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <span>{{ getFiltrosHeader() }}</span>
+
+                    @if (getActiveFilters().length > 0) {
+                    <ng-container>
+                        @for (filter of getActiveFilters(); track filter) {
+                        <p-tag [value]="filter.label + ': ' + filter.value" severity="contrast" styleClass="mr-1">
+                        </p-tag>
+                        }
+                    </ng-container>
+                    }
+                </div>
+            </ng-template>
+            <div class="itens-filters">
+                <p-floatLabel>
+                    <input pInputText id="nomeProduto" [(ngModel)]="filtros.nomeProduto" name="nomeProduto" />
+                    <label for="nomeProduto">Nome Produto</label>
+                </p-floatLabel>
+
+                <p-floatLabel>
+                    <p-calendar id="dataExpedicao" [showTime]="false" [(ngModel)]="filtros.dataExpedicao" [showIcon]="true"
+                        name="dataExpedicao" dateFormat="dd/mm/yy"></p-calendar>
+                    <label for="dataExpedicao">Data Expedição</label>
+                </p-floatLabel>
+
+                <p-floatLabel>
+                    <p-dropdown id="statusProduto" appendTo="body" [options]="statusOptions"
+                        [(ngModel)]="filtros.statusProduto" name="statusProduto">
+                    </p-dropdown>
+                    <label for="statusProduto">Situação Produto</label>
+                </p-floatLabel>
+            </div>
+
+            <div class="actions">
+                <button pButton [outlined]="true" [raised]="true" severity="warning" label="Limpar" icon="pi pi-times"
+                    (click)="limparFiltros()">
+                </button>
+                <button pButton [outlined]="true" [raised]="true" severity="success" label="Filtrar" icon="pi pi-filter"
+                    (click)="filtrar()">
+                </button>
+            </div>
+        </p-accordionTab>
+    </p-accordion>
+</div>
+
+<div class="tables">
+    <p-table [value]="acessos" [paginator]="true" [lazy]="true" [showCurrentPageReport]="true" [rows]="rows"
+        [resizableColumns]="true" [totalRecords]="totalRecords" [rowsPerPageOptions]="rowsPerPage"
+        styleClass="p-datatable-striped p-datatable-gridlines" (onPage)="handlePageChange($event)"
+        (onLazyLoad)="loadTableData($event)" dataKey="id">
+        <ng-template pTemplate="caption">
+            <div style="display: flex; justify-content: flex-end; align-items: center;">
+                <div class="actions">
+                    <p-button icon="pi pi-plus" label="Incluir Produto" class="exportButton" (onClick)="showDialog()" />
+                </div>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+            <tr>
+                <th id="nomeProduto">Nome Produto</th>
+                <th id="ordemProducao">Ordem Produção</th>
+                <th id="dataExpedicao">Data Expedição</th>
+                <th id="status">Status Produto</th>
+                <th id="acao">Ações</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-acesso let-rowIndex="rowIndex">
+            <tr>
+                <td>
+                    {{ acesso.nome }}
+                </td>
+                <td>
+                    {{ acesso.nomeCriadorUsuario }}
+                </td>
+                <td>
+                    {{ acesso.dataCriacao }}
+                </td>
+                <td>
+                    <p-tag [value]="acesso.status ? 'Ativo' : 'Inativo'"
+                        [severity]="acesso.status ? 'success' : 'danger'" />
+                </td>
+                <td>
+                    <div class="actions-table">
+                        <button pButton [outlined]="true" [raised]="true" severity="success" icon="pi pi-file-pdf"
+                            label="Gerar PDF" (click)="iniciarEdicao(acesso, rowIndex)">
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+
+<!-- Modal para incluir histórico de produtos -->
+<p-dialog header="Incluir Histórico de Produtos" [(visible)]="displayModal" [style]="{ width: '90vw', height: '90vh' }"
+    [modal]="true">
+    <p-tabView>
+        <p-tabPanel header="Identificação do Produto">
+            <div style="display: flex; width: 100%;">
+                <div style="width: 30%; padding: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                    <button pButton icon="pi pi-camera" label="Abrir Câmera" (click)="openCamera()"></button>
+                    
+                    <video #videoElement width="320" height="240" autoplay style="display: none;"></video>
+                    <canvas #canvasElement width="320" height="240" style="display: none;"></canvas>
+                </div>
+                <div style="width: 70%; padding: 10px;">
+                    <div class="field grid"
+                        style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                        <div style="flex: 1;">
+                            <p-floatLabel>
+                                <input id="codigoProduto" type="text" pInputText style="width: 100%;">
+                                <label for="codigoProduto">Código Produto</label>
+                            </p-floatLabel>
+                        </div>
+
+                        <div style="flex: 1;">
+                            <p-floatLabel>
+                                <input id="nomeProduto" type="text" pInputText style="width: 100%;">
+                                <label for="nomeProduto">Nome Produto</label>
+                            </p-floatLabel>
+                        </div>
+                    </div>
+
+                    <div class="field grid"
+                        style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                        <div style="flex: 1;">
+                            <p-floatLabel>
+                                <input id="versaoLote" type="text" pInputText style="width: 100%;">
+                                <label for="versaoLote">Versão ou Lote</label>
+                            </p-floatLabel>
+                        </div>
+
+                        <div style="flex: 1;">
+                            <p-floatLabel>
+                                <input id="categoria" type="text" pInputText style="width: 100%;">
+                                <label for="categoria">Categoria</label>
+                            </p-floatLabel>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </p-tabPanel>
+
+        <p-tabPanel header="Histórico de Produção">
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel>
+                        <input id="ordemProducao" type="text" pInputText style="width: 100%;">
+                        <label for="ordemProducao">Código Produto</label>
+                    </p-floatLabel>
+                </div>
+
+                <div style="flex: 1;">
+                    <p-floatLabel>
+                        <p-calendar id="dataProducao" [showTime]="false" [(ngModel)]="dataProducao" name="dataCriacao"
+                            appendTo="body" dateFormat="dd/mm/yy" [ngStyle]="{'width': '100%'}">
+                        </p-calendar>
+                        <label for="dataProducao">Data Fabricação</label>
+                    </p-floatLabel>
+                </div>
+
+                <div style="flex: 1;">
+                    <p-floatLabel>
+                        <input id="setorResponsavel" type="text" pInputText style="width: 100%;">
+                        <label for="setorResponsavel">Setor Responsável</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input id="maquinasUtilizadas" type="text" pInputText style="width: 100%;">
+                        <label for="maquinasUtilizadas">Máquinas e Equipamentos Utilizadas</label>
+                    </p-floatLabel>
+                </div>
+
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input id="operadorResponsavel" type="text" pInputText style="width: 100%;">
+                        <label for="operadorResponsavel">Operador Responsável</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+        </p-tabPanel>
+
+        <p-tabPanel header="Histórico de Expedição e Venda">
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-calendar id="dataExpedicao" [showTime]="false" [(ngModel)]="dataExpedicao" name="dataCriacao"
+                            appendTo="body" dateFormat="dd/mm/yy" [ngStyle]="{'width': '100%'}">
+                        </p-calendar>
+                        <label for="dataExpedicao">Data Expedição</label>
+                    </p-floatLabel>
+                </div>
+
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input id="clienteDestinoFinal" type="text" pInputText style="width: 100%;">
+                        <label for="clienteDestinoFinal">Cliente/Destino Final</label>
+                    </p-floatLabel>
+                </div>
+
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input id="documentacaoAssociada" type="text" pInputText style="width: 100%;">
+                        <label for="documentacaoAssociada">Documentação Associada</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input id="responsavelTransporte" type="text" pInputText style="width: 50%;">
+                        <label for="responsavelTransporte">Responsável pelo Transporte</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+        </p-tabPanel>
+
+        <p-tabPanel header="Observações e Anexos">
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <textarea id="observacoes" type="text" pInputText style="width: 100%;"></textarea>
+                        <label for="observacoes">Observações</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-fileUpload 
+                            name="demo[]" 
+                            url="https://www.primefaces.org/cdn/api/upload.php" 
+                            (onUpload)="onUpload($event)" 
+                            [multiple]="true"
+                            maxFileSize="1000000">
+                                <ng-template pTemplate="content">
+                                    <ul *ngIf="uploadedFiles.length">
+                                        <li *ngFor="let file of uploadedFiles">
+                                            {{ file.name }} - {{ file.size }} bytes
+                                        </li>
+                                    </ul>
+                                </ng-template>
+                        </p-fileUpload>
+                    </p-floatLabel>
+                </div>
+            </div>
+        </p-tabPanel>
+    </p-tabView>
+    <ng-template pTemplate="footer">
+        <button pButton [outlined]="true" [raised]="true" severity="danger" icon="pi pi-times" label="Cancelar"
+            (click)="displayModal =false" class="p-button-text">
+        </button>
+        <button pButton [outlined]="false" [raised]="true" severity="success" icon="pi pi-check" label="Salvar"
+            class="ml-2">
+        </button>
+    </ng-template>
+</p-dialog>

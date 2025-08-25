@@ -1,10 +1,28 @@
 export const inativoAtivoOptions = [
     {
-        label: "ATIVO",
-        value: true
+        label: "Inativo",
+        value: 0
     },
     {
-        label: "INATIVO",
-        value: false
+        label: "Ativo",
+        value: 1
     },
-]
+    {
+        label: "Suspenso",
+        value: 2
+    },
+];
+
+/**
+ * Opções para tipos de suspensão
+ */
+export const tipoSuspensaoOptions = [
+    {
+        label: "Temporária",
+        value: 0
+    },
+    {
+        label: "Permanente",
+        value: 1
+    }
+];

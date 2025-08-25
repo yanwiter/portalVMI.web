@@ -30,17 +30,18 @@
 
       h3 {
         margin-top: 0;
-        color: #333;
+        color: var(--text-color);
         font-size: 16px;
+        font-weight: bold;
       }
 
       p {
         margin: 5px 0;
-        color: #666;
+        color: var(--text-color-secondary);
 
         &.amount {
           font-weight: bold;
-          color: #2196F3;
+          color: var(--primary-color);
           font-size: 18px;
         }
       }
@@ -64,14 +65,14 @@
 
         .company-name {
           margin: 0;
-          color: #333;
+          color: var(--text-color);
           word-break: break-word;
           overflow-wrap: break-word;
         }
 
         .amount {
           font-weight: bold;
-          color: #4CAF50;
+          color: var(--primary-color);
           margin: 0;
           align-self: flex-end;
         }

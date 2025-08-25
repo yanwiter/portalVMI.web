@@ -6,8 +6,8 @@ import { SpinnerStateModel } from "../../models/spinnerState.model";
   providedIn: "root",
 })
 export class SpinnerService {
-  private spinnerSubject = new Subject<SpinnerStateModel>();
-  public spinnerState = this.spinnerSubject.asObservable();
+  private readonly spinnerSubject = new Subject<SpinnerStateModel>();
+  public readonly spinnerState = this.spinnerSubject.asObservable();
 
   /**
    * Exibe um load na tela

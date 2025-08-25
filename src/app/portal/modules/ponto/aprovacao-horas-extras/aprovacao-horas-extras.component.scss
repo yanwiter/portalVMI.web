@@ -1,0 +1,78 @@
+// Estilos para o componente de aprovação de horas extras
+
+.filtros-container {
+  margin-bottom: 1rem;
+  
+  .filtro-item {
+    margin-right: 1rem;
+    margin-bottom: 0.5rem;
+    
+    label {
+      display: block;
+      margin-bottom: 0.25rem;
+      font-weight: 500;
+    }
+  }
+}
+
+.acoes-container {
+  margin-bottom: 1rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.status-badge {
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  
+  &.status-aprovado {
+    background-color: #d4edda;
+    color: #155724;
+  }
+  
+  &.status-reprovado {
+    background-color: #f8d7da;
+    color: #721c24;
+  }
+  
+  &.status-corrigido {
+    background-color: #fff3cd;
+    color: #856404;
+  }
+  
+  &.status-pendente {
+    background-color: #f8f9fa;
+    color: #6c757d;
+  }
+}
+
+.acoes-botoes {
+  display: flex;
+  gap: 0.25rem;
+  flex-wrap: wrap;
+}
+
+.timeline-container {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.horas-extras-info {
+  .horas-extras-value {
+    font-weight: bold;
+    color: #f39c12;
+  }
+  
+  .horas-aprovadas {
+    font-size: 0.875rem;
+    color: #27ae60;
+  }
+} 

@@ -9,7 +9,8 @@
     </div>
   
     <div class="funnel-stages">
-      <div *ngFor="let stage of stages" class="funnel-stage p-card">
+      <div *ngFor="let stage of stages; let i = index" class="funnel-stage p-card" 
+          [ngStyle]="{'border-top': '4px solid ' + getStageColor(i), 'background-color': getStageBackgroundColor(i)}">
         <h3>{{ stage.name }}</h3>
         <p>{{ stage.count }} Negócios</p>
         <p class="amount">{{ formatCurrency(stage.amount) }}</p>

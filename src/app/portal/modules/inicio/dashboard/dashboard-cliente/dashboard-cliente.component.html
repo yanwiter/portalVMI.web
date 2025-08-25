@@ -1,0 +1,176 @@
+<div class="dashboard-cliente" [class.theme-dark]="isDarkTheme">
+  <!-- Cabeçalho do Dashboard -->
+  <div class="dashboard-header">
+    <div class="header-content">
+      <h1 class="dashboard-title">
+        <i class="pi pi-users"></i>
+        {{ translate('DASHBOARD.CLIENTS_DASHBOARD') }}
+      </h1>
+      <p-button 
+        icon="pi pi-refresh" 
+        [label]="translate('DASHBOARD.UPDATE')" 
+        severity="secondary"
+        (onClick)="carregarDados()">
+      </p-button>
+    </div>
+  </div>
+
+  <!-- Métricas Principais -->
+  <div class="metricas-grid">
+    <div class="metrica-card">
+      <div class="metrica-icon">
+        <i class="pi pi-users" style="color: #2196F3;"></i>
+      </div>
+      <div class="metrica-content">
+        <h3 class="metrica-valor">{{ totalClientes }}</h3>
+        <p class="metrica-label">{{ translate('DASHBOARD.TOTAL_CLIENTS') }}</p>
+      </div>
+    </div>
+
+    <div class="metrica-card">
+      <div class="metrica-icon">
+        <i class="pi pi-check-circle" style="color: #4CAF50;"></i>
+      </div>
+      <div class="metrica-content">
+        <h3 class="metrica-valor">{{ clientesAtivos }}</h3>
+        <p class="metrica-label">{{ translate('DASHBOARD.ACTIVE_CLIENTS') }}</p>
+      </div>
+    </div>
+
+    <div class="metrica-card">
+      <div class="metrica-icon">
+        <i class="pi pi-times-circle" style="color: #F44336;"></i>
+      </div>
+      <div class="metrica-content">
+        <h3 class="metrica-valor">{{ clientesInativos }}</h3>
+        <p class="metrica-label">{{ translate('DASHBOARD.INACTIVE_CLIENTS') }}</p>
+      </div>
+    </div>
+
+    <div class="metrica-card">
+      <div class="metrica-icon">
+        <i class="pi pi-plus-circle" style="color: #FF9800;"></i>
+      </div>
+      <div class="metrica-content">
+        <h3 class="metrica-valor">{{ novosClientesMes }}</h3>
+        <p class="metrica-label">{{ translate('DASHBOARD.NEW_THIS_MONTH') }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gráficos -->
+  <div class="graficos-grid">
+    <!-- Gráfico de Clientes por Porte -->
+    <div class="grafico-card">
+      <div class="grafico-header">
+        <h3>{{ translate('DASHBOARD.CLIENTS_BY_SIZE') }}</h3>
+      </div>
+      <div class="grafico-content">
+        <p-chart 
+          type="doughnut" 
+          [data]="clientesPorPorte"
+          [options]="chartOptions">
+        </p-chart>
+      </div>
+    </div>
+
+    <!-- Gráfico de Clientes por Região -->
+    <div class="grafico-card">
+      <div class="grafico-header">
+        <h3>{{ translate('DASHBOARD.CLIENTS_BY_REGION') }}</h3>
+      </div>
+      <div class="grafico-content">
+        <p-chart 
+          type="bar" 
+          [data]="clientesPorRegiao"
+          [options]="chartOptionsBar">
+        </p-chart>
+      </div>
+    </div>
+
+    <!-- Gráfico de Novos Clientes -->
+    <div class="grafico-card">
+      <div class="grafico-header">
+        <h3>{{ translate('DASHBOARD.NEW_CLIENTS_LAST_6_MONTHS') }}</h3>
+      </div>
+      <div class="grafico-content">
+        <p-chart 
+          type="line" 
+          [data]="novosClientesUltimosMeses"
+          [options]="chartOptionsBar">
+        </p-chart>
+      </div>
+    </div>
+  </div>
+
+  <!-- Listas Recentes -->
+  <div class="listas-grid">
+    <!-- Clientes Recentes -->
+    <div class="lista-card">
+      <div class="lista-header">
+        <h3>
+          <i class="pi pi-users"></i>
+          {{ translate('DASHBOARD.RECENT_CLIENTS') }}
+        </h3>
+        <p-button 
+          icon="pi pi-external-link" 
+          [label]="translate('DASHBOARD.SEE_ALL')" 
+          severity="secondary"
+          size="small">
+        </p-button>
+      </div>
+      <div class="lista-content">
+        <p-table 
+          [value]="clientesRecentes" 
+          [paginator]="false"
+          [rows]="5"
+          styleClass="p-datatable-sm">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>{{ translate('DASHBOARD.NAME') }}</th>
+              <th>{{ translate('DASHBOARD.SIZE') }}</th>
+              <th>{{ translate('DASHBOARD.REGION') }}</th>
+              <th>{{ translate('DASHBOARD.STATUS') }}</th>
+              <th>{{ translate('DASHBOARD.REGISTRATION_DATE') }}</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-cliente>
+            <tr>
+              <td>{{ cliente.nome }}</td>
+              <td>{{ cliente.porte }}</td>
+              <td>{{ cliente.regiao }}</td>
+              <td>
+                <p-tag 
+                  [value]="cliente.status === 'Ativo' ? translate('DASHBOARD.ACTIVE') : translate('DASHBOARD.INACTIVE')" 
+                  [severity]="cliente.status === 'Ativo' ? 'success' : 'danger'">
+                </p-tag>
+              </td>
+              <td>{{ cliente.dataCadastro | date:'dd/MM/yyyy' }}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+
+    <!-- Controles de Período -->
+    <div class="lista-card">
+      <div class="lista-header">
+        <h3>
+          <i class="pi pi-calendar"></i>
+          {{ translate('DASHBOARD.PERIOD_FILTERS') }}
+        </h3>
+      </div>
+      <div class="lista-content">
+        <div class="period-controls">
+          <p-dropdown 
+            [options]="periodos" 
+            [(ngModel)]="periodoSelecionado"
+            (onChange)="onPeriodoChange()"
+            [placeholder]="translate('DASHBOARD.SELECT_PERIOD')"
+            [style]="{'width': '100%'}">
+          </p-dropdown>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

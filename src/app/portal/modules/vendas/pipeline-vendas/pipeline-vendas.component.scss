@@ -1,0 +1,202 @@
+.pipeline-vendas-container {
+  padding: 1.5rem;
+  
+  .header-section {
+    margin-bottom: 2rem;
+    
+    .title-section {
+      h1 {
+        margin: 0 0 0.5rem 0;
+        color: var(--text-color);
+        font-size: 2rem;
+        font-weight: 600;
+      }
+      
+      p {
+        margin: 0;
+        color: var(--text-color-secondary);
+        font-size: 1rem;
+      }
+    }
+  }
+  
+  .summary-section {
+    margin-bottom: 2rem;
+    
+    .summary-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      
+      .summary-card {
+        .card-content {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+          
+          .icon-section {
+            i {
+              font-size: 2rem;
+              color: var(--primary-color);
+            }
+          }
+          
+          .info-section {
+            h3 {
+              margin: 0 0 0.5rem 0;
+              color: var(--text-color);
+              font-size: 1rem;
+              font-weight: 500;
+            }
+            
+            .number {
+              font-size: 1.5rem;
+              font-weight: 700;
+              color: var(--primary-color);
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  .chart-card {
+    margin-bottom: 2rem;
+    
+    .chart-container {
+      height: 300px;
+    }
+  }
+  
+  .pipeline-stages {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    
+    .stage-column {
+      background: var(--surface-card);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      
+      .stage-header {
+        padding: 1rem;
+        color: white;
+        
+        h3 {
+          margin: 0 0 0.5rem 0;
+          font-size: 1.25rem;
+          font-weight: 600;
+        }
+        
+        .stage-stats {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          
+          .valor {
+            font-weight: 600;
+            font-size: 1rem;
+          }
+          
+          .probabilidade {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            font-weight: 500;
+          }
+        }
+      }
+      
+      .stage-content {
+        padding: 1rem;
+        
+        .oportunidade-card {
+          background: var(--surface-100);
+          border-radius: 8px;
+          padding: 1rem;
+          margin-bottom: 1rem;
+          border: 1px solid var(--surface-border);
+          
+          &:last-child {
+            margin-bottom: 0;
+          }
+          
+          .oportunidade-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.75rem;
+            
+            h4 {
+              margin: 0;
+              color: var(--text-color);
+              font-size: 1rem;
+              font-weight: 600;
+            }
+            
+            .valor {
+              font-weight: 600;
+              color: var(--green-600);
+              font-size: 0.875rem;
+            }
+          }
+          
+          .oportunidade-info {
+            .probabilidade {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              
+              label {
+                font-weight: 500;
+                color: var(--text-color);
+                font-size: 0.875rem;
+              }
+              
+              span {
+                color: var(--text-color-secondary);
+                font-size: 0.875rem;
+                font-weight: 500;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .pipeline-vendas-container {
+    padding: 1rem;
+    
+    .summary-section {
+      .summary-cards {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .pipeline-stages {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .pipeline-vendas-container {
+    .pipeline-stages {
+      .stage-column {
+        .stage-header {
+          .stage-stats {
+            flex-direction: column;
+            gap: 0.5rem;
+            align-items: flex-start;
+          }
+        }
+      }
+    }
+  }
+} 

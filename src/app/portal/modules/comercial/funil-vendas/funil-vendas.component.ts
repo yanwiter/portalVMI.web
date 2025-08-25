@@ -36,4 +36,14 @@ export class FunilVendasComponent {
   formatCurrency(value: number): string {
     return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
   }
+
+  getStageColor(index: number): string {
+  const colors = ['#F44336', '#FFC107', '#4CAF50', '#2196F3', '#9C27B0'];
+  return colors[index % colors.length];
+}
+
+getStageBackgroundColor(index: number): string {
+  const bgColors = ['#FFEBEE', '#FFF8E1', '#E8F5E9', '#E3F2FD', '#F3E5F5'];
+  return bgColors[index % bgColors.length];
+}
 }

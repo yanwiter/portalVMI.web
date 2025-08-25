@@ -1,0 +1,207 @@
+<div class="dashboard-contrato" [class.theme-dark]="isDarkTheme">
+  <!-- Cabeçalho do Dashboard -->
+  <div class="dashboard-header">
+    <div class="header-content">
+      <h1 class="dashboard-title">
+        <i class="pi pi-file"></i>
+        {{ translate('DASHBOARD.CONTRACTS_DASHBOARD') }}
+      </h1>
+      <p-button 
+        icon="pi pi-refresh" 
+        [label]="translate('DASHBOARD.UPDATE')" 
+        severity="secondary"
+        (onClick)="carregarDados()">
+      </p-button>
+    </div>
+  </div>
+
+  <!-- Métricas Principais -->
+  <div class="metricas-grid">
+    <div class="metrica-card">
+      <div class="metrica-icon">
+        <i class="pi pi-file" style="color: #2196F3;"></i>
+      </div>
+      <div class="metrica-content">
+        <h3 class="metrica-valor">{{ totalContratos }}</h3>
+        <p class="metrica-label">{{ translate('DASHBOARD.TOTAL_CONTRACTS') }}</p>
+      </div>
+    </div>
+
+    <div class="metrica-card">
+      <div class="metrica-icon">
+        <i class="pi pi-check-circle" style="color: #4CAF50;"></i>
+      </div>
+      <div class="metrica-content">
+        <h3 class="metrica-valor">{{ contratosVigentes }}</h3>
+        <p class="metrica-label">{{ translate('DASHBOARD.ACTIVE_CONTRACTS') }}</p>
+      </div>
+    </div>
+
+    <div class="metrica-card">
+      <div class="metrica-icon">
+        <i class="pi pi-times-circle" style="color: #F44336;"></i>
+      </div>
+      <div class="metrica-content">
+        <h3 class="metrica-valor">{{ contratosCancelados }}</h3>
+        <p class="metrica-label">{{ translate('DASHBOARD.CANCELLED_CONTRACTS') }}</p>
+      </div>
+    </div>
+
+    <div class="metrica-card">
+      <div class="metrica-icon">
+        <i class="pi pi-dollar" style="color: #FF9800;"></i>
+      </div>
+      <div class="metrica-content">
+        <h3 class="metrica-valor">{{ formatarValor(valorTotalContratos) }}</h3>
+        <p class="metrica-label">{{ translate('DASHBOARD.TOTAL_VALUE') }}</p>
+      </div>
+    </div>
+
+    <div class="metrica-card">
+      <div class="metrica-icon">
+        <i class="pi pi-calendar" style="color: #9C27B0;"></i>
+      </div>
+      <div class="metrica-content">
+        <h3 class="metrica-valor">{{ contratosEncerrados }}</h3>
+        <p class="metrica-label">{{ translate('DASHBOARD.FINISHED_CONTRACTS') }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gráficos -->
+  <div class="graficos-grid">
+    <!-- Gráfico de Contratos por Status -->
+    <div class="grafico-card">
+      <div class="grafico-header">
+        <h3>{{ translate('DASHBOARD.CONTRACTS_BY_STATUS') }}</h3>
+      </div>
+      <div class="grafico-content">
+        <p-chart 
+          type="doughnut" 
+          [data]="contratosPorStatus"
+          [options]="chartOptions">
+        </p-chart>
+      </div>
+    </div>
+
+    <!-- Gráfico de Contratos por Tipo -->
+    <div class="grafico-card">
+      <div class="grafico-header">
+        <h3>{{ translate('DASHBOARD.CONTRACTS_BY_TYPE') }}</h3>
+      </div>
+      <div class="grafico-content">
+        <p-chart 
+          type="bar" 
+          [data]="contratosPorTipo"
+          [options]="chartOptionsBar">
+        </p-chart>
+      </div>
+    </div>
+
+    <!-- Gráfico de Valor dos Contratos -->
+    <div class="grafico-card">
+      <div class="grafico-header">
+        <h3>{{ translate('DASHBOARD.CONTRACTS_VALUE_LAST_6_MONTHS') }}</h3>
+      </div>
+      <div class="grafico-content">
+        <p-chart 
+          type="line" 
+          [data]="valorContratosUltimosMeses"
+          [options]="chartOptionsBar">
+        </p-chart>
+      </div>
+    </div>
+
+    <!-- Gráfico de Duração dos Contratos -->
+    <div class="grafico-card">
+      <div class="grafico-header">
+        <h3>{{ translate('DASHBOARD.CONTRACTS_DURATION') }}</h3>
+      </div>
+      <div class="grafico-content">
+        <p-chart 
+          type="pie" 
+          [data]="duracaoContratos"
+          [options]="chartOptions">
+        </p-chart>
+      </div>
+    </div>
+  </div>
+
+  <!-- Listas Recentes -->
+  <div class="listas-grid">
+    <!-- Contratos Recentes -->
+    <div class="lista-card">
+      <div class="lista-header">
+        <h3>
+          <i class="pi pi-file"></i>
+          {{ translate('DASHBOARD.RECENT_CONTRACTS') }}
+        </h3>
+        <p-button 
+          icon="pi pi-external-link" 
+          [label]="translate('DASHBOARD.SEE_ALL')" 
+          severity="secondary"
+          size="small">
+        </p-button>
+      </div>
+      <div class="lista-content">
+        <p-table 
+          [value]="contratosRecentes" 
+          [paginator]="false"
+          [rows]="5"
+          styleClass="p-datatable-sm">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>{{ translate('DASHBOARD.NUMBER') }}</th>
+              <th>{{ translate('DASHBOARD.CLIENT') }}</th>
+              <th>{{ translate('DASHBOARD.TYPE') }}</th>
+              <th>{{ translate('DASHBOARD.VALUE') }}</th>
+              <th>{{ translate('DASHBOARD.STATUS') }}</th>
+              <th>{{ translate('DASHBOARD.PERIOD') }}</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-contrato>
+            <tr>
+              <td>{{ contrato.numero }}</td>
+              <td>{{ contrato.cliente }}</td>
+              <td>
+                <p-tag 
+                  [value]="contrato.tipo" 
+                  [severity]="getTipoSeverity(contrato.tipo)">
+                </p-tag>
+              </td>
+              <td>{{ formatarValor(contrato.valor) }}</td>
+              <td>
+                <p-tag 
+                  [value]="contrato.status === 'Vigente' ? translate('DASHBOARD.ACTIVE') : contrato.status === 'Cancelado' ? translate('DASHBOARD.CANCELLED') : translate('DASHBOARD.FINISHED')" 
+                  [severity]="getStatusSeverity(contrato.status)">
+                </p-tag>
+              </td>
+              <td>{{ contrato.dataInicio | date:'dd/MM/yyyy' }} - {{ contrato.dataFim | date:'dd/MM/yyyy' }}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+
+    <!-- Controles de Período -->
+    <div class="lista-card">
+      <div class="lista-header">
+        <h3>
+          <i class="pi pi-calendar"></i>
+          {{ translate('DASHBOARD.PERIOD_FILTERS') }}
+        </h3>
+      </div>
+      <div class="lista-content">
+        <div class="period-controls">
+          <p-dropdown 
+            [options]="periodos" 
+            [(ngModel)]="periodoSelecionado"
+            (onChange)="onPeriodoChange()"
+            [placeholder]="translate('DASHBOARD.SELECT_PERIOD')"
+            [style]="{'width': '100%'}">
+          </p-dropdown>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

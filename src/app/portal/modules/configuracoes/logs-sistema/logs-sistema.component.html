@@ -1,0 +1,275 @@
+<app-title-header title="{{ 'LOGS.TITLE' | translate }}"></app-title-header>
+
+<div class="logs-container">
+  <!-- Header da página -->
+  <div class="page-header">
+    <div class="header-content">
+      <div class="title-section">
+        <h1 class="page-title">
+          <i class="pi pi-list-alt"></i>
+          {{ 'LOGS.TITLE' | translate }}
+        </h1>
+        <p class="page-subtitle">{{ 'LOGS.SUBTITLE' | translate }}</p>
+      </div>
+      
+      <div class="header-actions">
+        <button 
+          pButton 
+          type="button" 
+          icon="pi pi-refresh" 
+          class="p-button-outlined p-button-sm"
+          [disabled]="isLoading"
+          (click)="onRefresh()"
+          pTooltip="{{ 'LOGS.REFRESH_LOGS' | translate }}"
+          tooltipPosition="bottom">
+          {{ 'LOGS.REFRESH' | translate }}
+        </button>
+        
+        <button 
+          pButton 
+          type="button" 
+          [icon]="isAutoRefresh ? 'pi pi-pause' : 'pi pi-play'"
+          [class]="isAutoRefresh ? 'p-button-outlined p-button-sm p-button-warning' : 'p-button-outlined p-button-sm p-button-success'"
+          (click)="toggleAutoRefresh()"
+          pTooltip="{{ 'LOGS.AUTO_REFRESH' | translate }}"
+          tooltipPosition="bottom">
+          {{ isAutoRefresh ? ('LOGS.PAUSE' | translate) : ('LOGS.AUTO' | translate) }}
+        </button>
+        
+        <button 
+          pButton 
+          type="button" 
+          icon="pi pi-download" 
+          class="p-button-outlined p-button-sm"
+          (click)="exportLogs()"
+          pTooltip="{{ 'LOGS.EXPORT_LOGS' | translate }}"
+          tooltipPosition="bottom">
+          {{ 'LOGS.EXPORT' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Estatísticas -->
+  <div class="stats-container">
+    <div class="stat-card total">
+      <div class="stat-icon">
+        <i class="pi pi-list"></i>
+      </div>
+      <div class="stat-content">
+        <div class="stat-value">{{ stats.total }}</div>
+        <div class="stat-label">{{ 'LOGS.TOTAL' | translate }}</div>
+      </div>
+    </div>
+    
+    <div class="stat-card info">
+      <div class="stat-icon">
+        <i class="pi pi-info-circle"></i>
+      </div>
+      <div class="stat-content">
+        <div class="stat-value">{{ stats.info }}</div>
+        <div class="stat-label">{{ 'LOGS.INFO' | translate }}</div>
+      </div>
+    </div>
+    
+    <div class="stat-card warn">
+      <div class="stat-icon">
+        <i class="pi pi-exclamation-circle"></i>
+      </div>
+      <div class="stat-content">
+        <div class="stat-value">{{ stats.warn }}</div>
+        <div class="stat-label">{{ 'LOGS.WARNINGS' | translate }}</div>
+      </div>
+    </div>
+    
+    <div class="stat-card error">
+      <div class="stat-icon">
+        <i class="pi pi-exclamation-triangle"></i>
+      </div>
+      <div class="stat-content">
+        <div class="stat-value">{{ stats.error }}</div>
+        <div class="stat-label">{{ 'LOGS.ERRORS' | translate }}</div>
+      </div>
+    </div>
+    
+    <div class="stat-card debug">
+      <div class="stat-icon">
+        <i class="pi pi-asterisk"></i>
+      </div>
+      <div class="stat-content">
+        <div class="stat-value">{{ stats.debug }}</div>
+        <div class="stat-label">{{ 'LOGS.DEBUG' | translate }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filtros -->
+  <div class="filters-container">
+    <div class="filters-row">
+      <div class="filter-group">
+        <label class="filter-label">{{ 'LOGS.LOG_LEVELS' | translate }}</label>
+        <p-multiSelect 
+          [(ngModel)]="selectedLevels"
+          [options]="levelOptions"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="{{ 'LOGS.SELECT_LEVELS' | translate }}"
+          class="level-filter"
+          (onChange)="applyFilters()">
+        </p-multiSelect>
+      </div>
+      
+      <div class="filter-group">
+        <label class="filter-label">{{ 'LOGS.SEARCH' | translate }}</label>
+        <span class="p-input-icon-left">
+          <i class="pi pi-search"></i>
+          <input 
+            pInputText 
+            type="text" 
+            [(ngModel)]="searchTerm"
+            placeholder="{{ 'LOGS.SEARCH_PLACEHOLDER' | translate }}"
+            class="search-input"
+            (input)="applyFilters()">
+        </span>
+      </div>
+      
+      <div class="filter-group">
+        <label class="filter-label">{{ 'LOGS.PERIOD' | translate }}</label>
+        <p-calendar 
+          [(ngModel)]="dateRange"
+          selectionMode="range"
+          [showIcon]="true"
+          dateFormat="dd/mm/yy"
+          placeholder="{{ 'LOGS.SELECT_PERIOD' | translate }}"
+          class="date-filter"
+          (onSelect)="applyFilters()">
+        </p-calendar>
+      </div>
+      
+      <div class="filter-actions">
+        <button 
+          pButton 
+          type="button" 
+          icon="pi pi-times" 
+          class="p-button-text p-button-sm"
+          (click)="clearFilters()"
+          pTooltip="{{ 'LOGS.CLEAR_FILTERS' | translate }}"
+          tooltipPosition="bottom">
+          {{ 'LOGS.CLEAR' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabela de Logs -->
+  <div class="logs-table-container">
+    <div class="table-header">
+      <div class="table-info">
+        <span class="results-count">
+          {{ 'LOGS.SHOWING' | translate }} {{ (currentPage - 1) * itemsPerPage + 1 }} - 
+          {{ Math.min(currentPage * itemsPerPage, totalItems) }} 
+          {{ 'LOGS.OF' | translate }} {{ totalItems }} {{ 'LOGS.RECORDS' | translate }}
+        </span>
+      </div>
+    </div>
+    
+    <div class="table-wrapper">
+      <p-table 
+        [value]="getPaginatedLogs()"
+        [loading]="isLoading"
+        [paginator]="false"
+        [scrollable]="true"
+        scrollHeight="400px"
+        class="logs-table"
+        [tableStyle]="{'min-width': '50rem'}"
+        styleClass="p-datatable-sm">
+        
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 180px">{{ 'LOGS.TIMESTAMP' | translate }}</th>
+            <th style="width: 100px">{{ 'LOGS.LEVEL' | translate }}</th>
+            <th style="width: 200px">{{ 'LOGS.SOURCE' | translate }}</th>
+            <th>{{ 'LOGS.MESSAGE' | translate }}</th>
+            <th style="width: 150px">{{ 'LOGS.USER' | translate }}</th>
+            <th style="width: 120px">{{ 'LOGS.IP' | translate }}</th>
+          </tr>
+        </ng-template>
+        
+        <ng-template pTemplate="body" let-log>
+          <tr [class]="getLevelClass(log.level)">
+            <td>
+              <div class="timestamp-cell">
+                <div class="timestamp-date">
+                  {{ log.timestamp | date:'dd/MM/yyyy' }}
+                </div>
+                <div class="timestamp-time">
+                  {{ log.timestamp | date:'HH:mm:ss' }}
+                </div>
+              </div>
+            </td>
+            
+            <td>
+              <div class="level-cell">
+                <i [class]="getLevelIcon(log.level)" class="level-icon"></i>
+                <span class="level-text">{{ log.level }}</span>
+              </div>
+            </td>
+            
+            <td>
+              <div class="source-cell">
+                <span class="source-badge">{{ log.source }}</span>
+              </div>
+            </td>
+            
+            <td>
+              <div class="message-cell">
+                <div class="message-text" [title]="log.message">
+                  {{ log.message }}
+                </div>
+              </div>
+            </td>
+            
+            <td>
+              <div class="user-cell">
+                <div class="user-info">
+                  <div class="user-name">{{ log.userName || 'N/A' }}</div>
+                  <div class="user-id" *ngIf="log.userId">{{ log.userId }}</div>
+                </div>
+              </div>
+            </td>
+            
+            <td>
+              <div class="ip-cell">
+                <span class="ip-address">{{ log.ipAddress || 'N/A' }}</span>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+        
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="6" class="empty-message">
+              <div class="empty-content">
+                <i class="pi pi-inbox empty-icon"></i>
+                <p>{{ 'LOGS.NO_LOGS_FOUND' | translate }}</p>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+    
+    <!-- Paginação -->
+    <div class="pagination-container" *ngIf="totalItems > itemsPerPage">
+      <p-paginator 
+        [rows]="itemsPerPage"
+        [totalRecords]="totalItems"
+        (onPageChange)="onPageChange($event)"
+        [showPageLinks]="true"
+        [showFirstLastIcon]="true"
+        [showCurrentPageReport]="false"
+        styleClass="custom-paginator">
+      </p-paginator>
+    </div>
+  </div>
+</div> 

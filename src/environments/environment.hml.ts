@@ -1,4 +1,5 @@
 export const environment = {
-  production: true,
+  production: false,
   apiServer: "",
+  version: '1.0.0'
 };

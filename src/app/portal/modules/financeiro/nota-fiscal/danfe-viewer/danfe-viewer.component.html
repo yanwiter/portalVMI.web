@@ -1,0 +1,227 @@
+<div class="danfe-container" *ngIf="notaFiscal">
+  <!-- Canhoto Fiscal -->
+  <div class="canhoto-fiscal">
+    <table width="100%" border="0" cellpadding="2" cellspacing="0">
+      <tr>
+        <td width="70%">RECEBEMOS DE {{dadosEmpresa.razaoSocial}} OS PRODUTOS CONSTANTES DA NOTA FISCAL INDICADA AO LADO</td>
+        <td width="30%" style="text-align: right">NF-e Nº {{notaFiscal.numero}} SÉRIE {{notaFiscal.serie}}</td>
+      </tr>
+    </table>
+    <div class="canhoto-linha">
+      <div class="canhoto-data">DATA DE RECEBIMENTO</div>
+      <div class="canhoto-assinatura">IDENTIFICAÇÃO E ASSINATURA DO RECEBEDOR</div>
+    </div>
+  </div>
+
+  <div class="danfe-header">
+    <div class="header-grid">
+      <!-- Coluna da Esquerda - Dados da Empresa -->
+      <div class="empresa-col" style="border: 1px solid #000; padding: 5px;">
+        <div class="empresa-logo">
+          <img src="assets/cropped-Logo-VMI 1.svg" alt="Logo da Empresa">
+        </div>
+        <div class="empresa-info">
+          <div class="empresa-nome">{{dadosEmpresa.razaoSocial}}</div>
+          <div class="empresa-detalhes">
+            <div>{{dadosEmpresa.endereco.logradouro}}, {{dadosEmpresa.endereco.numero}}</div>
+            <div>{{dadosEmpresa.endereco.bairro}} - {{dadosEmpresa.endereco.cidade}}/{{dadosEmpresa.endereco.uf}}</div>
+            <div>CEP: {{formatarCep(dadosEmpresa.endereco.cep)}}</div>
+            <div>CNPJ: {{formatarCnpjCpf(dadosEmpresa.cnpj)}} - IE: {{dadosEmpresa.inscricaoEstadual}}</div>
+            <div>Tel: {{dadosEmpresa.contato.telefone}}</div>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Coluna Central - Dados da Nota -->
+      <div class="nota-info-col" style="border: 1px solid #000; padding: 5px;">
+        <div class="nota-titulo">DANFE {{notaFiscal.tipoOperacao === 'ENTRADA' ? 'ENTRADA' : 'SAÍDA'}}</div>
+        <div class="nota-detalhes-grid">
+          <div class="nota-detalhe-item">
+            <span class="nota-detalhe-label">Nº</span>
+            <span class="nota-detalhe-value">{{notaFiscal.numero}}</span>
+          </div>
+          <div class="nota-detalhe-item">
+            <span class="nota-detalhe-label">SÉRIE</span>
+            <span class="nota-detalhe-value">{{notaFiscal.serie}}</span>
+          </div>
+          <div class="nota-detalhe-item">
+            <span class="nota-detalhe-label">FOLHA</span>
+            <span class="nota-detalhe-value">1/1</span>
+          </div>
+          <div class="nota-detalhe-item">
+            <span class="nota-detalhe-label">DATA EMISSÃO</span>
+            <span class="nota-detalhe-value">{{formatarData(notaFiscal.dataEmissao)}}</span>
+          </div>
+          <div class="nota-detalhe-item">
+            <span class="nota-detalhe-label">DATA SAÍDA</span>
+            <span class="nota-detalhe-value">{{formatarData(notaFiscal.dataEmissao)}}</span>
+          </div>
+          <div class="nota-detalhe-item">
+            <span class="nota-detalhe-label">HORA SAÍDA</span>
+            <span class="nota-detalhe-value">{{horaAtual}}</span>
+          </div>
+          <div class="nota-detalhe-item">
+            <span class="nota-detalhe-label">PROTOCOLO</span>
+            <span class="nota-detalhe-value"> 'N/A'</span>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Coluna da Direita - Código de Barras -->
+      <div class="barcode-col" style="border: 1px solid #000; padding: 5px;">
+        <div class="barcode-header">Consulta via leitor de código de barras</div>
+        <div class="barcode-container">
+          <canvas #barcodeCanvas id="barcodeCanvas"></canvas>
+        </div>
+        <div class="barcode-number">{{gerarChaveAcesso()}}</div>
+        <div class="barcode-footer">CHAVE DE ACESSO</div>
+      </div>
+    </div>
+
+
+  <!-- Dados do Emitente -->
+  <div class="danfe-section">
+    <div class="section-title">DADOS DO EMITENTE</div>
+    <table width="100%" border="0" cellpadding="2" cellspacing="0">
+      <tr>
+        <td width="60%"><strong>{{dadosEmpresa.razaoSocial}}</strong></td>
+        <td width="20%"><strong>CNPJ:</strong> {{formatarCnpjCpf(dadosEmpresa.cnpj)}}</td>
+        <td width="20%"><strong>IE:</strong> {{dadosEmpresa.inscricaoEstadual}}</td>
+      </tr>
+      <tr>
+        <td>{{dadosEmpresa.endereco.logradouro}}, {{dadosEmpresa.endereco.numero}} - {{dadosEmpresa.endereco.bairro}}</td>
+        <td><strong>CEP:</strong> {{formatarCep(dadosEmpresa.endereco.cep)}}</td>
+        <td><strong>FONE:</strong> {{dadosEmpresa.contato.telefone}}</td>
+      </tr>
+      <tr>
+        <td>{{dadosEmpresa.endereco.cidade}}/{{dadosEmpresa.endereco.uf}}</td>
+        <td colspan="2"></td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- Dados do Destinatário -->
+  <div class="danfe-section">
+    <div class="section-title">DADOS DO DESTINATÁRIO/REMETENTE</div>
+    <table width="100%" border="0" cellpadding="2" cellspacing="0">
+      <tr>
+        <td width="60%"><strong>{{notaFiscal.clienteNome}}</strong></td>
+        <td width="20%"><strong>CNPJ/CPF:</strong> {{formatarCnpjCpf(notaFiscal.clienteCnpjCpf)}}</td>
+        <td width="20%"><strong>IE:</strong> ISENTO</td>
+      </tr>
+      <tr>
+        <td>Endereço do Cliente</td>
+        <td><strong>CEP:</strong> 00000-000</td>
+        <td><strong>FONE:</strong> (00) 0000-0000</td>
+      </tr>
+      <tr>
+        <td>Cidade/UF</td>
+        <td colspan="2"></td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- Dados da Nota -->
+  <div class="danfe-section">
+    <table width="100%" border="0" cellpadding="2" cellspacing="0">
+      <tr>
+        <td width="25%"><strong>NATUREZA DA OPERAÇÃO:</strong> {{notaFiscal.naturezaOperacao}}</td>
+        <td width="15%"><strong>PROTOCOLO:</strong> {{gerarProtocolo()}}</td>
+        <td width="20%"><strong>DATA PROTOCOLO:</strong> {{formatarData(dataAtual)}}</td>
+        <td width="15%"><strong>HORA:</strong> {{horaAtual}}</td>
+        <td width="25%"><strong>AMBIENTE:</strong> PRODUÇÃO</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- Cálculo do Imposto -->
+  <div class="danfe-section">
+    <div class="section-title">CÁLCULO DO IMPOSTO</div>
+    <table width="100%" border="0" cellpadding="2" cellspacing="0">
+      <tr>
+        <td width="20%"><strong>BASE DE CÁLCULO ICMS:</strong> {{formatarMoeda(notaFiscal.valorBaseIcms)}}</td>
+        <td width="15%"><strong>VALOR ICMS:</strong> {{formatarMoeda(notaFiscal.valorIcms)}}</td>
+        <td width="20%"><strong>BASE ICMS ST:</strong> {{formatarMoeda(0)}}</td>
+        <td width="15%"><strong>VALOR ICMS ST:</strong> {{formatarMoeda(0)}}</td>
+        <td width="15%"><strong>VALOR IPI:</strong> {{formatarMoeda(notaFiscal.valorIpi || 0)}}</td>
+        <td width="15%"><strong>VALOR TOTAL:</strong> {{formatarMoeda(notaFiscal.valorTotal)}}</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- Itens da Nota Fiscal -->
+  <div class="danfe-section">
+    <div class="section-title">ITENS DA NOTA FISCAL</div>
+    <table width="100%" border="0" cellpadding="2" cellspacing="0" class="itens-table">
+      <thead>
+        <tr>
+          <th width="8%">CÓDIGO</th>
+          <th width="30%">DESCRIÇÃO</th>
+          <th width="8%">NCM/SH</th>
+          <th width="5%">CST</th>
+          <th width="5%">CFOP</th>
+          <th width="5%">UN</th>
+          <th width="8%">QTD</th>
+          <th width="10%">VALOR UNIT.</th>
+          <th width="10%">VALOR TOTAL</th>
+          <th width="6%">BC ICMS</th>
+          <th width="5%">VALOR ICMS</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of notaFiscal.itens">
+          <td align="center">{{item.produtoCodigo}}</td>
+          <td>{{item.produtoDescricao}}</td>
+          <td align="center">{{item.ncm}}</td>
+          <td align="center">00</td>
+          <td align="center">{{item.cfop}}</td>
+          <td align="center">{{item.unidadeComercial || 'UN'}}</td>
+          <td align="right">{{item.quantidade}}</td>
+          <td align="right">{{formatarMoeda(item.valorUnitario)}}</td>
+          <td align="right">{{formatarMoeda(item.valorTotal)}}</td>
+          <td align="right">{{formatarMoeda(item.valorBaseIcms || 0)}}</td>
+          <td align="right">{{formatarMoeda(item.valorIcms || 0)}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Dados Adicionais -->
+  <div class="danfe-section">
+    <div class="section-title">DADOS ADICIONAIS</div>
+    <table width="100%" border="0" cellpadding="2" cellspacing="0">
+      <tr>
+        <td width="70%"><strong>INFORMAÇÕES COMPLEMENTARES:</strong> {{notaFiscal.observacoes || 'Nenhuma observação adicional'}}</td>
+        <td width="30%"><strong>RESERVADO AO FISCO:</strong></td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <strong>CONSULTA:</strong> Acesse o site www.nfe.fazenda.gov.br ou use o aplicativo oficial
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- Rodapé -->
+  <div class="danfe-footer">
+    <table width="100%" border="0" cellpadding="2" cellspacing="0">
+      <tr>
+        <td width="70%">
+          <strong>CHAVE DE ACESSO:</strong> {{gerarChaveAcesso()}}<br>
+          <strong>PROTOCOLO:</strong> {{gerarProtocolo()}} - {{formatarData(dataAtual)}} {{horaAtual}}
+        </td>
+        <td width="30%" align="center">
+          <div class="qrcode">
+            <canvas #qrcodeCanvas id="qrcodeCanvas"></canvas>
+            <div>Consulte via QR Code</div>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- Botão de Impressão -->
+  <div class="print-controls">
+    <button (click)="imprimirDanfe()">Imprimir DANFE</button>
+  </div>
+</div>

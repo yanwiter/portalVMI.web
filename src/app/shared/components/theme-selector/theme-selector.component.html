@@ -1,0 +1,11 @@
+<div class="theme-selector">
+  <button 
+    pButton 
+    pRipple 
+    [icon]="selectedTheme?.icon || 'pi pi-sun'" 
+    class="p-button-text p-button-sm theme-toggle-btn"
+    (click)="toggleTheme()"
+    [pTooltip]="'THEME.TOGGLE' | translate"
+    tooltipPosition="bottom">
+  </button>
+</div>

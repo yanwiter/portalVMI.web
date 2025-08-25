@@ -1,0 +1,178 @@
+<app-title-header title="Gestão de Notas Fiscais"></app-title-header>
+
+<div class="nota-fiscal-container">
+  <!-- Filtros -->
+  <p-card>
+    <ng-template pTemplate="header">
+      <h5>Filtros</h5>
+    </ng-template>
+    
+    <div class="filtros-grid">
+      <div class="filtro-item">
+        <label for="numero">Número</label>
+        <input pInputText id="numero" [(ngModel)]="filtro.numero" placeholder="Número da NF" />
+      </div>
+      
+      <div class="filtro-item">
+        <label for="cliente">Cliente</label>
+        <input pInputText id="cliente" [(ngModel)]="filtro.clienteNome" placeholder="Nome do cliente" />
+      </div>
+      
+      <div class="filtro-item">
+        <label for="dataInicio">Data Início</label>
+        <p-calendar id="dataInicio" [(ngModel)]="filtro.dataInicio" dateFormat="dd/mm/yy" placeholder="Data início" />
+      </div>
+      
+      <div class="filtro-item">
+        <label for="dataFim">Data Fim</label>
+        <p-calendar id="dataFim" [(ngModel)]="filtro.dataFim" dateFormat="dd/mm/yy" placeholder="Data fim" />
+      </div>
+      
+      <div class="filtro-item">
+        <label for="status">Status</label>
+        <p-dropdown id="status" [options]="statusOptions" [(ngModel)]="filtro.status" 
+                   optionLabel="label" optionValue="value" placeholder="Selecione o status" />
+      </div>
+      
+      <div class="filtro-item">
+        <label for="tipoOperacao">Tipo de Operação</label>
+        <p-dropdown id="tipoOperacao" [options]="tipoOperacaoOptions" [(ngModel)]="filtro.tipoOperacao" 
+                   optionLabel="label" optionValue="value" placeholder="Selecione o tipo" />
+      </div>
+    </div>
+    
+    <div class="filtros-acoes">
+      <p-button label="Aplicar Filtros" icon="pi pi-search" (onClick)="aplicarFiltros()" />
+      <p-button label="Limpar Filtros" icon="pi pi-times" severity="secondary" (onClick)="limparFiltros()" />
+    </div>
+  </p-card>
+
+  <!-- Ações -->
+  <div class="acoes-container">
+    <p-button *ngIf="canCreate" label="Nova Nota Fiscal" icon="pi pi-plus" (onClick)="novaNotaFiscal()" />
+  </div>
+
+  <!-- Tabela de Notas Fiscais -->
+  <p-card>
+    <ng-template pTemplate="header">
+      <h5>Notas Fiscais</h5>
+    </ng-template>
+    
+    <p-table [value]="notasFiscais" [loading]="loading" [paginator]="true" [rows]="rows" 
+             [totalRecords]="totalRecords" [showCurrentPageReport]="true"
+             currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros"
+             [rowsPerPageOptions]="[10, 25, 50]">
+      
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Número</th>
+          <th>Série</th>
+          <th>Data Emissão</th>
+          <th>Cliente</th>
+          <th>Valor Total</th>
+          <th>Status</th>
+          <th>Tipo</th>
+          <th>Ações</th>
+        </tr>
+      </ng-template>
+      
+      <ng-template pTemplate="body" let-notaFiscal>
+        <tr>
+          <td>{{ notaFiscal.numero }}</td>
+          <td>{{ notaFiscal.serie }}</td>
+          <td>{{ formatarData(notaFiscal.dataEmissao) }}</td>
+          <td>{{ notaFiscal.clienteNome }}</td>
+          <td>{{ formatarMoeda(notaFiscal.valorTotal) }}</td>
+          <td>
+            <span class="status-badge" [ngClass]="getStatusClass(notaFiscal.status)">
+              {{ notaFiscal.status }}
+            </span>
+          </td>
+          <td>{{ notaFiscal.tipoOperacao }}</td>
+          <td>
+            <div class="acoes-botoes">
+              <p-button *ngIf="canEdit" icon="pi pi-pencil" severity="info" size="small" 
+                       pTooltip="Editar" (onClick)="editarNotaFiscal(notaFiscal)" />
+              
+              <p-button *ngIf="canEmit && notaFiscal.status === 'RASCUNHO'" icon="pi pi-send" 
+                       severity="success" size="small" pTooltip="Emitir" 
+                       (onClick)="emitirNotaFiscal(notaFiscal)" />
+              
+              <p-button *ngIf="canCancel && notaFiscal.status === 'EMITIDA'" icon="pi pi-times" 
+                       severity="danger" size="small" pTooltip="Cancelar" 
+                       (onClick)="cancelarNotaFiscal(notaFiscal)" />
+              
+              <p-button *ngIf="notaFiscal.status === 'EMITIDA'" 
+                       icon="pi pi-eye" severity="info" size="small" pTooltip="Visualizar DANFE" 
+                       (onClick)="visualizarDanfe(notaFiscal)" />
+              
+              <p-button *ngIf="notaFiscal.status === 'EMITIDA'" 
+                       icon="pi pi-file-pdf" severity="warning" size="small" pTooltip="Gerar DANFE" 
+                       (onClick)="gerarDanfe(notaFiscal)" />
+              
+              <p-button *ngIf="notaFiscal.status === 'EMITIDA'" 
+                       icon="pi pi-download" severity="info" size="small" pTooltip="Baixar XML" 
+                       (onClick)="baixarXml(notaFiscal)" />
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+      
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="8" class="text-center">Nenhuma nota fiscal encontrada</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-card>
+</div>
+
+<!-- Dialog para Edição/Criação -->
+<p-dialog [(visible)]="displayDialog" [modal]="true" [style]="{width: '90vw'}" 
+          [draggable]="false" [resizable]="false">
+  <ng-template pTemplate="header">
+    <h5>{{ notaFiscalSelecionada?.id ? 'Editar' : 'Nova' }} Nota Fiscal</h5>
+  </ng-template>
+  
+  <ng-template pTemplate="content">
+    <app-nota-fiscal-form 
+      [notaFiscal]="notaFiscalSelecionada"
+      (salvar)="salvarNotaFiscal()"
+      (cancelar)="displayDialog = false">
+    </app-nota-fiscal-form>
+  </ng-template>
+</p-dialog>
+
+<!-- Dialog para Emissão -->
+<p-dialog [(visible)]="displayDialogEmissao" [modal]="true" [style]="{width: '80vw'}" 
+          [draggable]="false" [resizable]="false">
+  <ng-template pTemplate="header">
+    <h5>Emitir Nota Fiscal</h5>
+  </ng-template>
+  
+  <ng-template pTemplate="content">
+    <app-emissao-nota-fiscal 
+      [notaFiscal]="notaFiscalSelecionada"
+      (emitir)="displayDialogEmissao = false; carregarNotasFiscais()"
+      (cancelar)="displayDialogEmissao = false">
+    </app-emissao-nota-fiscal>
+  </ng-template>
+</p-dialog>
+
+<!-- Dialog para Visualizar DANFE -->
+<p-dialog [(visible)]="displayDialogDanfe" [modal]="true" [style]="{width: '90vw', height: '90vh'}" 
+          [draggable]="false" [resizable]="false">
+  <ng-template pTemplate="header">
+    <h5>DANFE - Nota Fiscal {{ notaFiscalSelecionada?.numero }}</h5>
+  </ng-template>
+  
+  <ng-template pTemplate="content">
+    <app-danfe-viewer [notaFiscal]="notaFiscalSelecionada"></app-danfe-viewer>
+  </ng-template>
+  
+  <ng-template pTemplate="footer">
+    <div class="dialog-footer">
+      <p-button label="Fechar" icon="pi pi-times" severity="secondary" (onClick)="displayDialogDanfe = false" />
+    </div>
+  </ng-template>
+</p-dialog> 

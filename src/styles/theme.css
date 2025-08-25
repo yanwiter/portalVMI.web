@@ -10,9 +10,12 @@
   --surface-f: #fefbff;
   --text-color: rgba(0, 0, 0, 0.87);
   --text-color-secondary: rgba(0, 0, 0, 0.6);
-  --primary-color: #c69c6d;
-  --secundary-color:rgba(176, 134, 65, 0.5);
-  --primary-color-hover: #b38a5e;
+  --primary-color: rgba(41, 175, 229, 1);
+/*   --primary-color: #c69c6d; */
+--secundary-color: rgba(40, 40, 40, 1);
+/*   --secundary-color: rgba(176, 134, 65, 0.5); */
+  --primary-color-hover: rgba(41, 175, 229, 0.5);
+/*   --primary-color-hover: #b38a5e; */
   --primary-color-text: #fefbff;
   --surface-0: #fefbff;
   --surface-50: #fafafa;
@@ -2158,8 +2161,14 @@
     background: #fefbff;
   }
 
+  .flex.align-items-center.gap-3 {
+    display: flex;
+    align-items: center;
+  }
+
   .p-radiobutton-label {
     margin-left: 0.5rem;
+    margin-top: 0.5rem;  
   }
 
   .p-rating {
@@ -2597,7 +2606,7 @@
   }
 
   .p-button:not(:disabled):active {
-/*     background: rgba(33, 55, 105, 0.68); */
+    /*     background: rgba(33, 55, 105, 0.68); */
     color: #fefbff;
     border-color: transparent;
   }
@@ -2664,6 +2673,21 @@
   .p-button.p-button-text.p-button-plain:not(:disabled):active {
     background: rgba(0, 0, 0, 0.16);
     color: rgba(0, 0, 0, 0.6);
+  }
+
+  .p-button:focus {
+    box-shadow: 0 0 0 0.1rem transparent !important;
+    outline: none !important;
+  }
+
+  .p-button-outlined:focus {
+    box-shadow: 0 0 0 0.1rem transparent !important;
+    outline: none !important;
+  }
+
+  .p-button-text:focus {
+    box-shadow: 0 0 0 0.1rem transparent !important;
+    outline: none !important;
   }
 
   .p-button:focus-visible {
@@ -4240,6 +4264,7 @@
   }
 
   .p-paginator .p-dropdown {
+    border-color: var(--primary-color) !important;
     margin-left: 0.5rem;
     margin-right: 0.5rem;
     height: 3rem;
@@ -4291,21 +4316,42 @@
     color: rgba(0, 0, 0, 0.6);
   }
 
+  .p-paginator .p-paginator-first:focus,
+.p-paginator .p-paginator-prev:focus,
+.p-paginator .p-paginator-next:focus,
+.p-paginator .p-paginator-last:focus,
+.p-paginator .p-paginator-page:focus {
+  box-shadow: 0 0 0 0.1rem var(--primary-color) !important;
+  outline: none !important;
+  background: rgba(33, 55, 105, 0.12) !important;
+  border-color: var(--primary-color) !important;
+  color: var(--primary-color) !important;
+}
+
+.p-paginator .p-paginator-first:active,
+.p-paginator .p-paginator-prev:active,
+.p-paginator .p-paginator-next:active,
+.p-paginator .p-paginator-last:active,
+.p-paginator .p-paginator-page:active {
+  background: rgba(33, 55, 105, 0.24) !important;
+  color: var(--primary-color) !important;
+}
+
   .p-picklist .p-picklist-buttons {
     padding: 1rem;
   }
 
-.p-picklist .p-picklist-buttons {
-  display: flex;
-  flex-direction: column;
-  gap: 1%;
-  /* Isso cria um espaço de 1% entre os elementos filhos */
-}
+  .p-picklist .p-picklist-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 1%;
+    /* Isso cria um espaço de 1% entre os elementos filhos */
+  }
 
-.p-picklist .p-picklist-buttons .p-button {
-  margin-bottom: 0;
-  /* Remove a margem inferior original */
-}
+  .p-picklist .p-picklist-buttons .p-button {
+    margin-bottom: 0;
+    /* Remove a margem inferior original */
+  }
 
   .p-picklist .p-picklist-list-wrapper {
     background: #fefbff;
@@ -5567,6 +5613,33 @@
       0 9px 46px 8px rgba(0, 0, 0, 0.12);
   }
 
+  .p-confirm-popup .p-confirm-popup-footer .p-button {
+    min-width: 6rem;
+    margin-right: 0.5rem !important;
+  }
+
+  .p-confirm-popup .p-confirm-popup-footer .p-button.p-confirm-popup-accept {
+    background-color: #4CAF50;
+    border: 1px solid #4CAF50;
+    color: white;
+  }
+
+  .p-confirm-popup .p-confirm-popup-footer .p-button.p-confirm-popup-accept:hover {
+    background-color: #45a049;
+    border-color: #45a049;
+  }
+
+  .p-confirm-popup .p-confirm-popup-footer .p-button.p-confirm-popup-reject {
+    background-color: #f44336;
+    border: 1px solid #f44336;
+    color: white;
+  }
+
+  .p-confirm-popup .p-confirm-popup-footer .p-button.p-confirm-popup-reject:hover {
+    background-color: #d32f2f;
+    border-color: #d32f2f;
+  }
+
   .p-confirm-popup .p-confirm-popup-content {
     padding: 1rem;
   }
@@ -5708,6 +5781,24 @@
 
   .p-dialog.p-confirm-dialog .p-confirm-dialog-message {
     margin-left: 1rem;
+  }
+
+  .p-confirm-dialog-accept {
+    background-color: #4CAF50 !important;
+    border-color: #4CAF50 !important;
+  }
+
+  .p-confirm-dialog-reject {
+    background-color: #f44336 !important;
+    border-color: #f44336 !important;
+  }
+
+  .p-confirm-dialog-accept:hover {
+    background-color: #45a049 !important;
+  }
+
+  .p-confirm-dialog-reject:hover {
+    background-color: #d32f2f !important;
   }
 
   .p-overlaypanel {
@@ -5900,7 +5991,7 @@
   }
 
   .p-fileupload-choose:not(.p-disabled):active {
-/*     background: rgba(33, 55, 105, 0.68); */
+    /*     background: rgba(33, 55, 105, 0.68); */
     color: #fefbff;
     border-color: transparent;
   }
@@ -8141,10 +8232,11 @@
   .p-tag {
     background: transparent;
     color: #fefbff;
-    font-size: 0.75rem;
+    font-size: 0.85rem;
     font-weight: 700;
     padding: 0.25rem 0.4rem;
     border-radius: 4px;
+    width: 100%;
   }
 
   .p-tag.p-tag-success {
@@ -8160,6 +8252,11 @@
   .p-tag.p-tag-warning {
     background-color: #fbc02d;
     color: #212529;
+  }
+
+  .p-tag.p-tag-help {
+    background-color: #9c27b0;
+    color: #fefbff;
   }
 
   .p-tag.p-tag-danger {
@@ -8382,11 +8479,11 @@
   }
 
   .p-button:enabled:focus {
-/*     background: var(--orange-900); */
+    /*     background: var(--orange-900); */
   }
 
   .p-button:enabled:active {
-/*     background: rgba(33, 55, 105, 0.68); */
+    /*     background: rgba(33, 55, 105, 0.68); */
   }
 
   .p-button .p-ink {
@@ -8492,7 +8589,7 @@
   .p-button.p-button-info:enabled:active,
   .p-buttonset.p-button-info>.p-button:enabled:active,
   .p-splitbutton.p-button-info>.p-button:enabled:active {
-     background: rgba(33, 55, 105, 0.68);
+    background: rgba(33, 55, 105, 0.68);
   }
 
   .p-button.p-button-info.p-button-text:enabled:focus,
@@ -9755,7 +9852,12 @@
   }
 
   .p-paginator {
-    justify-content: flex-end;
+    background: #fefbff;
+    color: rgba(0, 0, 0, 0.87);
+    border: solid #e4e4e4;
+    border-width: 0;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
   }
 
   .p-paginator .p-paginator-element:focus {

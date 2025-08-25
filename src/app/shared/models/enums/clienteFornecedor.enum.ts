@@ -1,5 +1,4 @@
-export enum ClienteFornecedor {
-    Cliente = 1,
-    Fornecedor = 2,
+export enum ClienteFornecedorEnum {
+    Cliente = 0,
+    Fornecedor = 1,
 }
-  

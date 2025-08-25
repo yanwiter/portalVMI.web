@@ -1,0 +1,338 @@
+<app-title-header title="Relatório de Estoque"></app-title-header>
+<div class="relatorios-estoque">
+  <div class="page-header">
+    <div class="header-content">
+      <h1 class="page-title">
+      </h1>
+      <div class="header-actions">
+        <p-button 
+          icon="pi pi-refresh" 
+          label="Atualizar" 
+          severity="secondary"
+          (onClick)="atualizarRelatorios()">
+        </p-button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Resumo Geral -->
+  <div class="resumo-section">
+    <div class="resumo-card">
+      <div class="resumo-header">
+        <h3>
+          <i class="pi pi-chart-bar"></i>
+          Resumo Geral
+        </h3>
+        <p-button 
+          icon="pi pi-download" 
+          label="Exportar" 
+          severity="primary"
+          size="small"
+          (onClick)="exportarRelatorioGeral()">
+        </p-button>
+      </div>
+      <div class="resumo-content">
+        <div class="resumo-metricas">
+          <div class="metrica">
+            <span class="metrica-label">Total de Produtos:</span>
+            <span class="metrica-valor">{{ totalProdutos }}</span>
+          </div>
+          <div class="metrica">
+            <span class="metrica-label">Valor Total do Estoque:</span>
+            <span class="metrica-valor">{{ formatarValor(valorTotalEstoque) }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Relatórios Específicos -->
+  <div class="relatorios-grid">
+    <!-- Produtos com Estoque Baixo -->
+    <div class="relatorio-card">
+      <div class="relatorio-header">
+        <h3>
+          <i class="pi pi-exclamation-triangle"></i>
+          Produtos com Estoque Baixo
+        </h3>
+        <p-button 
+          icon="pi pi-download" 
+          label="Exportar" 
+          severity="warning"
+          size="small"
+          (onClick)="exportarProdutosBaixoEstoque()">
+        </p-button>
+      </div>
+      <div class="relatorio-content">
+        <p-table 
+          [value]="produtosBaixoEstoque" 
+          [paginator]="false"
+          [rows]="5"
+          styleClass="p-datatable-sm">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Produto</th>
+              <th>Estoque Atual</th>
+              <th>Mínimo</th>
+              <th>Status</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-produto>
+            <tr>
+              <td>{{ produto.nome }}</td>
+              <td>{{ formatarQuantidade(produto.estoqueAtual, produto.unidadeMedida) }}</td>
+              <td>{{ formatarQuantidade(produto.estoqueMinimo, produto.unidadeMedida) }}</td>
+              <td>
+                <p-tag 
+                  [value]="produto.statusEstoque" 
+                  [severity]="getSeverity(produto.statusEstoque)">
+                </p-tag>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td colspan="4" class="text-center">
+                <div class="empty-message">
+                  <i class="pi pi-check-circle"></i>
+                  <p>Nenhum produto com estoque baixo</p>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+
+    <!-- Produtos Críticos -->
+    <div class="relatorio-card">
+      <div class="relatorio-header">
+        <h3>
+          <i class="pi pi-times-circle"></i>
+          Produtos Críticos
+        </h3>
+        <p-button 
+          icon="pi pi-download" 
+          label="Exportar" 
+          severity="danger"
+          size="small"
+          (onClick)="exportarProdutosCriticos()">
+        </p-button>
+      </div>
+      <div class="relatorio-content">
+        <p-table 
+          [value]="produtosCriticos" 
+          [paginator]="false"
+          [rows]="5"
+          styleClass="p-datatable-sm">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Produto</th>
+              <th>Estoque Atual</th>
+              <th>Mínimo</th>
+              <th>Status</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-produto>
+            <tr>
+              <td>{{ produto.nome }}</td>
+              <td>{{ formatarQuantidade(produto.estoqueAtual, produto.unidadeMedida) }}</td>
+              <td>{{ formatarQuantidade(produto.estoqueMinimo, produto.unidadeMedida) }}</td>
+              <td>
+                <p-tag 
+                  [value]="produto.statusEstoque" 
+                  [severity]="getSeverity(produto.statusEstoque)">
+                </p-tag>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td colspan="4" class="text-center">
+                <div class="empty-message">
+                  <i class="pi pi-check-circle"></i>
+                  <p>Nenhum produto crítico</p>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+
+    <!-- Produtos em Excesso -->
+    <div class="relatorio-card">
+      <div class="relatorio-header">
+        <h3>
+          <i class="pi pi-arrow-up"></i>
+          Produtos em Excesso
+        </h3>
+        <p-button 
+          icon="pi pi-download" 
+          label="Exportar" 
+          severity="info"
+          size="small">
+        </p-button>
+      </div>
+      <div class="relatorio-content">
+        <p-table 
+          [value]="produtosExcesso" 
+          [paginator]="false"
+          [rows]="5"
+          styleClass="p-datatable-sm">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Produto</th>
+              <th>Estoque Atual</th>
+              <th>Máximo</th>
+              <th>Status</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-produto>
+            <tr>
+              <td>{{ produto.nome }}</td>
+              <td>{{ formatarQuantidade(produto.estoqueAtual, produto.unidadeMedida) }}</td>
+              <td>{{ formatarQuantidade(produto.estoqueMaximo, produto.unidadeMedida) }}</td>
+              <td>
+                <p-tag 
+                  [value]="produto.statusEstoque" 
+                  [severity]="getSeverity(produto.statusEstoque)">
+                </p-tag>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td colspan="4" class="text-center">
+                <div class="empty-message">
+                  <i class="pi pi-check-circle"></i>
+                  <p>Nenhum produto em excesso</p>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+
+    <!-- Movimentações Recentes -->
+    <div class="relatorio-card">
+      <div class="relatorio-header">
+        <h3>
+          <i class="pi pi-arrows-alt"></i>
+          Movimentações Recentes
+        </h3>
+        <p-button 
+          icon="pi pi-download" 
+          label="Exportar" 
+          severity="secondary"
+          size="small">
+        </p-button>
+      </div>
+      <div class="relatorio-content">
+        <p-table 
+          [value]="movimentacoesRecentes" 
+          [paginator]="false"
+          [rows]="5"
+          styleClass="p-datatable-sm">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Produto</th>
+              <th>Tipo</th>
+              <th>Quantidade</th>
+              <th>Data</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-movimentacao>
+            <tr>
+              <td>{{ movimentacao.produto?.nome }}</td>
+              <td>
+                <p-tag 
+                  [value]="movimentacao.tipoMovimentacao" 
+                  [severity]="movimentacao.tipoMovimentacao === 'Entrada' ? 'success' : 'danger'">
+                </p-tag>
+              </td>
+              <td>{{ formatarQuantidade(movimentacao.quantidade, movimentacao.produto?.unidadeMedida) }}</td>
+              <td>{{ movimentacao.dataMovimentacao | date:'dd/MM/yyyy HH:mm' }}</td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td colspan="4" class="text-center">
+                <div class="empty-message">
+                  <i class="pi pi-inbox"></i>
+                  <p>Nenhuma movimentação recente</p>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Relatório Detalhado -->
+  <div class="relatorio-detalhado">
+    <div class="relatorio-card">
+      <div class="relatorio-header">
+        <h3>
+          <i class="pi pi-list"></i>
+          Relatório Detalhado de Estoque
+        </h3>
+        <p-button 
+          icon="pi pi-download" 
+          label="Exportar Completo" 
+          severity="primary"
+          size="small"
+          (onClick)="exportarRelatorioGeral()">
+        </p-button>
+      </div>
+      <div class="relatorio-content">
+        <p-table 
+          [value]="relatorioEstoque" 
+          [paginator]="true"
+          [rows]="10"
+          [rowsPerPageOptions]="[10, 25, 50]"
+          styleClass="p-datatable-sm">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Produto</th>
+              <th>Estoque Atual</th>
+              <th>Mínimo</th>
+              <th>Máximo</th>
+              <th>Valor Total</th>
+              <th>Última Movimentação</th>
+              <th>Status</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-item>
+            <tr>
+              <td>{{ item.produto?.nome }}</td>
+              <td>{{ formatarQuantidade(item.estoqueAtual, item.produto?.unidadeMedida) }}</td>
+              <td>{{ formatarQuantidade(item.estoqueMinimo, item.produto?.unidadeMedida) }}</td>
+              <td>{{ formatarQuantidade(item.estoqueMaximo, item.produto?.unidadeMedida) }}</td>
+              <td>{{ formatarValor(item.valorTotalEstoque) }}</td>
+              <td>{{ item.ultimaMovimentacao | date:'dd/MM/yyyy HH:mm' }}</td>
+              <td>
+                <p-tag 
+                  [value]="item.statusEstoque" 
+                  [severity]="getSeverity(item.statusEstoque)">
+                </p-tag>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td colspan="7" class="text-center">
+                <div class="empty-message">
+                  <i class="pi pi-inbox"></i>
+                  <p>Nenhum produto encontrado</p>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+  </div>
+</div> 

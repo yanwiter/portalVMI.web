@@ -1,0 +1,354 @@
+.notification-container {
+  position: relative;
+  display: inline-block;
+}
+
+// Botão de Notificações
+.notification-trigger {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--surface-card);
+  border: 1px solid var(--surface-border);
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: var(--surface-hover);
+    transform: translateY(-1px);
+  }
+
+  i {
+    font-size: 1.2rem;
+    color: var(--text-color);
+  }
+
+  .notification-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: var(--red-500);
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 600;
+    animation: pulse 2s infinite;
+  }
+}
+
+// Painel de Notificações
+.notification-panel {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  width: 400px;
+  max-height: 600px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  border: 1px solid var(--surface-border);
+  z-index: 1000;
+  overflow: hidden;
+  animation: slideDown 0.3s ease-out;
+
+  @media (max-width: 480px) {
+    width: 350px;
+    right: -50px;
+  }
+}
+
+// Header do Painel
+.notification-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--surface-border);
+  background: var(--surface-ground);
+
+  h3 {
+    margin: 0;
+    color: var(--text-color);
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+
+  .notification-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+}
+
+// Estatísticas
+.notification-stats {
+  display: flex;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--surface-border);
+  background: var(--surface-ground);
+
+  .stat-item {
+    flex: 1;
+    text-align: center;
+    padding: 0.5rem;
+
+    .stat-number {
+      display: block;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-color);
+    }
+
+    .stat-label {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--text-color-secondary);
+      margin-top: 0.25rem;
+    }
+
+    &.unread .stat-number {
+      color: var(--red-500);
+    }
+
+    &.read .stat-number {
+      color: var(--green-500);
+    }
+  }
+}
+
+// Filtros
+.notification-filters {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--surface-border);
+  background: var(--surface-ground);
+  display: flex;
+  gap: 1rem;
+  align-items: flex-end;
+
+  .filter-group {
+    flex: 1;
+    min-width: 0;
+
+    label {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--text-color-secondary);
+      margin-bottom: 0.25rem;
+      font-weight: 500;
+    }
+
+    ::ng-deep .p-dropdown {
+      width: 100%;
+    }
+  }
+}
+
+// Lista de Notificações
+.notification-list {
+  max-height: 400px;
+  overflow-y: auto;
+
+  .notification-item {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--surface-border);
+    transition: background-color 0.2s ease;
+    position: relative;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &:hover {
+      background: var(--surface-hover);
+    }
+
+    &.unread {
+      background: var(--blue-50);
+      border-left: 3px solid var(--blue-500);
+
+      &:hover {
+        background: var(--blue-100);
+      }
+    }
+
+    &.read {
+      opacity: 0.8;
+    }
+
+    .notification-icon {
+      flex-shrink: 0;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--surface-ground);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      i {
+        font-size: 1.2rem;
+      }
+    }
+
+    .notification-content {
+      flex: 1;
+      min-width: 0;
+
+      .notification-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 0.5rem;
+
+        h4 {
+          margin: 0;
+          color: var(--text-color);
+          font-size: 0.95rem;
+          font-weight: 600;
+          line-height: 1.3;
+        }
+
+        .notification-meta {
+          display: flex;
+          gap: 0.5rem;
+          font-size: 0.7rem;
+          flex-wrap: wrap;
+
+          .priority {
+            font-weight: 600;
+          }
+
+          .category {
+            color: var(--text-color-secondary);
+          }
+
+          .time {
+            color: var(--text-color-secondary);
+          }
+        }
+      }
+
+      .notification-message {
+        margin: 0 0 0.75rem 0;
+        color: var(--text-color-secondary);
+        font-size: 0.85rem;
+        line-height: 1.4;
+      }
+
+      .notification-actions {
+        button {
+          padding: 0.25rem 0.5rem;
+          font-size: 0.8rem;
+        }
+      }
+    }
+
+    .notification-menu {
+      flex-shrink: 0;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    &:hover .notification-menu {
+      opacity: 1;
+    }
+  }
+}
+
+// Estado vazio
+.no-notifications {
+  padding: 2rem 1.5rem;
+  text-align: center;
+  color: var(--text-color-secondary);
+
+  i {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    opacity: 0.5;
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.9rem;
+  }
+}
+
+// Animações
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+// Scrollbar customizada
+.notification-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.notification-list::-webkit-scrollbar-track {
+  background: var(--surface-ground);
+}
+
+.notification-list::-webkit-scrollbar-thumb {
+  background: var(--surface-border);
+  border-radius: 3px;
+}
+
+.notification-list::-webkit-scrollbar-thumb:hover {
+  background: var(--text-color-secondary);
+}
+
+// Responsividade
+@media (max-width: 480px) {
+  .notification-panel {
+    width: 320px;
+    right: -40px;
+  }
+
+  .notification-filters {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .notification-item {
+    padding: 0.75rem 1rem;
+
+    .notification-content {
+      .notification-header {
+        flex-direction: column;
+        gap: 0.25rem;
+
+        .notification-meta {
+          justify-content: flex-start;
+        }
+      }
+    }
+  }
+}

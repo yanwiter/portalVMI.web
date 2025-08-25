@@ -1,0 +1,21 @@
+<header class="app-header">
+  <div class="header-content">
+    <div class="header-left">
+      <div class="logo">
+        <i class="pi pi-home"></i>
+        <span>Portal VMI</span>
+      </div>
+    </div>
+
+    <div class="header-center">
+      <div class="current-date">
+        <i class="pi pi-calendar"></i>
+        <span>{{ currentDate | date:'EEEE, d \'de\' MMMM \'de\' yyyy' }}</span>
+      </div>
+    </div>
+
+    <div class="header-right">
+      <app-user-menu></app-user-menu>
+    </div>
+  </div>
+</header>

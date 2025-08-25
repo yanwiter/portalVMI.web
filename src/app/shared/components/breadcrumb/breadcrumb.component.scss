@@ -1,0 +1,86 @@
+.breadcrumb-container {
+  padding: 0;
+  background-color: transparent;
+  border: none;
+  margin: 0;
+  margin-top: 0.5rem;
+}
+
+.custom-breadcrumb {
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+.breadcrumb-link {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: var(--primary-color);
+    text-decoration: underline;
+  }
+}
+
+:host ::ng-deep {
+  .p-breadcrumb {
+    background: transparent;
+    border: none;
+    padding: 0;
+  }
+
+  .p-breadcrumb .p-breadcrumb-list li .p-menuitem-link {
+    color: var(--primary-color);
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 0.2s ease;
+    font-size: 0.875rem;
+
+    &:hover {
+      color: var(--primary-color);
+      text-decoration: underline;
+    }
+
+    .p-menuitem-icon {
+      color: var(--primary-color);
+    }
+
+    .p-menuitem-text {
+      color: var(--primary-color);
+    }
+  }
+
+  .p-breadcrumb .p-breadcrumb-list li.p-menuitem-separator {
+    color: var(--text-color-secondary);
+    margin: 0 0.5rem;
+    opacity: 0.8;
+  }
+
+  .p-breadcrumb .p-breadcrumb-list li:last-child .p-menuitem-link {
+    color: var(--text-color-secondary);
+    font-weight: 600;
+    pointer-events: none;
+
+    .p-menuitem-icon {
+      color: var(--text-color-secondary);
+    }
+
+    .p-menuitem-text {
+      color: var(--text-color-secondary);
+    }
+  }
+
+  .p-breadcrumb .p-breadcrumb-list li:first-child .p-menuitem-link {
+    color: var(--primary-color);
+
+    .p-menuitem-icon {
+      color: var(--primary-color);
+    }
+
+    .p-menuitem-text {
+      color: var(--primary-color);
+    }
+  }
+} 

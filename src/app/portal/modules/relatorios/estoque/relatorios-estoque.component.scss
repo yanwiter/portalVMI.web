@@ -1,0 +1,316 @@
+.relatorios-estoque {
+  padding: 1.5rem;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+
+  .page-header {
+    margin-bottom: 2rem;
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+      .page-title {
+        margin: 0;
+        color: #2c3e50;
+        font-size: 1.8rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        i {
+          font-size: 1.5rem;
+          color: #3498db;
+        }
+      }
+    }
+  }
+
+  .resumo-section {
+    margin-bottom: 2rem;
+
+    .resumo-card {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+
+      .resumo-header {
+        padding: 1.5rem;
+        border-bottom: 1px solid #ecf0f1;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+
+        h3 {
+          margin: 0;
+          font-size: 1.2rem;
+          font-weight: 600;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+      }
+
+      .resumo-content {
+        padding: 1.5rem;
+
+        .resumo-metricas {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+          gap: 1.5rem;
+
+          .metrica {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+
+            .metrica-label {
+              color: #2c3e50;
+              font-weight: 500;
+              font-size: 0.9rem;
+            }
+
+            .metrica-valor {
+              color: #2c3e50;
+              font-weight: 700;
+              font-size: 1.1rem;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .relatorios-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+
+    .relatorio-card {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+
+      .relatorio-header {
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid #ecf0f1;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #f8f9fa;
+
+        h3 {
+          margin: 0;
+          color: #2c3e50;
+          font-size: 1.1rem;
+          font-weight: 600;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+      }
+
+      .relatorio-content {
+        padding: 1rem;
+
+        ::ng-deep .p-datatable {
+          .p-datatable-header {
+            background: transparent;
+            border: none;
+            padding: 0;
+          }
+
+          .p-datatable-thead > tr > th {
+            background: #f8f9fa;
+            border: none;
+            padding: 0.75rem;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 0.8rem;
+          }
+
+          .p-datatable-tbody > tr > td {
+            border: none;
+            padding: 0.75rem;
+            font-size: 0.8rem;
+          }
+
+          .p-datatable-tbody > tr:nth-child(even) {
+            background: #f8f9fa;
+          }
+
+          .p-datatable-tbody > tr:hover {
+            background: #e3f2fd;
+          }
+
+          .empty-message {
+            text-align: center;
+            padding: 2rem;
+            color: #7f8c8d;
+
+            i {
+              font-size: 2rem;
+              margin-bottom: 0.5rem;
+              display: block;
+            }
+
+            p {
+              margin: 0;
+              font-size: 0.9rem;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .relatorio-detalhado {
+    .relatorio-card {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+
+      .relatorio-header {
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid #ecf0f1;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #f8f9fa;
+
+        h3 {
+          margin: 0;
+          color: #2c3e50;
+          font-size: 1.1rem;
+          font-weight: 600;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+      }
+
+      .relatorio-content {
+        padding: 1rem;
+
+        ::ng-deep .p-datatable {
+          .p-datatable-header {
+            background: #f8f9fa;
+            border: none;
+            padding: 1rem 1.5rem;
+          }
+
+          .p-datatable-thead > tr > th {
+            background: #f8f9fa;
+            border: none;
+            padding: 1rem;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 0.9rem;
+          }
+
+          .p-datatable-tbody > tr > td {
+            border: none;
+            padding: 1rem;
+            font-size: 0.9rem;
+          }
+
+          .p-datatable-tbody > tr:nth-child(even) {
+            background: #f8f9fa;
+          }
+
+          .p-datatable-tbody > tr:hover {
+            background: #e3f2fd;
+          }
+
+          .empty-message {
+            text-align: center;
+            padding: 2rem;
+            color: #7f8c8d;
+
+            i {
+              font-size: 2rem;
+              margin-bottom: 0.5rem;
+              display: block;
+            }
+
+            p {
+              margin: 0;
+              font-size: 0.9rem;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// Responsividade
+@media (max-width: 768px) {
+  .relatorios-estoque {
+    padding: 1rem;
+
+    .page-header {
+      .header-content {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+
+        .page-title {
+          font-size: 1.5rem;
+        }
+      }
+    }
+
+    .resumo-section {
+      .resumo-card {
+        .resumo-content {
+          .resumo-metricas {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+
+            .metrica {
+              flex-direction: column;
+              text-align: center;
+              gap: 0.5rem;
+            }
+          }
+        }
+      }
+    }
+
+    .relatorios-grid {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .relatorios-estoque {
+    .resumo-section {
+      .resumo-card {
+        .resumo-header {
+          flex-direction: column;
+          gap: 1rem;
+          text-align: center;
+        }
+      }
+    }
+  }
+} 

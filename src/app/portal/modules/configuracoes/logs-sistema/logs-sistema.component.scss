@@ -1,0 +1,569 @@
+.logs-container {
+  padding: 1.5rem;
+  background: var(--surface-ground);
+  min-height: 100vh;
+  font-family: var(--font-family);
+}
+
+// Header da página
+.page-header {
+  background: var(--surface-card);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--surface-border);
+
+  .header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+
+    .title-section {
+      .page-title {
+        margin: 0 0 0.5rem 0;
+        font-size: 1.75rem;
+        font-weight: 600;
+        color: var(--text-color);
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+
+        i {
+          color: var(--primary-color);
+          font-size: 1.5rem;
+        }
+      }
+
+      .page-subtitle {
+        margin: 0;
+        color: var(--text-color-secondary);
+        font-size: 0.9rem;
+      }
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+
+      .auto-refresh-toggle {
+        .p-togglebutton {
+          min-width: 80px;
+        }
+      }
+    }
+  }
+}
+
+// Estatísticas
+.stats-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+
+  .stat-card {
+    background: var(--surface-card);
+    border-radius: 12px;
+    padding: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--surface-border);
+    transition: all 0.3s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    .stat-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: white;
+    }
+
+    .stat-content {
+      flex: 1;
+
+      .stat-value {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: var(--text-color);
+        line-height: 1;
+        margin-bottom: 0.25rem;
+      }
+
+      .stat-label {
+        font-size: 0.875rem;
+        color: var(--text-color-secondary);
+        font-weight: 500;
+      }
+    }
+
+    &.total .stat-icon {
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-600));
+    }
+
+    &.info .stat-icon {
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    }
+
+    &.warn .stat-icon {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+    }
+
+    &.error .stat-icon {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+    }
+
+    &.debug .stat-icon {
+      background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+    }
+  }
+}
+
+// Filtros
+.filters-container {
+  background: var(--surface-card);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--surface-border);
+
+  .filters-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    align-items: end;
+
+    .filter-group {
+      .filter-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: var(--text-color);
+        font-size: 0.875rem;
+      }
+
+      .level-filter,
+      .search-input,
+      .date-filter {
+        width: 100%;
+      }
+
+      .search-input {
+        padding-left: 2.5rem;
+      }
+    }
+
+    .filter-actions {
+      display: flex;
+      align-items: end;
+      height: 100%;
+    }
+  }
+}
+
+// Dark mode styles for PrimeNG Calendar/DatePicker
+:host ::ng-deep {
+  .p-datepicker {
+    background: var(--surface-overlay) !important;
+    border: 1px solid var(--surface-border) !important;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    
+    .p-datepicker-header {
+      background: var(--surface-section) !important;
+      border-bottom: 1px solid var(--surface-border) !important;
+      border-radius: 12px 12px 0 0;
+      
+      .p-datepicker-title {
+        .p-datepicker-year,
+        .p-datepicker-month {
+          color: var(--text-color) !important;
+          font-weight: 600;
+          
+          &:hover {
+            background: var(--surface-hover) !important;
+          }
+        }
+      }
+      
+      .p-datepicker-prev,
+      .p-datepicker-next {
+        color: var(--text-color) !important;
+        
+        &:hover {
+          background: var(--surface-hover) !important;
+        }
+      }
+    }
+    
+    .p-datepicker-calendar {
+      background: var(--surface-overlay) !important;
+      
+      thead {
+        th {
+          color: var(--text-color-secondary) !important;
+          font-weight: 600;
+          background: var(--surface-section) !important;
+        }
+      }
+      
+      tbody {
+        td {
+          .p-ripple {
+            color: var(--text-color) !important;
+            
+            &:hover {
+              background: var(--surface-hover) !important;
+            }
+            
+            &.p-highlight {
+              background: var(--primary-color) !important;
+              color: var(--primary-color-text) !important;
+            }
+            
+            &.p-today {
+              background: var(--primary-color) !important;
+              color: var(--primary-color-text) !important;
+              font-weight: 600;
+            }
+          }
+          
+          &.p-datepicker-other-month {
+            .p-ripple {
+              color: var(--text-color-secondary) !important;
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  // Ensure the overlay has proper z-index and background
+  .p-datepicker-panel {
+    background: var(--surface-overlay) !important;
+    border: 1px solid var(--surface-border) !important;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  }
+}
+
+// Tabela de logs
+.logs-table-container {
+  background: var(--surface-card);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--surface-border);
+
+  .table-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--surface-border);
+    background: var(--surface-section);
+
+    .table-info {
+      .results-count {
+        font-size: 0.875rem;
+        color: var(--text-color-secondary);
+        font-weight: 500;
+      }
+    }
+  }
+
+  .table-wrapper {
+    .logs-table {
+      .p-datatable-thead > tr > th {
+        background: var(--surface-section);
+        border-bottom: 1px solid var(--surface-border);
+        font-weight: 600;
+        color: var(--text-color);
+        padding: 1rem;
+        font-size: 0.875rem;
+      }
+
+      .p-datatable-tbody > tr {
+        transition: background-color 0.2s ease;
+
+        &:hover {
+          background: var(--surface-hover);
+        }
+
+        &.level-error {
+          background: rgba(239, 68, 68, 0.05);
+          border-left: 4px solid #ef4444;
+
+          &:hover {
+            background: rgba(239, 68, 68, 0.1);
+          }
+        }
+
+        &.level-warn {
+          background: rgba(245, 158, 11, 0.05);
+          border-left: 4px solid #f59e0b;
+
+          &:hover {
+            background: rgba(245, 158, 11, 0.1);
+          }
+        }
+
+        &.level-info {
+          background: rgba(59, 130, 246, 0.05);
+          border-left: 4px solid #3b82f6;
+
+          &:hover {
+            background: rgba(59, 130, 246, 0.1);
+          }
+        }
+
+        &.level-debug {
+          background: rgba(139, 92, 246, 0.05);
+          border-left: 4px solid #8b5cf6;
+
+          &:hover {
+            background: rgba(139, 92, 246, 0.1);
+          }
+        }
+
+        > td {
+          padding: 1rem;
+          border-bottom: 1px solid var(--surface-border);
+          vertical-align: top;
+        }
+      }
+
+      .timestamp-cell {
+        .timestamp-date {
+          font-weight: 600;
+          color: var(--text-color);
+          font-size: 0.875rem;
+        }
+
+        .timestamp-time {
+          color: var(--text-color-secondary);
+          font-size: 0.75rem;
+          margin-top: 0.25rem;
+        }
+      }
+
+      .level-cell {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        .level-icon {
+          font-size: 0.875rem;
+        }
+
+        .level-text {
+          font-weight: 600;
+          font-size: 0.75rem;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+      }
+
+      .source-cell {
+        .source-badge {
+          background: var(--primary-color);
+          color: white;
+          padding: 0.25rem 0.75rem;
+          border-radius: 20px;
+          font-size: 0.75rem;
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+      }
+
+      .message-cell {
+        .message-text {
+          color: var(--text-color);
+          line-height: 1.4;
+          word-break: break-word;
+        }
+      }
+
+      .user-cell {
+        .user-info {
+          .user-name {
+            font-weight: 600;
+            color: var(--text-color);
+            font-size: 0.875rem;
+          }
+
+          .user-id {
+            color: var(--text-color-secondary);
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+          }
+        }
+      }
+
+      .ip-cell {
+        .ip-address {
+          font-family: 'Courier New', monospace;
+          font-size: 0.875rem;
+          color: var(--text-color-secondary);
+          background: var(--surface-ground);
+          padding: 0.25rem 0.5rem;
+          border-radius: 4px;
+        }
+      }
+
+      .empty-message {
+        .empty-content {
+          text-align: center;
+          padding: 3rem 1rem;
+          color: var(--text-color-secondary);
+
+          .empty-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+          }
+
+          p {
+            margin: 0;
+            font-size: 1rem;
+          }
+        }
+      }
+    }
+  }
+
+  .pagination-container {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--surface-border);
+    background: var(--surface-section);
+    display: flex;
+    justify-content: center;
+
+    .custom-paginator {
+      .p-paginator-pages {
+        .p-paginator-page {
+          border-radius: 8px;
+          margin: 0 0.25rem;
+        }
+      }
+    }
+  }
+}
+
+// Responsividade
+@media (max-width: 768px) {
+  .logs-container {
+    padding: 1rem;
+  }
+
+  .page-header {
+    .header-content {
+      flex-direction: column;
+      align-items: flex-start;
+
+      .header-actions {
+        width: 100%;
+        justify-content: space-between;
+      }
+    }
+  }
+
+  .stats-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .filters-container {
+    .filters-row {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .logs-table-container {
+    .table-wrapper {
+      overflow-x: auto;
+
+      .logs-table {
+        min-width: 800px;
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .stats-container {
+    grid-template-columns: 1fr;
+  }
+
+  .page-header {
+    .header-content {
+      .header-actions {
+        flex-direction: column;
+        gap: 0.5rem;
+
+        button,
+        p-toggleButton {
+          width: 100%;
+        }
+      }
+    }
+  }
+}
+
+// Animações
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.stat-card,
+.filters-container,
+.logs-table-container {
+  animation: fadeIn 0.3s ease-out;
+}
+
+// Estados de loading
+.logs-table-container.loading {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+// Melhorias de acessibilidade
+.logs-table-container {
+  .logs-table {
+    .p-datatable-tbody > tr {
+      &:focus-within {
+        outline: 2px solid var(--primary-color);
+        outline-offset: -2px;
+      }
+    }
+  }
+}
+
+// Tooltips personalizados
+.p-tooltip {
+  .p-tooltip-text {
+    background: var(--surface-overlay);
+    color: var(--text-color);
+    border: 1px solid var(--surface-border);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+} 

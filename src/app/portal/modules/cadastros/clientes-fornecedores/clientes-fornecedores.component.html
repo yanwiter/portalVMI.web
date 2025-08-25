@@ -1,0 +1,786 @@
+<app-title-header title="Clientes e Fornecedores"></app-title-header>
+
+<div class="filters">
+    <p-accordion class="p-accordion-custom-header">
+        <p-accordionTab>
+            <ng-template pTemplate="header">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <span>{{ getFiltrosHeader() }}</span>
+
+                    @if (getActiveFilters().length > 0) {
+                    <ng-container>
+                        @for (filter of getActiveFilters(); track filter) {
+                        <p-tag [value]="filter.label + ': ' + filter.value" severity="contrast" styleClass="mr-1">
+                        </p-tag>
+                        }
+                    </ng-container>
+                    }
+                </div>
+            </ng-template>
+
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-dropdown id="tipoCadastro" appendTo="body" [options]="clienteFornecedorOptions" optionLabel="label"
+                            optionValue="value" [(ngModel)]="filtros.tipoCadastro" name="tipoCadastro">
+                        </p-dropdown>
+                        <label for="tipo">Tipo Cadastro</label>
+                    </p-floatLabel>
+                </div>
+
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-dropdown id="tipoPessoa" appendTo="body" [options]="tipoPessoaOptions" optionLabel="label"
+                            optionValue="value" [(ngModel)]="filtros.tipoPessoa" name="tipoPessoa">
+                        </p-dropdown>
+                        <label for="tipo">Tipo Pessoa</label>
+                    </p-floatLabel>
+                </div>
+
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input pInputText id="nome" [(ngModel)]="filtros.nome" name="nome" style="width: 100%;" />
+                        <label for="nome">Nome Cliente/Fornecedor</label>
+                    </p-floatLabel>
+                </div>
+
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input pInputText id="cpfCnpj" [(ngModel)]="filtros.cpfCnpj" name="cpfCnpj"
+                            style="width: 100%;" />
+                        <label for="cpfCnpj">CPF/CNPJ</label>
+                    </p-floatLabel>
+                </div>
+
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-dropdown id="statusCadastro" appendTo="body" [options]="statusOptions"
+                            [(ngModel)]="filtros.statusCadastro" name="statusCadastro">
+                        </p-dropdown>
+                        <label for="status">Status Cadastro</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button *ngIf="canView" pButton [outlined]="true" [raised]="true" severity="warning" label="Limpar" icon="pi pi-times"
+                    (click)="limparFiltros()">
+                </button>
+                <button *ngIf="canView" pButton [outlined]="true" [raised]="true" severity="success" label="Filtrar" icon="pi pi-filter"
+                    (click)="filtrar()">
+                </button>
+            </div>
+        </p-accordionTab>
+    </p-accordion>
+</div>
+
+<div class="tables">
+    <p-table [value]="clientesFornecedores" [paginator]="true" [lazy]="true" [showCurrentPageReport]="true"
+        [rows]="rows" [resizableColumns]="true" [totalRecords]="totalRecords" [rowsPerPageOptions]="rowsPerPage"
+        styleClass="p-datatable-striped p-datatable-gridlines" (onPage)="handlePageChange($event)"
+        (onLazyLoad)="loadTableData($event)" dataKey="id">
+        <ng-template pTemplate="caption">
+            <div style="display: flex; justify-content: flex-end; align-items: center;">
+                <div class="actions">
+                    <button pButton [outlined]="true" [raised]="true" severity="success" label="Exportar"
+                        icon="pi pi-file-export"  (click)="exportarParaExcel()"
+                        pTooltip="Exportar para Excel" tooltipPosition="top">
+                    </button>
+                    <p-button *ngIf="canCreate" icon="pi pi-plus" label="Incluir Cliente/Fornecedor" class="exportButton"
+                        (onClick)="showDialog()" />
+                </div>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+            <tr>
+                <th id="razaoSocial">Nome / Razão Social</th>
+                <th id="nomeFantasia">Nome Fantasia</th>
+                <th id="tipoCadastro">Tipo Cadastro</th>
+                <th id="tipoPessoa">Tipo Pessoa</th>
+                <th id="cpfCnpj">CPF/CNPJ</th>
+                <th id="observacoes">Observações</th>
+                <th id="status">Status </th>
+                <th *ngIf="showActionsColumn" style="width: 120px; text-align: center;">
+                    Ações
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-clienteFornecedor let-rowIndex="rowIndex">
+            <tr>
+                <td>{{ clienteFornecedor.razaoSocial }}</td>
+                <td>{{ clienteFornecedor.nomeFantasia  ?? 'N/A' }}</td>
+                <td>
+                    <p-tag [value]="getTipoCadastro(clienteFornecedor.tipoCadastro)"
+                        [severity]="getTipoCadastroSeverity(clienteFornecedor.tipoCadastro)" />
+                </td>
+                <td>
+                    <p-tag [value]="getTipoPessoa(clienteFornecedor.tipoPessoa)"
+                        [severity]="getTipoPessoaSeverity(clienteFornecedor.tipoPessoa)" />
+                </td>
+                <td>
+                    {{ formatDocument(clienteFornecedor.cpfCnpj) }}
+                </td>
+                <td>
+                    {{ clienteFornecedor.observacoes ?? 'N/A' }}
+                </td>
+
+                <td>
+                    <p-tag [value]="clienteFornecedor.statusCadastro ? 'Ativo' : 'Inativo'"
+                        [severity]="clienteFornecedor.statusCadastro ? 'success' : 'danger'" />
+                </td>
+                <td *ngIf="showActionsColumn">
+                    <div class="actions-table">
+                        <button *ngIf="canEdit" pButton [outlined]="true" [raised]="true" severity="success" icon="pi pi-pencil"
+                            (click)="iniciarEdicao(clienteFornecedor)">
+                        </button>
+
+                        <button *ngIf="canDelete" pButton [outlined]="true" [raised]="true" severity="danger" icon="pi pi-trash"
+                            (click)="confirmarExclusao(clienteFornecedor)">
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+
+<!-- Modal para incluir/editar Cliente/Fornecedor -->
+<p-dialog [header]="modalTitle" [draggable]="false" [resizable]="false" [(visible)]="displayModal"
+    [style]="{width: '90vw'}" [modal]="true" (onShow)="resetTabView()">
+    <p-tabView #tabView>
+        <p-tabPanel header="Dados Cadastrais">
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-dropdown id="tipo" appendTo="body" [options]="clienteFornecedorOptions" name="tipo"
+                            (onChange)="onTipoChange($event)" [(ngModel)]="clienteFornecedor.tipoCadastro" width="2%">
+                        </p-dropdown>
+                        <label for="tipo">Tipo Cadastro</label>
+                    </p-floatLabel>
+                </div>
+
+                @if (isEditando){
+                <div style="flex: 1; display: flex; justify-content: flex-end; gap: 1rem;">
+                    @if (clienteFornecedor.dataInclusao != null) {
+                    <p-floatLabel>
+                        <p-calendar [(ngModel)]="clienteFornecedor.dataInclusao" name="dataCadastro"
+                            dateFormat="dd/mm/yy" appendTo="body" disabled="true">
+                        </p-calendar>
+                        <label for="dataCadastro">Data de Cadastro</label>
+                    </p-floatLabel>
+                    }
+
+                    @if (clienteFornecedor.dataUltimaModificacao != null) {
+                    <p-floatLabel>
+                        <p-calendar [(ngModel)]="clienteFornecedor.dataUltimaModificacao" name="dataAlteracao"
+                            dateFormat="dd/mm/yy" appendTo="body" disabled="true">
+                        </p-calendar>
+                        <label for="dataAlteracao">Data Última Alteração</label>
+                    </p-floatLabel>
+                    }
+                </div>
+                }
+            </div>
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-dropdown id="tipoPessoa" [(ngModel)]="clienteFornecedor.tipoPessoa"
+                            (onChange)="atualizarMascaraCPFCNPJ()" [options]="tipoPessoaOptions" appendTo="body"
+                            name="tipoPessoa">
+                        </p-dropdown>
+                        <label for="tipoPessoa">Tipo Pessoa</label>
+                    </p-floatLabel>
+                </div>
+
+                @if (clienteFornecedor.tipoPessoa === 0) {
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-inputMask [mask]="'999.999.999-99'" [(ngModel)]="clienteFornecedor.cpfCnpj"
+                            (onComplete)="validarCPFCNPJ()">
+                        </p-inputMask>
+                        <label for="cpf">CPF</label>
+                    </p-floatLabel>
+                </div>
+                } @else {
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-inputMask [mask]="'99.999.999/9999-99'" [(ngModel)]="clienteFornecedor.cpfCnpj"
+                            (onComplete)="validarCPFCNPJ()">
+                        </p-inputMask>
+                        <label for="Cnpj">CNPJ</label>
+                    </p-floatLabel>
+                </div>
+                }
+
+                @if (clienteFornecedor.tipoPessoa === 0) {
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-inputMask id="rg" [mask]="'99.999.999-9'" [(ngModel)]="clienteFornecedor.rg">
+                        </p-inputMask>
+                        <label for="rg">RG</label>
+                    </p-floatLabel>
+                </div>
+                }
+
+                @if (clienteFornecedor.tipoPessoa === 1) {
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-dropdown id="tipo" appendTo="body" [options]="porteEmpresaOptions" name="tipo" optionLabel="label"
+                            optionValue="value" [(ngModel)]="clienteFornecedor.porteEmpresa" width="2%">
+                        </p-dropdown>
+                        <label for="tipo">Porte Empresa</label>
+                    </p-floatLabel>
+                </div>
+                }
+
+                @if (clienteFornecedor.tipoPessoa === 1) {
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-dropdown id="tipoEmpresa"name="tipoEmpresa" appendTo="body" [options]="tipoEmpresaOptions" optionLabel="label" optionValue="value"
+                         [(ngModel)]="clienteFornecedor.tipoEmpresa">
+                        </p-dropdown>
+                        <label for="tipo">Tipo Empresa</label>
+                    </p-floatLabel>
+                </div>
+                }
+            </div>
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input [(ngModel)]="clienteFornecedor.razaoSocial" type="text" pInputText
+                            style="width: 100%;" />
+                         @if (clienteFornecedor.tipoPessoa === 0) {
+                            <label for="razaoSocial">Nome Completo</label>
+                        } @else {
+                            <label for="razaoSocial">Razão Social</label>
+                        }
+                    </p-floatLabel>
+                </div>
+                @if (clienteFornecedor.tipoPessoa === 1) {
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input [(ngModel)]="clienteFornecedor.nomeFantasia" type="text" pInputText
+                            style="width: 100%;" />
+                        <label for="nomeFantasia">Nome Fantasia</label>
+                    </p-floatLabel>
+                </div>
+                
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-dropdown id="naturezaJuridica" name="naturezaJuridica" appendTo="body" [options]="naturezaJuridicaOptions" optionLabel="label"
+                            optionValue="value" [(ngModel)]="clienteFornecedor.naturezaJuridica">
+                        </p-dropdown>
+                        <label for="tipo">Natureza Jurídica</label>
+                    </p-floatLabel>
+                </div>
+                }
+
+                @if (clienteFornecedor.tipoPessoa === 1) {
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-dropdown id="isOptanteMEI" name="isOptanteMEI" appendTo="body" [options]="simNaoOptions" optionLabel="label"
+                            optionValue="value" [(ngModel)]="clienteFornecedor.optanteMEI">
+                        </p-dropdown>
+                        <label for="tipo">Opção pelo MEI</label>
+                    </p-floatLabel>
+                </div>
+                }
+
+                @if (clienteFornecedor.tipoPessoa === 1) {
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-dropdown id="isOptanteSimples" name="isOptanteSimples" appendTo="body" [options]="simNaoOptions" optionLabel="label"
+                            optionValue="value" [(ngModel)]="clienteFornecedor.optanteSimples">
+                        </p-dropdown>
+                        <label for="tipo">Opção pelo Simples</label>
+                    </p-floatLabel>
+                </div>
+                }
+
+            </div>
+            @if (clienteFornecedor.tipoPessoa === 1) {
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-dropdown id="regimeTributario" [(ngModel)]="clienteFornecedor.regimeTributario" optionLabel="label" optionValue="value"
+                            appendTo="body" [options]="tipoRegimeTributarioOptions">
+                        </p-dropdown>
+                        <label for="regimeTributario">Regime Tributário</label>
+                    </p-floatLabel>
+                </div>
+
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input [(ngModel)]="clienteFornecedor.inscricaoEstadual" maxlength="20" type="text" pInputText
+                            style="width: 100%;" />
+                        <label for="inscricaoEstadual">Inscrição Estadual</label>
+                    </p-floatLabel>
+                </div>
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input [(ngModel)]="clienteFornecedor.inscricaoMunicipal" maxlength="20" type="text" pInputText
+                            style="width: 100%;" />
+                        <label for="inscricaoMunicipal">Inscrição Municipal</label>
+                    </p-floatLabel>
+                </div>
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-inputMask id="cnae" [mask]="'9999-9/99'"
+                            [(ngModel)]="clienteFornecedor.cnae" 
+                            (onComplete)="buscarAtividadeCNAE()"></p-inputMask>
+                        <label for="cnae">CNAE</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+            }
+
+            @if (clienteFornecedor.cnae) {
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                    <textarea [(ngModel)]="clienteFornecedor.atividadeCnae" id="atividadeCnae" type="text" pInputText disabled
+                        style="width: 100%;">
+                    </textarea>
+                        <label for="cnae">Atividade CNAE</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+            }
+
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input [(ngModel)]="clienteFornecedor.site" type="text" pInputText style="width: 100%;" />
+                        <label for="site">Site</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+        </p-tabPanel>
+
+        <p-tabPanel header="Endereço">
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 49%;">
+                <div style="flex: 1;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <p-floatLabel style="flex: 1;">
+                            <p-inputMask mask="99999-999" [(ngModel)]="clienteFornecedor.enderecos[0].cep"
+                                (onComplete)="buscarCep()" id="cep">
+                            </p-inputMask>
+                            <label for="cep">CEP</label>
+                        </p-floatLabel>
+                        <button pButton type="button" icon="pi pi-search" (click)="buscarCep()"
+                            style="padding: 1rem;"></button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input pInputText type="text" [(ngModel)]="clienteFornecedor.enderecos[0].logradouro"
+                            id="logradouro" style="width: 100%;" />
+                        <label for="logradouro">Logradouro</label>
+                    </p-floatLabel>
+                </div>
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-dropdown id="tipoEndereco" appendTo="body"
+                            [(ngModel)]="clienteFornecedor.enderecos[0].tipoEndereco" [options]="tipoEnderecoOptions"
+                            optionLabel="label" optionValue="value">
+                        </p-dropdown>
+                        <label for="tipoEndereco">Tipo de Endereço</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input pInputText type="text" [(ngModel)]="clienteFornecedor.enderecos[0].complemento"
+                            id="complemento" style="width: 100%;" />
+                        <label for="complemento">Complemento</label>
+                    </p-floatLabel>
+                </div>
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input pInputText type="text" [(ngModel)]="clienteFornecedor.enderecos[0].numero" id="numero"
+                            style="width: 100%;" />
+                        <label for="numero">Número</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input pInputText type="text" [(ngModel)]="clienteFornecedor.enderecos[0].cidade" id="cidade"
+                            style="width: 100%;" />
+                        <label for="cidade">Cidade</label>
+                    </p-floatLabel>
+                </div>
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input pInputText type="text" [(ngModel)]="clienteFornecedor.enderecos[0].bairro" id="bairro"
+                            style="width: 100%;" />
+                        <label for="bairro">Bairro</label>
+                    </p-floatLabel>
+                </div>
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-dropdown id="uf" [(ngModel)]="clienteFornecedor.enderecos[0].uf" [options]="ufOptions"
+                            appendTo="body"></p-dropdown>
+                        <label for="uf">UF</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <textarea id="referencia" [(ngModel)]="clienteFornecedor.enderecos[0].referencia" pInputText
+                            style="width: 100%;"></textarea>
+                        <label for="referencia">Ponto de Referência</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+        </p-tabPanel>
+
+        <p-tabPanel header="Contato">
+            <h4>Representante Legal</h4>
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 49%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input pInputText type="text" [(ngModel)]="clienteFornecedor.contatos[0].nome"
+                            style="width: 100%;" />
+                        <label for="nomeRepresentante">Nome Representante</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input pInputText type="text" [(ngModel)]="clienteFornecedor.contatos[0].cargo"
+                            style="width: 100%;" />
+                        <label for="cargoRepresentante">Cargo</label>
+                    </p-floatLabel>
+                </div>
+
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input pInputText type="email" [(ngModel)]="clienteFornecedor.contatos[0].email"
+                            style="width: 100%;" />
+                        <label for="emailRepresentante">E-mail Representante</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-inputMask [mask]="'(99) 9999-9999'"
+                            [(ngModel)]="clienteFornecedor.contatos[0].telefone"></p-inputMask>
+                        <label for="telefoneRepresentante">Telefone</label>
+                    </p-floatLabel>
+                </div>
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-inputMask [mask]="'(99) 9 9999-9999'"
+                            [(ngModel)]="clienteFornecedor.contatos[0].celular"></p-inputMask>
+                        <label for="celularRepresentante">Celular</label>
+                    </p-floatLabel>
+                </div>
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-inputMask [mask]="'9999'" [(ngModel)]="clienteFornecedor.contatos[0].ramal"></p-inputMask>
+                        <label for="ramalRepresentante">Ramal</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+
+            <h4>Representante Comercial</h4>
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input pInputText type="text" pInputText style="width: 100%;" />
+                        <label for="nomeComercial">Nome Representante Comercial</label>
+                    </p-floatLabel>
+                </div>
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input pInputText type="email" pInputText style="width: 100%;" />
+                        <label for="emailComercial">E-mail Comercial</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-inputMask [mask]="'(99) 9999-9999'"></p-inputMask>
+                        <label for="telefoneComercial">Telefone Comercial</label>
+                    </p-floatLabel>
+                </div>
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-inputMask [mask]="'(99) 9 99999-9999'"></p-inputMask>
+                        <label for="celularComercial">Celular Comercial</label>
+                    </p-floatLabel>
+                </div>
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-inputMask [mask]="'9999'"></p-inputMask>
+                        <label for="ramalComercial">Ramal Comercial</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+        </p-tabPanel>
+
+        @if (clienteFornecedor.tipoCadastro === 0){
+        <p-tabPanel header="Dados Financeiros">
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-inputNumber id="limiteCredito" name="limiteCredito" mode="currency" currency="BRL"
+                            locale="pt-BR" [(ngModel)]="clienteFornecedor.dadosFinanceiros[0].limiteCredito">
+                        </p-inputNumber>
+                        <label for="limiteCredito">Limite de Crédito (R$)</label>
+                    </p-floatLabel>
+                </div>
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-dropdown id="condicaoPagamento" appendTo="body" [options]="condicaoPagamentoOptions"
+                            optionLabel="label" optionValue="value"
+                            [(ngModel)]="clienteFornecedor.dadosFinanceiros[0].condicaoPagamento">
+                        </p-dropdown>
+                        <label for="condicaoPagamento">Condição de Pagamento</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-dropdown id="banco" appendTo="body" [options]="bancoOptions" optionLabel="label"
+                            optionValue="value" [(ngModel)]="clienteFornecedor.dadosFinanceiros[0].banco">
+                        </p-dropdown>
+                        <label for="banco">Banco</label>
+                    </p-floatLabel>
+                </div>
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-inputMask mask="9999-9" [(ngModel)]="clienteFornecedor.dadosFinanceiros[0].agencia"
+                            id="agencia">
+                        </p-inputMask>
+                        <label for="agencia">Agência</label>
+                    </p-floatLabel>
+                </div>
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-inputMask mask="99999999-9" [(ngModel)]="clienteFornecedor.dadosFinanceiros[0].conta"
+                            id="conta">
+                        </p-inputMask>
+                        <label for="conta">Conta</label>
+                    </p-floatLabel>
+                </div>
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-dropdown id="tipoConta" appendTo="body" [options]="tipoContaOptions" optionLabel="label"
+                            optionValue="value" [(ngModel)]="clienteFornecedor.dadosFinanceiros[0].tipoConta">
+                        </p-dropdown>
+                        <label for="tipoConta">Tipo de Conta</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input pInputText type="text" [(ngModel)]="clienteFornecedor.dadosFinanceiros[0].chavePix"
+                            style="width: 100%;" />
+                        <label for="pix">Chave PIX</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+        </p-tabPanel>
+        }
+
+        <p-tabPanel header="Observações e Anexos">
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                @if (isEditando) {
+                <div style="flex: 1;">
+                    @if (isCadastroInativo == false) {
+                    @if (clienteFornecedor.tipoCadastro === 0) {
+                    <label for="isCadastroInativo">Inativar Cliente</label>
+                    } @else {
+                    <label for="isCadastroInativo">Inativar Fornecedor</label>
+                    }
+                    } @else {
+
+                    @if (clienteFornecedor.tipoCadastro === 0) {
+                    <label for="isCadastroInativo">Ativar Cliente</label>
+                    } @else {
+                    <label for="isCadastroInativo">Ativar Fornecedor</label>
+                    }
+                    }
+                    <p-floatLabel style="flex: 1;">
+                        <p-inputSwitch [(ngModel)]="isCadastroInativo"
+                            (onChange)="toggleInativacao($event)"></p-inputSwitch>
+                    </p-floatLabel>
+                </div>
+                }
+
+
+                @if (clienteFornecedor.dataInativacao != null) {
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-calendar name="dataInativacao" dateFormat="dd/mm/yy" appendTo="body" showIcon="true"
+                            disabled="true" [(ngModel)]="clienteFornecedor.dataInativacao"></p-calendar>
+                        <label for="dataInativacao">Data de Inativação</label>
+                    </p-floatLabel>
+                </div>
+                }
+            </div>
+
+            @if (isCadastroInativo) {
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <textarea id="motivoInativacao" type="text" pInputText style="width: 100%;"
+                            [(ngModel)]="clienteFornecedor.justificativaInativacao"></textarea>
+                        <label for="observacoes">Motivo da Inativação</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+            }
+            <div class="field grid"
+                style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <textarea [(ngModel)]="clienteFornecedor.observacoes" id="observacoes" type="text" pInputText
+                            style="width: 100%;"></textarea>
+                        <label for="observacoes">Observações</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+
+            <div class="field grid" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+            <div style="flex: 1;">
+                <p-floatLabel style="flex: 1;">
+                    <p-fileUpload name="anexos" (onUpload)="onUpload()" (onSelect)="onFileSelect($event)" 
+                        [multiple]="true" accept="image/*,.pdf,.doc,.docx" maxFileSize="10000000" 
+                        [showUploadButton]="false" chooseLabel="Selecionar Arquivos" [showCancelButton]="false">
+                        <ng-template pTemplate="content">
+                        <div style="margin-top: 0.5rem; font-size: 0.875rem; color: #6c757d;">
+                            Formatos aceitos: JPEG, PNG, PDF, DOC, DOCX (Máx. 10MB por arquivo, até 5 arquivos)
+                        </div>
+                        
+                        <!-- Arquivos selecionados para upload -->
+                        <div *ngIf="uploadedFiles.length > 0" class="selected-files">
+                            <h6>Arquivos selecionados para upload:</h6>
+                            <ul class="file-list">
+                                <li *ngFor="let file of uploadedFiles; let i = index">
+                                    <i [class]="getFileIcon(file.name.split('.').pop() || '')"></i>
+                                    {{ file.name }} ({{ (file.size / 1024 / 1024).toFixed(2) }} MB)
+                                    <button pButton type="button" icon="pi pi-times" 
+                                        class="p-button-rounded p-button-text p-button-danger" 
+                                        (click)="removeFile(i)" pTooltip="Remover arquivo">
+                                    </button>
+                                </li>
+                            </ul>
+                            <button pButton type="button" label="Processar Arquivos" icon="pi pi-upload" 
+                                severity="success" (click)="onUpload()" 
+                                style="margin-top: 0.5rem;">
+                            </button>
+                        </div>
+                        
+                        <!-- Lista de anexos existentes -->
+                        <div *ngIf="clienteFornecedor.anexos && clienteFornecedor.anexos.length > 0" class="existing-files">
+                            <h6>Anexos existentes:</h6>
+                            <ul class="file-list">
+                                <li *ngFor="let anexo of clienteFornecedor.anexos; let i = index">
+                                    <a (click)="downloadAnexo(anexo)" class="file-link" pTooltip="Download">
+                                        <i [class]="getFileIcon(anexo.extensao)"></i> {{ anexo.nome }}
+                                    </a>
+                                    <button pButton pRipple type="button" icon="pi pi-trash" 
+                                        class="p-button-rounded p-button-text p-button-danger" 
+                                        (click)="removeExistingAnexo(i)" pTooltip="Remover anexo">
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+                        </ng-template>
+                    </p-fileUpload>
+                </p-floatLabel>
+            </div>
+            </div>
+
+            <style>
+                .p-fileupload-buttonbar .p-button {
+                    display: none;
+                }
+            </style>
+        </p-tabPanel>
+    </p-tabView>
+    <ng-template pTemplate="footer">
+        <button pButton [outlined]="true" [raised]="true" severity="danger" icon="pi pi-times" label="Cancelar"
+            (click)="displayModal = false" class="p-button-text">
+        </button>
+        <button pButton [outlined]="false" [raised]="true" severity="success" icon="pi pi-check" label="Salvar"
+            class="ml-2" (click)="salvarClienteFornecedor()">
+        </button>
+    </ng-template>
+</p-dialog>
+
+<!-- Diálogo de confirmação para exclusão -->
+<p-dialog [header]="modalTitleDelete" [(visible)]="displayConfirmation" [style]="{width: '30vw'}" [modal]="true"
+    [closable]="false">
+    <div class="confirmation-content">
+        @if (clienteFornecedorParaExcluir) {
+        <span>
+            Tem certeza que deseja excluir o {{ getTipoCadastro(clienteFornecedorParaExcluir.tipoCadastro) }} <b>{{
+                clienteFornecedorParaExcluir.razaoSocial }}</b>?
+        </span>
+        }
+    </div>
+    <ng-template pTemplate="footer">
+        <div class="actions">
+            <button pButton pRipple type="button" label="Cancelar" icon="pi pi-times" (click)="cancelarExclusao()"
+                class="p-button-text"></button>
+            <button *ngIf="canDelete" pButton pRipple type="button" label="Confirmar" icon="pi pi-check"
+                (click)="confirmarExclusaoDialog()" class="p-button-danger"></button>
+        </div>
+    </ng-template>
+</p-dialog>
+
+<p-dialog header="Confirmação" [(visible)]="displayConfirmationforInativacao" [style]="{width: '350px'}"
+    [modal]="true" [closable]="false">
+    <p>Você realmente deseja inativar este cadastro?</p>
+    <div class="actions-table">
+        <button pButton label="Cancelar" icon="pi pi-times" (click)="cancelarInativacao()"></button>
+        <button *ngIf="canEdit" pButton label="Confirmar" icon="pi pi-check" (click)="confirmarInativacaoDialog()"
+            severity="success"></button>
+    </div>
+</p-dialog>

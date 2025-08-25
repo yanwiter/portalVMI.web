@@ -1,0 +1,377 @@
+<div class="analises-preditivas-container">
+  <div class="header-section">
+    <div class="title-section">
+      <h1>{{ 'ANALISES_PREDITIVAS.ANALISES_PREDITIVAS_TITLE' | translate }}</h1>
+      <p>{{ 'ANALISES_PREDITIVAS.ANALISES_PREDITIVAS_DESC' | translate }}</p>
+    </div>
+    <div class="actions-section">
+      <p-button 
+        icon="pi pi-plus" 
+        [label]="'ANALISES_PREDITIVAS.NOVO_MODELO' | translate"
+        (onClick)="openNewModelo()"
+        class="p-button-success">
+      </p-button>
+    </div>
+  </div>
+
+  <div class="content-section">
+    <!-- Resumo dos Modelos -->
+    <div class="summary-cards">
+      <p-card class="summary-card">
+        <div class="card-content">
+          <div class="icon-section">
+            <i class="pi pi-chart-line"></i>
+          </div>
+          <div class="info-section">
+            <h3>{{ 'ANALISES_PREDITIVAS.TOTAL_MODELOS' | translate }}</h3>
+            <span class="number">{{ getTotalModelos() }}</span>
+          </div>
+        </div>
+      </p-card>
+      
+      <p-card class="summary-card">
+        <div class="card-content">
+          <div class="icon-section">
+            <i class="pi pi-check-circle"></i>
+          </div>
+          <div class="info-section">
+            <h3>{{ 'ANALISES_PREDITIVAS.MODELOS_ATIVOS' | translate }}</h3>
+            <span class="number">{{ getModelosAtivos() }}</span>
+          </div>
+        </div>
+      </p-card>
+      
+      <p-card class="summary-card">
+        <div class="card-content">
+          <div class="icon-section">
+            <i class="pi pi-spin pi-spinner"></i>
+          </div>
+          <div class="info-section">
+            <h3>{{ 'ANALISES_PREDITIVAS.EM_TREINAMENTO' | translate }}</h3>
+            <span class="number">{{ getModelosTreinando() }}</span>
+          </div>
+        </div>
+      </p-card>
+      
+      <p-card class="summary-card">
+        <div class="card-content">
+          <div class="icon-section">
+            <i class="pi pi-percentage"></i>
+          </div>
+          <div class="info-section">
+            <h3>{{ 'ANALISES_PREDITIVAS.PRECISAO_MEDIA' | translate }}</h3>
+            <span class="number">{{ getPrecisaoMedia() }}%</span>
+          </div>
+        </div>
+      </p-card>
+    </div>
+
+    <!-- Gráfico de Performance -->
+    <p-card [header]="'ANALISES_PREDITIVAS.PERFORMANCE_MODELOS' | translate" class="chart-card">
+      <div class="performance-overview">
+        <div class="performance-stats">
+          <div class="stat-item">
+            <div class="stat-icon">
+              <i class="pi pi-chart-line"></i>
+            </div>
+            <div class="stat-content">
+              <span class="stat-value">{{ getPrecisaoMedia() }}%</span>
+              <span class="stat-label">{{ 'ANALISES_PREDITIVAS.PRECISAO_MEDIA' | translate }}</span>
+            </div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-icon">
+              <i class="pi pi-clock"></i>
+            </div>
+            <div class="stat-content">
+              <span class="stat-value">{{ getModelosAtivos() }}</span>
+              <span class="stat-label">{{ 'ANALISES_PREDITIVAS.MODELOS_ATIVOS' | translate }}</span>
+            </div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-icon">
+              <i class="pi pi-sync"></i>
+            </div>
+            <div class="stat-content">
+              <span class="stat-value">{{ getModelosTreinando() }}</span>
+              <span class="stat-label">{{ 'ANALISES_PREDITIVAS.EM_TREINAMENTO' | translate }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="chart-container">
+          <p-chart type="line" [data]="chartData" [options]="chartOptions" height="250px"></p-chart>
+        </div>
+      </div>
+    </p-card>
+
+    <!-- Lista de Modelos -->
+    <p-card [header]="'ANALISES_PREDITIVAS.MODELOS_PREDICAO' | translate" class="modelos-card">
+      <div class="modelos-header">
+        <div class="modelos-filters">
+          <p-dropdown 
+            [options]="tiposModelo" 
+            [(ngModel)]="filtroTipo"
+            placeholder="Filtrar por tipo"
+            (onChange)="onFiltroTipoChange()"
+            class="filter-dropdown">
+          </p-dropdown>
+          <p-dropdown 
+            [options]="statusOptions" 
+            [(ngModel)]="filtroStatus"
+            placeholder="Filtrar por status"
+            (onChange)="onFiltroStatusChange()"
+            class="filter-dropdown">
+          </p-dropdown>
+        </div>
+        <div class="modelos-actions">
+          <p-button 
+            icon="pi pi-refresh" 
+            [label]="'ANALISES_PREDITIVAS.ATUALIZAR' | translate"
+            class="p-button-outlined p-button-sm">
+          </p-button>
+        </div>
+      </div>
+      
+      <div class="modelos-grid">
+        <div class="modelo-card" *ngFor="let modelo of modelosFiltrados">
+          <div class="card-header">
+            <div class="modelo-info">
+              <div class="modelo-title">
+                <h3>{{ modelo.nome }}</h3>
+                <span class="tipo-badge">{{ modelo.tipo }}</span>
+              </div>
+              <p class="descricao">{{ modelo.descricao }}</p>
+            </div>
+            <div class="status-section">
+              <div class="status-indicator">
+                <i [class]="getStatusIcon(modelo.status)" 
+                   [ngClass]="getStatusClass(modelo.status)"></i>
+                <span class="status-text">{{ modelo.status | titlecase }}</span>
+              </div>
+              <div class="precisao-indicator">
+                <div class="precisao-circle" [ngClass]="getPrecisaoClass(modelo.precisao)">
+                  <span class="precisao-value">{{ modelo.precisao }}%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card-content">
+            <div class="metricas-section">
+              <h4>{{ 'ANALISES_PREDITIVAS.METRICAS' | translate }}</h4>
+              <div class="metricas-grid">
+                <div class="metrica-item">
+                  <div class="metrica-header">
+                    <i class="pi pi-check-circle"></i>
+                    <label>{{ 'ANALISES_PREDITIVAS.ACURACIA' | translate }}</label>
+                  </div>
+                  <span class="metrica-value">{{ (modelo.metricas.acuracia * 100).toFixed(1) }}%</span>
+                </div>
+                <div class="metrica-item">
+                  <div class="metrica-header">
+                    <i class="pi pi-percentage"></i>
+                    <label>{{ 'ANALISES_PREDITIVAS.PRECISAO' | translate }}</label>
+                  </div>
+                  <span class="metrica-value">{{ (modelo.metricas.precisao * 100).toFixed(1) }}%</span>
+                </div>
+                <div class="metrica-item">
+                  <div class="metrica-header">
+                    <i class="pi pi-replay"></i>
+                    <label>{{ 'ANALISES_PREDITIVAS.RECALL' | translate }}</label>
+                  </div>
+                  <span class="metrica-value">{{ (modelo.metricas.recall * 100).toFixed(1) }}%</span>
+                </div>
+                <div class="metrica-item">
+                  <div class="metrica-header">
+                    <i class="pi pi-star"></i>
+                    <label>{{ 'ANALISES_PREDITIVAS.F1_SCORE' | translate }}</label>
+                  </div>
+                  <span class="metrica-value">{{ (modelo.metricas.f1Score * 100).toFixed(1) }}%</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="info-section">
+              <div class="info-item">
+                <i class="pi pi-calendar"></i>
+                <div class="info-content">
+                  <label>{{ 'ANALISES_PREDITIVAS.ULTIMA_ATUALIZACAO' | translate }}</label>
+                  <span>{{ modelo.ultimaAtualizacao | date:'dd/MM/yyyy HH:mm' }}</span>
+                </div>
+              </div>
+              <div class="info-item">
+                <i class="pi pi-clock"></i>
+                <div class="info-content">
+                  <label>{{ 'ANALISES_PREDITIVAS.PROXIMA_EXECUCAO' | translate }}</label>
+                  <span>{{ modelo.proximaExecucao | date:'dd/MM/yyyy HH:mm' }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card-actions">
+            <div class="action-group">
+              <p-button 
+                icon="pi pi-play" 
+                [label]="'ANALISES_PREDITIVAS.EXECUTAR' | translate"
+                (onClick)="executarPredicao(modelo)"
+                class="p-button-primary p-button-sm">
+              </p-button>
+              <p-button 
+                icon="pi pi-refresh" 
+                [label]="'ANALISES_PREDITIVAS.TREINAR' | translate"
+                (onClick)="treinarModelo(modelo)"
+                class="p-button-secondary p-button-sm">
+              </p-button>
+            </div>
+            <div class="action-group">
+              <p-button 
+                icon="pi pi-pencil" 
+                [label]="'ANALISES_PREDITIVAS.EDITAR' | translate"
+                (onClick)="editModelo(modelo)"
+                class="p-button-outlined p-button-sm">
+              </p-button>
+              <p-button 
+                icon="pi pi-trash" 
+                [label]="'ANALISES_PREDITIVAS.EXCLUIR' | translate"
+                (onClick)="deleteModelo(modelo)"
+                class="p-button-danger p-button-sm">
+              </p-button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </p-card>
+
+    <!-- Histórico de Predições -->
+    <p-card [header]="'ANALISES_PREDITIVAS.HISTORICO_PREDICOES' | translate">
+      <p-table [value]="predicoes" [paginator]="true" [rows]="5" 
+               [showCurrentPageReport]="true" 
+               currentPageReportTemplate="{{ 'ANALISES_PREDITIVAS.SHOWING' | translate }} {first} {{ 'ANALISES_PREDITIVAS.TO' | translate }} {last} {{ 'ANALISES_PREDITIVAS.OF' | translate }} {totalRecords} {{ 'ANALISES_PREDITIVAS.ENTRIES' | translate }}"
+               [rowsPerPageOptions]="[5, 10, 25]">
+        
+        <ng-template pTemplate="header">
+          <tr>
+            <th>{{ 'ANALISES_PREDITIVAS.MODELO' | translate }}</th>
+            <th>{{ 'ANALISES_PREDITIVAS.ENTRADA' | translate }}</th>
+            <th>{{ 'ANALISES_PREDITIVAS.RESULTADO' | translate }}</th>
+            <th>{{ 'ANALISES_PREDITIVAS.CONFIANCA' | translate }}</th>
+            <th>{{ 'ANALISES_PREDITIVAS.DATA' | translate }}</th>
+            <th>{{ 'ANALISES_PREDITIVAS.STATUS' | translate }}</th>
+          </tr>
+        </ng-template>
+        
+        <ng-template pTemplate="body" let-predicao>
+          <tr>
+            <td>{{ predicao.modelo }}</td>
+            <td>
+              <div class="entrada-data">
+                <div *ngFor="let key of getObjectKeys(predicao.entrada)">
+                  <strong>{{ key }}:</strong> {{ predicao.entrada[key] }}
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="resultado-data">
+                <div *ngFor="let key of getObjectKeys(predicao.resultado)">
+                  <strong>{{ key }}:</strong> {{ predicao.resultado[key] }}
+                </div>
+              </div>
+            </td>
+            <td>
+              <span class="confianca-badge">{{ (predicao.confianca * 100).toFixed(1) }}%</span>
+            </td>
+            <td>{{ predicao.dataPredicao | date:'dd/MM/yyyy HH:mm' }}</td>
+            <td>
+              <span class="status-badge" [ngClass]="'status-' + predicao.status">
+                {{ predicao.status | translate }}
+              </span>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </p-card>
+  </div>
+</div>
+
+<!-- Dialog para criar/editar modelo -->
+<p-dialog 
+  [(visible)]="displayDialog" 
+  [header]="(isNewModelo ? 'ANALISES_PREDITIVAS.NOVO_MODELO' : 'ANALISES_PREDITIVAS.EDITAR_MODELO') | translate"
+  [modal]="true" 
+  [style]="{width: '700px'}"
+  [draggable]="false" 
+  [resizable]="false">
+  
+  <div class="dialog-content" *ngIf="selectedModelo">
+    <div class="form-row">
+      <div class="form-field">
+        <label for="nome">{{ 'ANALISES_PREDITIVAS.NOME' | translate }} *</label>
+        <input 
+          id="nome"
+          type="text" 
+          pInputText 
+          [(ngModel)]="selectedModelo.nome"
+          class="w-full">
+      </div>
+    </div>
+    
+    <div class="form-row">
+      <div class="form-field">
+        <label for="tipo">{{ 'ANALISES_PREDITIVAS.TIPO_MODELO' | translate }} *</label>
+        <p-dropdown 
+          id="tipo"
+          [options]="tiposModelo" 
+          [(ngModel)]="selectedModelo.tipo"
+                      placeholder="{{ 'ANALISES_PREDITIVAS.SELECIONE_TIPO' | translate }}"
+          class="w-full">
+        </p-dropdown>
+      </div>
+    </div>
+    
+    <div class="form-row">
+      <div class="form-field">
+        <label for="descricao">{{ 'ANALISES_PREDITIVAS.DESCRICAO' | translate }}</label>
+        <textarea 
+          id="descricao"
+          pInputTextarea 
+          [(ngModel)]="selectedModelo.descricao"
+          [rows]="3"
+          class="w-full">
+        </textarea>
+      </div>
+    </div>
+    
+    <div class="form-row">
+      <div class="form-field">
+        <label for="precisao">{{ 'ANALISES_PREDITIVAS.PRECISAO_INICIAL' | translate }} (%)</label>
+        <p-inputNumber 
+          id="precisao"
+          [(ngModel)]="selectedModelo.precisao"
+          [min]="0"
+          [max]="100"
+          [showButtons]="true"
+          suffix="%"
+          class="w-full">
+        </p-inputNumber>
+      </div>
+    </div>
+  </div>
+  
+  <ng-template pTemplate="footer">
+    <p-button 
+      [label]="'ANALISES_PREDITIVAS.CANCELAR' | translate"
+      icon="pi pi-times" 
+      (onClick)="displayDialog = false"
+      class="p-button-text">
+    </p-button>
+    <p-button 
+      [label]="'ANALISES_PREDITIVAS.SALVAR' | translate"
+      icon="pi pi-check" 
+      (onClick)="saveModelo()"
+      class="p-button-success">
+    </p-button>
+  </ng-template>
+</p-dialog>
+
+<p-toast></p-toast> 

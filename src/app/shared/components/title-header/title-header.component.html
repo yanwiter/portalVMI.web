@@ -2,6 +2,18 @@
     <div class="title-header p-shadow-3">
         <div class="header-left">
             <h1>{{ title }}</h1>
+            <app-breadcrumb></app-breadcrumb>
+        </div>
+        <div class="header-right">
+            <!-- Indicador de Dados Sensíveis -->
+            <app-sensitive-data-indicator [showSelector]="true" class="sensitive-data-control"></app-sensitive-data-indicator>
+            
+            <!-- Componente de Notificações -->
+            <app-notification></app-notification>
+            
+            <!-- Menu do Usuário -->
+            <app-user-menu></app-user-menu>
+
         </div>
     </div>
 </div>

@@ -1,0 +1,144 @@
+<div class="notification-container">
+  <!-- Botão de Notificações -->
+  <div class="notification-trigger" (click)="toggleNotificationPanel()">
+    <i class="pi pi-bell"></i>
+    @if (stats.unread > 0) {
+    <span class="notification-badge">{{ stats.unread }}</span>
+    }
+  </div>
+
+  <!-- Painel de Notificações -->
+  @if (showNotificationPanel) {
+  <div class="notification-panel">
+    <!-- Header do Painel -->
+    <div class="notification-header">
+      <h3>{{ 'NOTIFICATION.TITLE' | translate }}</h3>
+      <div class="notification-actions">
+        @if (stats.unread > 0) {
+        <button pButton icon="pi pi-check" class="p-button-text p-button-sm"
+                pTooltip="Marcar todas como lidas" tooltipPosition="top"
+                (click)="markAllAsRead()">
+        </button>
+        }
+        <button pButton icon="pi pi-times" class="p-button-text p-button-sm"
+                pTooltip="Fechar" tooltipPosition="top"
+                (click)="toggleNotificationPanel()">
+        </button>
+      </div>
+    </div>
+
+    <!-- Estatísticas -->
+    <div class="notification-stats">
+      <div class="stat-item">
+        <span class="stat-number">{{ stats.total }}</span>
+        <span class="stat-label">Total</span>
+      </div>
+      <div class="stat-item unread">
+        <span class="stat-number">{{ stats.unread }}</span>
+        <span class="stat-label">Não lidas</span>
+      </div>
+      <div class="stat-item read">
+        <span class="stat-number">{{ stats.read }}</span>
+        <span class="stat-label">Lidas</span>
+      </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="notification-filters">
+      <div class="filter-group">
+        <label>Status:</label>
+        <p-dropdown [options]="[
+          {label: 'Todas', value: 'all'},
+          {label: 'Não lidas', value: 'unread'},
+          {label: 'Lidas', value: 'read'}
+        ]" [(ngModel)]="selectedFilter" 
+        (onChange)="onFilterChange()"
+        optionLabel="label" optionValue="value"
+        styleClass="p-inputtext-sm">
+        </p-dropdown>
+      </div>
+
+      <div class="filter-group">
+        <label>Tipo:</label>
+        <p-dropdown [options]="[
+          {label: 'Todos', value: 'all'},
+          {label: 'Info', value: 'info'},
+          {label: 'Sucesso', value: 'success'},
+          {label: 'Aviso', value: 'warning'},
+          {label: 'Erro', value: 'error'}
+        ]" [(ngModel)]="selectedType" 
+        (onChange)="onFilterChange()"
+        optionLabel="label" optionValue="value"
+        styleClass="p-inputtext-sm">
+        </p-dropdown>
+      </div>
+
+      <div class="filter-group">
+        <label>Categoria:</label>
+        <p-dropdown [options]="[
+          {label: 'Todas', value: 'all'},
+          {label: 'Sistema', value: 'system'},
+          {label: 'Usuário', value: 'user'},
+          {label: 'Processo', value: 'process'},
+          {label: 'Financeiro', value: 'financial'}
+        ]" [(ngModel)]="selectedCategory" 
+        (onChange)="onFilterChange()"
+        optionLabel="label" optionValue="value"
+        styleClass="p-inputtext-sm">
+        </p-dropdown>
+      </div>
+    </div>
+
+    <!-- Lista de Notificações -->
+    <div class="notification-list">
+      @if (filteredNotifications.length > 0) {
+        @for (notification of filteredNotifications; track notification.id) {
+        <div class="notification-item" [class]="notification.read ? 'read' : 'unread'">
+          <div class="notification-icon" [style.color]="getNotificationColor(notification.type)">
+            <i [class]="getNotificationIcon(notification.type)"></i>
+          </div>
+          
+          <div class="notification-content">
+            <div class="notification-header">
+              <h4>{{ notification.title }}</h4>
+              <div class="notification-meta">
+                <span class="priority" [style.color]="getPriorityColor(notification.priority)">
+                  {{ getPriorityLabel(notification.priority) }}
+                </span>
+                <span class="category">{{ getCategoryLabel(notification.category) }}</span>
+                <span class="time">{{ formatTimeAgo(notification.timestamp) }}</span>
+              </div>
+            </div>
+            
+            <p class="notification-message">{{ notification.message }}</p>
+            
+            @if (notification.actionUrl && notification.actionText) {
+            <div class="notification-actions">
+              <button pButton [label]="notification.actionText" 
+                      class="p-button-text p-button-sm"
+                      (click)="navigateToAction(notification)">
+              </button>
+            </div>
+            }
+          </div>
+          
+          <div class="notification-menu">
+            <p-menu #menu [popup]="true" [model]="getMenuItems(notification)">
+            </p-menu>
+            <button pButton icon="pi pi-ellipsis-v" 
+                    class="p-button-text p-button-sm"
+                    (click)="menu.toggle($event)">
+            </button>
+          </div>
+        </div>
+        }
+      } @else {
+        <div class="no-notifications">
+          <i class="pi pi-bell-slash"></i>
+          <p>{{ 'NOTIFICATION.NO_NOTIFICATIONS' | translate }}</p>
+        </div>
+      }
+    </div>
+  </div>
+  }
+</div>

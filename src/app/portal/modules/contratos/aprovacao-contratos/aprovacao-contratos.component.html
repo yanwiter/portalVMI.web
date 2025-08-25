@@ -1,0 +1,230 @@
+<app-title-header title="Aprovação de Contratos"></app-title-header>
+
+<div class="filters">
+    <p-accordion class="p-accordion-custom-header" styleClass="filters-accordion">
+        <p-accordionTab>
+            <ng-template pTemplate="header">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="pi pi-filter"></i>
+                    <span>Filtros de Contratos</span>
+                </div>
+            </ng-template>
+
+            <div class="field grid" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; width: 100%;">
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input pInputText id="numero" [(ngModel)]="filtros.numero" name="numero" />
+                        <label for="numero">Número do Contrato</label>
+                    </p-floatLabel>
+                </div>
+
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <input pInputText id="titulo" [(ngModel)]="filtros.titulo" name="titulo" />
+                        <label for="titulo">Título</label>
+                    </p-floatLabel>
+                </div>
+
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-dropdown id="status" appendTo="body" [options]="statusOptions" [(ngModel)]="filtros.status" name="status">
+                        </p-dropdown>
+                        <label for="status">Status</label>
+                    </p-floatLabel>
+                </div>
+
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-calendar id="dataInicio" [showTime]="false" [(ngModel)]="filtros.dataInicio" name="dataInicio" dateFormat="dd/mm/yy">
+                        </p-calendar>
+                        <label for="dataInicio">Data Início</label>
+                    </p-floatLabel>
+                </div>
+
+                <div style="flex: 1;">
+                    <p-floatLabel style="flex: 1;">
+                        <p-calendar id="dataFim" [showTime]="false" [(ngModel)]="filtros.dataFim" name="dataFim" dateFormat="dd/mm/yy">
+                        </p-calendar>
+                        <label for="dataFim">Data Fim</label>
+                    </p-floatLabel>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button pButton [outlined]="true" [raised]="true" severity="warning" label="Limpar" icon="pi pi-times"
+                    (click)="limparFiltros()">
+                </button>
+                <button pButton [outlined]="true" [raised]="true" severity="success" label="Filtrar" icon="pi pi-filter"
+                    (click)="filtrar()">
+                </button>
+            </div>
+        </p-accordionTab>
+    </p-accordion>
+</div>
+
+<div class="tables">
+    <p-table [value]="contratos" [paginator]="true" [lazy]="true" [showCurrentPageReport]="true" [rows]="rows"
+        [resizableColumns]="true" [totalRecords]="totalRecords" [rowsPerPageOptions]="rowsPerPage"
+        styleClass="p-datatable-striped p-datatable-gridlines custom-datatable" (onLazyLoad)="loadTableData($event)" dataKey="id">
+        
+        <ng-template pTemplate="caption">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h3>Contratos para Aprovação</h3>
+                <div class="actions">
+                    <p-button icon="pi pi-refresh" label="Atualizar" class="p-button-outlined" (click)="loadTableData({ first: currentFirstRows, rows: rows })">
+                    </p-button>
+                </div>
+            </div>
+        </ng-template>
+
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Número</th>
+                <th>Título</th>
+                <th>Cliente</th>
+                <th>Valor</th>
+                <th>Data Início</th>
+                <th>Data Fim</th>
+                <th>Status</th>
+                <th>Responsável</th>
+                <th>Ações</th>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-contrato>
+            <tr>
+                <td>
+                    <strong>{{ contrato.numero }}</strong>
+                </td>
+                <td>{{ contrato.titulo }}</td>
+                <td>{{ contrato.clienteNome }}</td>
+                <td>{{ formatCurrency(contrato.valorTotal) }}</td>
+                <td>{{ formatDate(contrato.dataInicio) }}</td>
+                <td>{{ formatDate(contrato.dataFim) }}</td>
+                <td>
+                    <p-tag [value]="getStatusLabel(contrato.status)" [severity]="getSeverity(contrato.status)">
+                    </p-tag>
+                </td>
+                <td>{{ contrato.responsavelNome }}</td>
+                <td>
+                    <div class="actions">
+                        @if (podeAprovar(contrato)) {
+                        <button pButton icon="pi pi-check" class="p-button-success p-button-sm p-button-outlined"
+                            pTooltip="Aprovar Contrato" (click)="aprovarContrato(contrato)">
+                        </button>
+                        }
+                        
+                        @if (podeReprovar(contrato)) {
+                        <button pButton icon="pi pi-times" class="p-button-danger p-button-sm p-button-outlined"
+                            pTooltip="Reprovar Contrato" (click)="reprovarContrato(contrato)">
+                        </button>
+                        }
+                        
+                        @if (podeVisualizarHistorico(contrato)) {
+                        <button pButton icon="pi pi-history" class="p-button-info p-button-sm p-button-outlined"
+                            pTooltip="Ver Histórico" (click)="visualizarHistorico(contrato)">
+                        </button>
+                        }
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="9" class="text-center">
+                    <div class="empty-state">
+                        <i class="pi pi-file-text" style="font-size: 3rem; color: #ccc;"></i>
+                        <p>Nenhum contrato encontrado</p>
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+
+<!-- Modal de Aprovação/Reprovação -->
+<p-dialog [(visible)]="displayModalAprovacao" [modal]="true" [draggable]="false" [resizable]="false" 
+    [style]="{ width: '50vw' }" [header]="acaoSelecionada === 'aprovar' ? 'Aprovar Contrato' : 'Reprovar Contrato'">
+    
+    @if (contratoSelecionado) {
+    <div class="contrato-info">
+        <div class="field">
+            <label><strong>Contrato:</strong></label>
+            <p>{{ contratoSelecionado.numero }} - {{ contratoSelecionado.titulo }}</p>
+        </div>
+        
+        <div class="field">
+            <label><strong>Cliente:</strong></label>
+            <p>{{ contratoSelecionado.clienteNome }}</p>
+        </div>
+        
+        <div class="field">
+            <label><strong>Valor:</strong></label>
+            <p>{{ formatCurrency(contratoSelecionado.valorTotal) }}</p>
+        </div>
+        
+        <div class="field">
+            <label><strong>Observação:</strong></label>
+            <textarea pInputTextarea [(ngModel)]="observacaoAprovacao" rows="4" 
+                [placeholder]="acaoSelecionada === 'aprovar' ? 'Observação (opcional)' : 'Observação (obrigatória)'">
+            </textarea>
+        </div>
+    </div>
+    }
+    
+    <ng-template pTemplate="footer">
+        <button pButton label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="fecharModalAprovacao()">
+        </button>
+        <button pButton [label]="acaoSelecionada === 'aprovar' ? 'Aprovar' : 'Reprovar'" 
+            [icon]="acaoSelecionada === 'aprovar' ? 'pi pi-check' : 'pi pi-times'"
+            [severity]="acaoSelecionada === 'aprovar' ? 'success' : 'danger'"
+            (click)="executarAcao()" [disabled]="acaoSelecionada === 'reprovar' && !observacaoAprovacao.trim()">
+        </button>
+    </ng-template>
+</p-dialog>
+
+<!-- Modal de Histórico -->
+<p-dialog [(visible)]="displayModalHistorico" [modal]="true" [draggable]="false" [resizable]="false" 
+    [style]="{ width: '70vw' }" header="Histórico de Aprovação">
+    
+    @if (contratoSelecionado) {
+    <div class="contrato-info mb-3">
+        <h4><i class="pi pi-file-text"></i> {{ contratoSelecionado.numero }} - {{ contratoSelecionado.titulo }}</h4>
+        <p><strong>Cliente:</strong> {{ contratoSelecionado.clienteNome }}</p>
+        <p><strong>Valor:</strong> {{ formatCurrency(contratoSelecionado.valorTotal) }}</p>
+    </div>
+    }
+    
+    <p-timeline [value]="historicoAprovacao" layout="vertical">
+        <ng-template pTemplate="content" let-item>
+            <div class="timeline-item">
+                <div class="timeline-header">
+                    <h5>{{ getAcaoLabel(item.acao) }}</h5>
+                    <span class="timeline-date">{{ formatDate(item.dataAcao) }}</span>
+                </div>
+                <div class="timeline-content">
+                    <p><strong>Responsável:</strong> {{ item.responsavelNome }}</p>
+                    @if (item.observacao) {
+                    <p><strong>Observação:</strong> {{ item.observacao }}</p>
+                    }
+                    @if (item.statusAnterior && item.statusNovo) {
+                    <p><strong>Status:</strong> {{ getStatusLabel(item.statusAnterior) }} → {{ getStatusLabel(item.statusNovo) }}</p>
+                    }
+                </div>
+            </div>
+        </ng-template>
+    </p-timeline>
+    
+    @if (historicoAprovacao.length === 0) {
+    <div class="empty-state">
+        <i class="pi pi-history" style="font-size: 2rem; color: #ccc;"></i>
+        <p>Nenhum histórico encontrado</p>
+    </div>
+    }
+    
+    <ng-template pTemplate="footer">
+        <button pButton label="Fechar" icon="pi pi-times" class="p-button-text" (click)="fecharHistorico()">
+        </button>
+    </ng-template>
+</p-dialog> 

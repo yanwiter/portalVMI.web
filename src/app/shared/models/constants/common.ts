@@ -1,5 +1,5 @@
 import { AcessLevel } from "../enums/acessLevel.enum";
-import { ClienteFornecedor } from "../enums/clienteFornecedor.enum";
+import { ClienteFornecedorEnum } from "../enums/clienteFornecedor.enum";
 
 export const AccessLabel = {
     [AcessLevel.Visualization]: 'Visualização',
@@ -9,7 +9,7 @@ export const AccessLabel = {
 };
 
 export const ClienteFornecedorLabel = {
-    [ClienteFornecedor.Cliente]: 'Cliente',
-    [ClienteFornecedor.Fornecedor]: 'Fornecedor'
+    [ClienteFornecedorEnum.Cliente]: 'Cliente',
+    [ClienteFornecedorEnum.Fornecedor]: 'Fornecedor'
 
 };

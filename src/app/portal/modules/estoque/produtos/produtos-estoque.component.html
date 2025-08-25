@@ -1,0 +1,404 @@
+<div class="produtos-estoque">
+  <!-- Cabeçalho -->
+  <div class="page-header">
+    <div class="header-content">
+      <h1 class="page-title">
+        <i class="pi pi-box"></i>
+        Gestão de Produtos
+      </h1>
+      <div class="header-actions">
+        <p-button 
+          icon="pi pi-plus" 
+          label="Novo Produto" 
+          severity="primary"
+          (onClick)="showDialog()">
+        </p-button>
+        <p-button 
+          icon="pi pi-download" 
+          label="Exportar" 
+          severity="secondary"
+          (onClick)="exportarParaExcel()">
+        </p-button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filtros -->
+  <div class="filtros-section">
+    <div class="filtros-header">
+      <h3>{{ getFiltrosHeader() }}</h3>
+      <div class="filtros-actions">
+        <p-button 
+          icon="pi pi-search" 
+          label="Filtrar" 
+          severity="primary"
+          size="small"
+          (onClick)="filtrar()">
+        </p-button>
+        <p-button 
+          icon="pi pi-times" 
+          label="Limpar" 
+          severity="secondary"
+          size="small"
+          (onClick)="limparFiltros()">
+        </p-button>
+      </div>
+    </div>
+
+    <div class="filtros-content">
+      <div class="filtros-grid">
+        <div class="filtro-item">
+          <label for="codigo">Código</label>
+          <input 
+            id="codigo"
+            type="text" 
+            pInputText 
+            [(ngModel)]="filtros.codigo"
+            placeholder="Digite o código">
+        </div>
+
+        <div class="filtro-item">
+          <label for="nome">Nome</label>
+          <input 
+            id="nome"
+            type="text" 
+            pInputText 
+            [(ngModel)]="filtros.nome"
+            placeholder="Digite o nome">
+        </div>
+
+        <div class="filtro-item">
+          <label for="categoria">Categoria</label>
+          <p-dropdown 
+            id="categoria"
+            [options]="categorias" 
+            [(ngModel)]="filtros.categoria"
+            placeholder="Selecione uma categoria"
+            optionLabel="label"
+            optionValue="value">
+          </p-dropdown>
+        </div>
+
+        <div class="filtro-item">
+          <label for="status">Status</label>
+          <p-dropdown 
+            id="status"
+            [options]="statusOptions" 
+            [(ngModel)]="filtros.status"
+            placeholder="Selecione o status"
+            optionLabel="label"
+            optionValue="value">
+          </p-dropdown>
+        </div>
+
+        <div class="filtro-item">
+          <label class="checkbox-label">
+            <p-checkbox 
+              [(ngModel)]="filtros.estoqueMinimo"
+              [binary]="true">
+            </p-checkbox>
+            Estoque Mínimo
+          </label>
+        </div>
+
+        <div class="filtro-item">
+          <label class="checkbox-label">
+            <p-checkbox 
+              [(ngModel)]="filtros.estoqueMaximo"
+              [binary]="true">
+            </p-checkbox>
+            Estoque Máximo
+          </label>
+        </div>
+      </div>
+
+      <!-- Filtros Ativos -->
+      <div class="filtros-ativos" *ngIf="getActiveFilters().length > 0">
+        <div class="filtros-ativos-header">
+          <i class="pi pi-filter"></i>
+          <span>Filtros Aplicados:</span>
+        </div>
+        <div class="filtros-ativos-tags">
+          <p-chip 
+            *ngFor="let filtro of getActiveFilters()" 
+            [label]="filtro.label + ': ' + filtro.value"
+            removable="true"
+            (onRemove)="limparFiltros()">
+          </p-chip>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabela de Produtos -->
+  <div class="table-section">
+    <p-table 
+      [value]="produtos" 
+      [lazy]="true"
+      [lazyLoadOnInit]="false"
+      [paginator]="true"
+      [rows]="currentRowsPerPage"
+      [rowsPerPageOptions]="rowsPerPage"
+      [totalRecords]="totalRecords"
+      [loading]="tblLazyLoading"
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} produtos"
+      [tableStyle]="{'min-width': '50rem'}"
+      (onLazyLoad)="loadTableData($event)"
+      (onPage)="handlePageChange($event)"
+      styleClass="p-datatable-gridlines">
+
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Código</th>
+          <th>Nome</th>
+          <th>Categoria</th>
+          <th>Estoque Atual</th>
+          <th>Preço Unit.</th>
+          <th>Valor Total</th>
+          <th>Status Estoque</th>
+          <th>Status</th>
+          <th>Ações</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-produto>
+        <tr>
+          <td>{{ produto.codigo }}</td>
+          <td>{{ produto.nome }}</td>
+          <td>{{ produto.categoria }}</td>
+          <td>{{ formatarQuantidade(produto.estoqueAtual, produto.unidadeMedida) }}</td>
+          <td>{{ formatarValor(produto.precoUnitario) }}</td>
+          <td>{{ formatarValor(produto.valorTotalEstoque) }}</td>
+          <td>
+            <p-tag 
+              [value]="produto.statusEstoque" 
+              [severity]="getSeverity(produto.statusEstoque)">
+            </p-tag>
+          </td>
+          <td>
+            <p-tag 
+              [value]="produto.status ? 'Ativo' : 'Inativo'" 
+              [severity]="produto.status ? 'success' : 'danger'">
+            </p-tag>
+          </td>
+          <td>
+            <div class="acoes-buttons">
+              <p-button 
+                icon="pi pi-pencil" 
+                severity="info"
+                size="small"
+                pTooltip="Editar"
+                (onClick)="iniciarEdicao(produto)">
+              </p-button>
+              <p-button 
+                icon="pi pi-trash" 
+                severity="danger"
+                size="small"
+                pTooltip="Excluir"
+                (onClick)="confirmarExclusao(produto)">
+              </p-button>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="9" class="text-center">
+            <div class="empty-message">
+              <i class="pi pi-inbox"></i>
+              <p>Nenhum produto encontrado</p>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+  <!-- Modal de Produto -->
+  <p-dialog 
+    [(visible)]="displayModal" 
+    [header]="modalTitle"
+    [modal]="true" 
+    [style]="{width: '50rem'}"
+    [draggable]="false" 
+    [resizable]="false"
+    (onHide)="fecharModal()">
+
+    <div class="modal-content">
+      <form class="produto-form">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="modal-codigo">Código *</label>
+            <input 
+              id="modal-codigo"
+              type="text" 
+              pInputText 
+              [(ngModel)]="produtoEditando.codigo"
+              name="codigo"
+              placeholder="Digite o código do produto">
+          </div>
+
+          <div class="form-group">
+            <label for="modal-nome">Nome *</label>
+            <input 
+              id="modal-nome"
+              type="text" 
+              pInputText 
+              [(ngModel)]="produtoEditando.nome"
+              name="nome"
+              placeholder="Digite o nome do produto">
+          </div>
+
+          <div class="form-group">
+            <label for="modal-categoria">Categoria *</label>
+            <p-dropdown 
+              id="modal-categoria"
+              [options]="categorias" 
+              [(ngModel)]="produtoEditando.categoria"
+              name="categoria"
+              placeholder="Selecione uma categoria"
+              optionLabel="label"
+              optionValue="value">
+            </p-dropdown>
+          </div>
+
+          <div class="form-group">
+            <label for="modal-unidade">Unidade de Medida *</label>
+            <p-dropdown 
+              id="modal-unidade"
+              [options]="unidadeMedidaOptions" 
+              [(ngModel)]="produtoEditando.unidadeMedida"
+              name="unidadeMedida"
+              placeholder="Selecione a unidade"
+              optionLabel="label"
+              optionValue="value">
+            </p-dropdown>
+          </div>
+
+          <div class="form-group">
+            <label for="modal-preco">Preço Unitário *</label>
+            <p-inputNumber 
+              id="modal-preco"
+              [(ngModel)]="produtoEditando.precoUnitario"
+              name="precoUnitario"
+              mode="currency" 
+              currency="BRL"
+              locale="pt-BR"
+              placeholder="0,00">
+            </p-inputNumber>
+          </div>
+
+          <div class="form-group">
+            <label for="modal-estoque-min">Estoque Mínimo</label>
+            <p-inputNumber 
+              id="modal-estoque-min"
+              [(ngModel)]="produtoEditando.estoqueMinimo"
+              name="estoqueMinimo"
+              placeholder="0"
+              [min]="0">
+            </p-inputNumber>
+          </div>
+
+          <div class="form-group">
+            <label for="modal-estoque-max">Estoque Máximo</label>
+            <p-inputNumber 
+              id="modal-estoque-max"
+              [(ngModel)]="produtoEditando.estoqueMaximo"
+              name="estoqueMaximo"
+              placeholder="0"
+              [min]="0">
+            </p-inputNumber>
+          </div>
+
+          <div class="form-group">
+            <label for="modal-estoque-atual">Estoque Atual</label>
+            <p-inputNumber 
+              id="modal-estoque-atual"
+              [(ngModel)]="produtoEditando.estoqueAtual"
+              name="estoqueAtual"
+              placeholder="0"
+              [min]="0">
+            </p-inputNumber>
+          </div>
+
+          <div class="form-group">
+            <label for="modal-status">Status</label>
+            <p-dropdown 
+              id="modal-status"
+              [options]="statusOptions" 
+              [(ngModel)]="produtoEditando.status"
+              name="status"
+              placeholder="Selecione o status"
+              optionLabel="label"
+              optionValue="value">
+            </p-dropdown>
+          </div>
+        </div>
+
+        <div class="form-group full-width">
+          <label for="modal-descricao">Descrição</label>
+          <textarea 
+            id="modal-descricao"
+            pInputTextarea 
+            [(ngModel)]="produtoEditando.descricao"
+            name="descricao"
+            [rows]="3"
+            placeholder="Digite a descrição do produto">
+          </textarea>
+        </div>
+      </form>
+    </div>
+
+    <ng-template pTemplate="footer">
+      <div class="modal-footer">
+        <p-button 
+          label="Cancelar" 
+          icon="pi pi-times" 
+          severity="secondary"
+          (onClick)="fecharModal()">
+        </p-button>
+        <p-button 
+          label="Salvar" 
+          icon="pi pi-check" 
+          severity="primary"
+          (onClick)="salvarProduto()">
+        </p-button>
+      </div>
+    </ng-template>
+  </p-dialog>
+
+  <!-- Modal de Confirmação de Exclusão -->
+  <p-dialog 
+    [(visible)]="displayConfirmation" 
+    [header]="modalTitleDelete"
+    [modal]="true" 
+    [style]="{width: '30rem'}"
+    [draggable]="false" 
+    [resizable]="false">
+
+    <div class="confirmation-content">
+      <i class="pi pi-exclamation-triangle" style="font-size: 3rem; color: #f44336;"></i>
+      <p>Tem certeza que deseja excluir o produto <strong>{{ produtoParaExcluir?.nome }}</strong>?</p>
+      <p class="warning-text">Esta ação não pode ser desfeita.</p>
+    </div>
+
+    <ng-template pTemplate="footer">
+      <div class="confirmation-footer">
+        <p-button 
+          label="Cancelar" 
+          icon="pi pi-times" 
+          severity="secondary"
+          (onClick)="cancelarExclusao()">
+        </p-button>
+        <p-button 
+          label="Confirmar" 
+          icon="pi pi-check" 
+          severity="danger"
+          (onClick)="confirmarExclusaoDialog()">
+        </p-button>
+      </div>
+    </ng-template>
+  </p-dialog>
+</div> 

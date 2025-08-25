@@ -1,0 +1,299 @@
+<div class="oportunidades-container">
+  <div class="header-section">
+    <div class="title-section">
+      <h1>{{ 'OPORTUNIDADES' | translate }}</h1>
+      <p>{{ 'OPORTUNIDADES_DESC' | translate }}</p>
+    </div>
+    <div class="actions-section">
+      <p-button 
+        icon="pi pi-plus" 
+        [label]="'NOVA_OPORTUNIDADE' | translate"
+        (onClick)="openNewOportunidade()"
+        class="p-button-success">
+      </p-button>
+    </div>
+  </div>
+
+  <!-- Resumo -->
+  <div class="summary-section">
+    <p-card class="summary-card">
+      <div class="summary-content">
+        <div class="summary-item">
+          <i class="pi pi-dollar"></i>
+          <div class="summary-info">
+            <h3>{{ 'VALOR_TOTAL' | translate }}</h3>
+            <span class="value">{{ getValorTotal() | currency:'BRL' }}</span>
+          </div>
+        </div>
+        <div class="summary-item">
+          <i class="pi pi-check-circle"></i>
+          <div class="summary-info">
+            <h3>{{ 'VALOR_GANHO' | translate }}</h3>
+            <span class="value">{{ getValorGanho() | currency:'BRL' }}</span>
+          </div>
+        </div>
+        <div class="summary-item">
+          <i class="pi pi-list"></i>
+          <div class="summary-info">
+            <h3>{{ 'TOTAL_OPORTUNIDADES' | translate }}</h3>
+            <span class="value">{{ getOportunidadesFiltradas().length }}</span>
+          </div>
+        </div>
+      </div>
+    </p-card>
+  </div>
+
+  <!-- Filtros -->
+  <p-card [header]="'FILTROS' | translate" class="filters-card">
+    <div class="filters-content">
+      <div class="filter-row">
+        <div class="filter-item">
+          <label for="filtroFase">{{ 'FASE' | translate }}</label>
+          <p-dropdown 
+            id="filtroFase"
+            [options]="fases" 
+            [(ngModel)]="filtroFase"
+            placeholder="{{ 'TODAS_FASES' | translate }}"
+            [showClear]="true"
+            class="w-full">
+          </p-dropdown>
+        </div>
+        <div class="filter-item">
+          <label for="filtroResponsavel">{{ 'RESPONSAVEL' | translate }}</label>
+          <p-dropdown 
+            id="filtroResponsavel"
+            [options]="responsaveis" 
+            [(ngModel)]="filtroResponsavel"
+            placeholder="{{ 'TODOS_RESPONSAVEIS' | translate }}"
+            [showClear]="true"
+            class="w-full">
+          </p-dropdown>
+        </div>
+        <div class="filter-item">
+          <label for="filtroStatus">{{ 'STATUS' | translate }}</label>
+          <p-dropdown 
+            id="filtroStatus"
+            [options]="statusOptions" 
+            [(ngModel)]="filtroStatus"
+            placeholder="{{ 'TODOS_STATUS' | translate }}"
+            [showClear]="true"
+            class="w-full">
+          </p-dropdown>
+        </div>
+      </div>
+    </div>
+  </p-card>
+
+  <!-- Lista de Oportunidades -->
+  <p-card [header]="'OPORTUNIDADES' | translate">
+    <div class="oportunidades-grid">
+      <div class="oportunidade-card" *ngFor="let oportunidade of getOportunidadesFiltradas()">
+        <div class="card-header">
+          <div class="oportunidade-info">
+            <h3>{{ oportunidade.titulo }}</h3>
+            <span class="cliente">{{ oportunidade.cliente }}</span>
+          </div>
+          <div class="status-indicator">
+            <i [class]="getFaseIcon(oportunidade.fase)" 
+               [ngClass]="getFaseClass(oportunidade.fase)"></i>
+          </div>
+        </div>
+        
+        <div class="card-content">
+          <p class="descricao">{{ oportunidade.descricao }}</p>
+          
+          <div class="info-grid">
+            <div class="info-item">
+              <label>{{ 'VALOR' | translate }}:</label>
+              <span class="valor">{{ oportunidade.valor | currency:'BRL' }}</span>
+            </div>
+            <div class="info-item">
+              <label>{{ 'PROBABILIDADE' | translate }}:</label>
+              <span [ngClass]="getProbabilidadeClass(oportunidade.probabilidade)">
+                {{ oportunidade.probabilidade }}%
+              </span>
+            </div>
+            <div class="info-item">
+              <label>{{ 'RESPONSAVEL' | translate }}:</label>
+              <span>{{ oportunidade.responsavel }}</span>
+            </div>
+            <div class="info-item">
+              <label>{{ 'FASE' | translate }}:</label>
+              <span [ngClass]="getFaseClass(oportunidade.fase)">
+                {{ oportunidade.fase | titlecase }}
+              </span>
+            </div>
+            <div class="info-item">
+              <label>{{ 'DATA_CRIACAO' | translate }}:</label>
+              <span>{{ oportunidade.dataCriacao | date:'dd/MM/yyyy' }}</span>
+            </div>
+            <div class="info-item">
+              <label>{{ 'DATA_FECHAMENTO' | translate }}:</label>
+              <span>{{ oportunidade.dataFechamento | date:'dd/MM/yyyy' }}</span>
+            </div>
+          </div>
+          
+          <div class="produtos">
+            <label>{{ 'PRODUTOS' | translate }}:</label>
+            <div class="produto-tags">
+              <span class="produto-tag" *ngFor="let produto of oportunidade.produtos">
+                {{ produto }}
+              </span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card-actions">
+          <p-button 
+            icon="pi pi-pencil" 
+            [label]="'EDITAR' | translate"
+            (onClick)="editOportunidade(oportunidade)"
+            class="p-button-primary p-button-sm">
+          </p-button>
+          <p-button 
+            icon="pi pi-trash" 
+            [label]="'EXCLUIR' | translate"
+            (onClick)="deleteOportunidade(oportunidade)"
+            class="p-button-danger p-button-sm">
+          </p-button>
+        </div>
+      </div>
+    </div>
+  </p-card>
+</div>
+
+<!-- Dialog para criar/editar oportunidade -->
+<p-dialog 
+  [(visible)]="displayDialog" 
+  [header]="(isNewOportunidade ? 'NOVA_OPORTUNIDADE' : 'EDITAR_OPORTUNIDADE') | translate"
+  [modal]="true" 
+  [style]="{width: '700px'}"
+  [draggable]="false" 
+  [resizable]="false">
+  
+  <div class="dialog-content" *ngIf="selectedOportunidade">
+    <div class="form-row">
+      <div class="form-field">
+        <label for="titulo">{{ 'TITULO' | translate }} *</label>
+        <input 
+          id="titulo"
+          type="text" 
+          pInputText 
+          [(ngModel)]="selectedOportunidade.titulo"
+          class="w-full">
+      </div>
+    </div>
+    
+    <div class="form-row">
+      <div class="form-field">
+        <label for="cliente">{{ 'CLIENTE' | translate }} *</label>
+        <input 
+          id="cliente"
+          type="text" 
+          pInputText 
+          [(ngModel)]="selectedOportunidade.cliente"
+          class="w-full">
+      </div>
+    </div>
+    
+    <div class="form-row">
+      <div class="form-field">
+        <label for="valor">{{ 'VALOR' | translate }} *</label>
+        <p-inputNumber 
+          id="valor"
+          [(ngModel)]="selectedOportunidade.valor"
+          [min]="0"
+          [showButtons]="true"
+          prefix="R$ "
+          class="w-full">
+        </p-inputNumber>
+      </div>
+      <div class="form-field">
+        <label for="probabilidade">{{ 'PROBABILIDADE' | translate }} (%)</label>
+        <p-inputNumber 
+          id="probabilidade"
+          [(ngModel)]="selectedOportunidade.probabilidade"
+          [min]="0"
+          [max]="100"
+          [showButtons]="true"
+          suffix="%"
+          class="w-full">
+        </p-inputNumber>
+      </div>
+    </div>
+    
+    <div class="form-row">
+      <div class="form-field">
+        <label for="fase">{{ 'FASE' | translate }} *</label>
+        <p-dropdown 
+          id="fase"
+          [options]="fases" 
+          [(ngModel)]="selectedOportunidade.fase"
+          placeholder="{{ 'SELECIONE_FASE' | translate }}"
+          class="w-full">
+        </p-dropdown>
+      </div>
+      <div class="form-field">
+        <label for="responsavel">{{ 'RESPONSAVEL' | translate }} *</label>
+        <p-dropdown 
+          id="responsavel"
+          [options]="responsaveis" 
+          [(ngModel)]="selectedOportunidade.responsavel"
+          placeholder="{{ 'SELECIONE_RESPONSAVEL' | translate }}"
+          class="w-full">
+        </p-dropdown>
+      </div>
+    </div>
+    
+    <div class="form-row">
+      <div class="form-field">
+        <label for="dataCriacao">{{ 'DATA_CRIACAO' | translate }}</label>
+        <p-calendar 
+          id="dataCriacao"
+          [(ngModel)]="selectedOportunidade.dataCriacao"
+          dateFormat="dd/mm/yy"
+          class="w-full">
+        </p-calendar>
+      </div>
+      <div class="form-field">
+        <label for="dataFechamento">{{ 'DATA_FECHAMENTO' | translate }}</label>
+        <p-calendar 
+          id="dataFechamento"
+          [(ngModel)]="selectedOportunidade.dataFechamento"
+          dateFormat="dd/mm/yy"
+          class="w-full">
+        </p-calendar>
+      </div>
+    </div>
+    
+    <div class="form-row">
+      <div class="form-field">
+        <label for="descricao">{{ 'DESCRICAO' | translate }}</label>
+        <textarea 
+          id="descricao"
+          pInputTextarea 
+          [(ngModel)]="selectedOportunidade.descricao"
+          [rows]="3"
+          class="w-full">
+        </textarea>
+      </div>
+    </div>
+  </div>
+  
+  <ng-template pTemplate="footer">
+    <p-button 
+      [label]="'CANCELAR' | translate"
+      icon="pi pi-times" 
+      (onClick)="displayDialog = false"
+      class="p-button-text">
+    </p-button>
+    <p-button 
+      [label]="'SALVAR' | translate"
+      icon="pi pi-check" 
+      (onClick)="saveOportunidade()"
+      class="p-button-success">
+    </p-button>
+  </ng-template>
+</p-dialog>
+
+<p-toast></p-toast> 
