@@ -51,6 +51,7 @@ export class AcessosComponent {
   private readonly permissionsService = inject(PermissionsService);
   private readonly sensitiveDataService = inject(SensitiveDataService);
 
+  public pageTitle: string = this.translateService.instant('ACESSOS.TITLE');
   public acessos: UsuarioModel[] = [];
   public customQueryParams?: string;
   public currentRowsPerPage = 10;
