@@ -109,7 +109,7 @@
           *ngIf="hoveredMenu"
           class="compact-submenu-float"
           [ngClass]="{'submenu-up': isSubmenuUp()}"
-          [ngStyle]="{'top.px': submenuPosition.top, 'left.px': submenuPosition.left}"
+          [ngStyle]="{'top.px': submenuPosition.top, 'left.px': submenuPosition.left, 'max-height.px': calculatedMaxHeight}"
           (mouseenter)="submenuHover = true"
           (mouseleave)="submenuHover = false; hideCompactSubmenu(hoveredMenu)"
         >
@@ -149,7 +149,7 @@
           *ngIf="nestedSubmenu"
           class="compact-submenu-float nested-submenu"
           [ngClass]="{'submenu-up': isNestedSubmenuUp()}"
-          [ngStyle]="{'top.px': nestedSubmenuPosition.top, 'left.px': nestedSubmenuPosition.left}"
+          [ngStyle]="{'top.px': nestedSubmenuPosition.top, 'left.px': nestedSubmenuPosition.left, 'max-height.px': nestedSubmenuMaxHeight}"
           (mouseenter)="nestedSubmenuHover = true"
           (mouseleave)="nestedSubmenuHover = false; hideNestedSubmenu(nestedSubmenu)"
         >

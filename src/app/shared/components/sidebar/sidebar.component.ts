@@ -156,6 +156,12 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
   /** Indica se o submenu foi aberto por clique (não por hover) */
   public submenuOpenedByClick = false;
+  
+  /** Altura máxima calculada para o submenu baseada no espaço disponível */
+  public calculatedMaxHeight: number = 400;
+
+  /** Altura máxima calculada para o submenu aninhado baseada no espaço disponível */
+  public nestedSubmenuMaxHeight: number = 400;
 
   /** Estado de loading para melhor UX */
   public isLoading = false;
@@ -235,6 +241,17 @@ export class SidebarComponent implements OnInit, OnDestroy {
     }
     if (this.themeSubscription) {
       this.themeSubscription.unsubscribe();
+    }
+  }
+
+  @HostListener('window:resize')
+  onResize() {
+    if (this.hoveredMenu) {
+      this.showCompactSubmenu(this.hoveredMenu);
+    }
+    if (this.nestedSubmenu) {
+      const dummyEvent = new MouseEvent('mouseenter');
+      this.showNestedSubmenu(this.nestedSubmenu, dummyEvent);
     }
   }
 
@@ -755,29 +772,47 @@ export class SidebarComponent implements OnInit, OnDestroy {
       
       if (targetElement) {
         const targetRect = targetElement.getBoundingClientRect();
-        const estimatedHeight = Math.min(menu.items.length * 50 + 80, 80 * 16);
+        const headerHeight = 80;
+        const itemHeight = 56;
+        const totalItems = menu.items.length;
+        const estimatedHeight = Math.min(headerHeight + (totalItems * itemHeight), window.innerHeight * 0.8);
+        
         const spaceBelow = window.innerHeight - targetRect.bottom;
         const spaceAbove = targetRect.top;
         
         let topPosition: number;
+        let maxHeight: number;
         
         if (spaceBelow >= estimatedHeight || spaceBelow > spaceAbove) {
           topPosition = targetRect.top - 10;
           this._isSubmenuUp = false;
+          
+          maxHeight = Math.min(estimatedHeight, spaceBelow - 20);
         } else {
           topPosition = targetRect.bottom - estimatedHeight + 10;
           this._isSubmenuUp = true;
+          
+          maxHeight = Math.min(estimatedHeight, spaceAbove - 20);
+        }
+        
+        topPosition = Math.max(10, Math.min(topPosition, window.innerHeight - maxHeight - 10));
+        
+        if (maxHeight < 100) {
+          maxHeight = Math.min(300, window.innerHeight - 40);
         }
         
         this.submenuPosition = {
-          top: Math.max(10, topPosition),
+          top: topPosition,
           left: rect.right + 5
         };
+        
+        this.calculatedMaxHeight = maxHeight;
       } else {
         this.submenuPosition = {
           top: rect.top + 100,
           left: rect.right + 5
         };
+        this.calculatedMaxHeight = window.innerHeight * 0.8;
       }
     }
   }
@@ -807,25 +842,39 @@ export class SidebarComponent implements OnInit, OnDestroy {
     const targetElement = event.target as HTMLElement;
     const targetRect = targetElement.getBoundingClientRect();
     
-    const estimatedHeight = Math.min((menuItem.submenuItems?.length || 0) * 50 + 80, 80 * 16);
+    const headerHeight = 80;
+    const itemHeight = 50;
+    const totalItems = menuItem.submenuItems?.length || 0;
+    const estimatedHeight = Math.min(headerHeight + (totalItems * itemHeight), window.innerHeight * 0.8);
+
     const spaceBelow = window.innerHeight - targetRect.bottom;
     const spaceAbove = targetRect.top;
     
     let topPosition: number;
+    let maxHeight: number;
     
     if (spaceBelow >= estimatedHeight || spaceBelow > spaceAbove) {
       topPosition = targetRect.top - 10;
       this._isNestedSubmenuUp = false;
+      maxHeight = Math.min(estimatedHeight, spaceBelow - 20);
     } else {
       topPosition = targetRect.bottom - estimatedHeight + 10;
       this._isNestedSubmenuUp = true;
+      maxHeight = Math.min(estimatedHeight, spaceAbove - 20);
+    }
+
+    topPosition = Math.max(10, Math.min(topPosition, window.innerHeight - maxHeight - 10));
+    
+    if (maxHeight < 100) {
+      maxHeight = Math.min(300, window.innerHeight - 40);
     }
     
     this.nestedSubmenuPosition = {
-      top: Math.max(10, topPosition),
+      top: topPosition,
       left: targetRect.right + 5
     };
     
+    this.nestedSubmenuMaxHeight = maxHeight;
     this.changeDetectorRef.detectChanges();
   }
 
