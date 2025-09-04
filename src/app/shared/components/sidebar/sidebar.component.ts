@@ -426,7 +426,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
           isExpanded: false,
           items: [
             { label: 'Dashboard', labelKey: 'SIDEBAR.DASHBOARD', routerLink: 'inicio', requiredPermission: "Home" },
-            { label: "Dashboards", labelKey: 'SIDEBAR.DASHBOARDS', routerLink: 'inicio/dashboards', requiredPermission: "Dashboards" },
+            { label: "Dashboards", labelKey: 'SIDEBAR.DASHBOARDS', routerLink: 'inicio/dashboards', requiredPermission: "Dashboards",  icon: 'pi pi-chart-pie' },
           ]
         },
         {
@@ -680,13 +680,15 @@ export class SidebarComponent implements OnInit, OnDestroy {
                   label: "Controle de Perfis",
                   labelKey: 'SIDEBAR.CONTROLE_PERFIS',
                   routerLink: 'configuracoes/perfis',
-                  requiredPermission: "Controle de Perfis"
+                  requiredPermission: "Controle de Perfis",
+                  icon: 'pi pi-user-edit'
                 },
                 {
                   label: "Controle de Acessos",
                   labelKey: 'SIDEBAR.CONTROLE_ACESSOS',
                   routerLink: 'configuracoes/acessos',
-                  requiredPermission: "Controle de Acessos"
+                  requiredPermission: "Controle de Acessos",
+                  icon: 'pi pi-key'
                 },
               ]
             },

@@ -34,6 +34,9 @@
                                class="nav-item"
                                routerLinkActive="active"
                                [routerLinkActiveOptions]="{exact: false}">
+                                @if (item.icon) {
+                                <i [class]="item.icon" class="nav-item-icon"></i>
+                                }
                                 <span class="nav-item-text">{{ translateLabel(item) }}</span>
                                 <div class="nav-item-indicator"></div>
                             </a>
@@ -53,6 +56,9 @@
                                        class="submenu-item"
                                        routerLinkActive="active"
                                        [routerLinkActiveOptions]="{exact: false}">
+                                        @if (subItem.icon) {
+                                        <i [class]="subItem.icon" class="submenu-item-icon"></i>
+                                        }
                                         <span class="submenu-item-text">{{ translateSubmenuLabel(subItem) }}</span>
                                         <div class="submenu-item-indicator"></div>
                                     </a>
@@ -127,6 +133,9 @@
                        [state]="{ bypassGuard: true }" 
                        class="compact-submenu-item"
                        routerLinkActive="active">
+                        @if (item.icon) {
+                        <i [class]="item.icon" class="compact-submenu-item-icon"></i>
+                        }
                         <span> {{ translateLabel(item) }}</span>
                     </a>
                     } @else {
@@ -155,7 +164,7 @@
         >
             <div class="compact-submenu-header">
                 <div class="submenu-title">
-                    <i class="pi pi-folder"></i>
+                    <i [class]="nestedSubmenu.icon || 'pi pi-folder'"></i>
                     <h6>{{ translateLabel(nestedSubmenu) }}</h6>
                 </div>
             </div>
@@ -166,6 +175,9 @@
                        [state]="{ bypassGuard: true }" 
                        class="compact-submenu-item"
                        routerLinkActive="active">
+                        @if (subItem.icon) {
+                        <i [class]="subItem.icon" class="compact-submenu-item-icon"></i>
+                        }
                         <span>{{ translateSubmenuLabel(subItem) }}</span>
                     </a>
                 </div>

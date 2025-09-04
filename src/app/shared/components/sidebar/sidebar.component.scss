@@ -164,8 +164,9 @@
         max-height: 100%;
 
         &.compact {
-          height: 160px;
-          width: 100%;
+          margin-left: 10%;
+          height: 80px;
+          width: 80%;
           max-width: 100%;
           max-height: 100%;
           object-fit: contain;
@@ -354,6 +355,15 @@
       }
     }
 
+    .nav-item-icon {
+      font-size: 16px;
+      margin-right: 12px;
+      color: var(--header-text);
+      opacity: 0.8;
+      transition: all var(--transition-duration) ease;
+      flex-shrink: 0;
+    }
+
     .nav-item-text {
       flex: 1;
       transition: all var(--transition-duration) ease;
@@ -369,6 +379,16 @@
       opacity: 0;
       transform: scale(0);
       transition: all var(--transition-duration) ease;
+    }
+
+    &:hover .nav-item-icon {
+      opacity: 1;
+      transform: scale(1.1);
+    }
+
+    &.active .nav-item-icon {
+      opacity: 1;
+      color: var(--primary-color);
     }
   }
 
@@ -445,6 +465,15 @@
       }
     }
 
+    .submenu-item-icon {
+      font-size: 14px;
+      margin-right: 8px;
+      color: var(--header-text);
+      opacity: 0.8;
+      transition: all var(--transition-duration) ease;
+      flex-shrink: 0;
+    }
+
     .submenu-item-text {
       flex: 1;
     }
@@ -459,6 +488,16 @@
       opacity: 0;
       transform: scale(0);
       transition: all var(--transition-duration) ease;
+    }
+
+    &:hover .submenu-item-icon {
+      opacity: 1;
+      transform: scale(1.1);
+    }
+
+    &.active .submenu-item-icon {
+      opacity: 1;
+      color: var(--primary-color);
     }
   }
 
@@ -930,15 +969,34 @@
         min-height: 56px;
         box-sizing: border-box;
 
+        .compact-submenu-item-icon {
+          font-size: 16px;
+          color: var(--text-color);
+          opacity: 0.7;
+          transition: all var(--transition-duration) ease;
+          flex-shrink: 0;
+        }
+
         &:hover {
           background: var(--surface-hover);
           color: var(--primary-color);
           padding-left: 28px;
+
+          .compact-submenu-item-icon {
+            opacity: 1;
+            color: var(--primary-color);
+            transform: scale(1.1);
+          }
         }
 
         &.active {
           background: #3b82f6;
           color: white;
+
+          .compact-submenu-item-icon {
+            color: white;
+            opacity: 1;
+          }
 
           .item-indicator {
             color: white;
@@ -1074,6 +1132,7 @@
       }
     }
   }
+
   @media (max-width: 768px) {
     position: fixed;
     left: 0 !important;
@@ -1240,6 +1299,7 @@
   }
 }
 
+/* Media queries para melhorar a responsividade em telas pequenas */
 @media (max-width: 768px) {
   .compact-submenu-float {
     min-width: 200px;
