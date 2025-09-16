@@ -1116,6 +1116,18 @@ export class SidebarComponent implements OnInit, OnDestroy {
     }
     return subItem.label;
   }
+
+    /**
+   * Alterna o submenu no modo expandido
+   * Permite abrir/fechar o submenu clicando na seta
+   * @param menuItem - Item de menu do submenu
+   * @param event - Evento de clique
+   */
+  toggleExpandedSubmenu(menuItem: MenuItem, event: MouseEvent) {
+    event.stopPropagation();
+    menuItem.isSubmenuVisible = !menuItem.isSubmenuVisible;
+    this.changeDetectorRef.detectChanges();
+  }
 }
 
 function messageOfReturns(messageService: MessageService, arg1: string, arg2: any, arg3: any, arg4: number) {

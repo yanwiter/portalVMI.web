@@ -38,18 +38,27 @@
                                 <i [class]="item.icon" class="nav-item-icon"></i>
                                 }
                                 <span class="nav-item-text">{{ translateLabel(item) }}</span>
-                                <div class="nav-item-indicator"></div>
                             </a>
                             } @else {
-                            <div class="nav-item-with-submenu">
-                                <div class="nav-item-submenu-header" 
-                                     (mouseenter)="showExpandedSubmenu(item, $event)"
-                                     (mouseleave)="hideExpandedSubmenu(item)">
+                            <div class="nav-item-with-submenu" 
+                                 (mouseenter)="showExpandedSubmenu(item, $event)"
+                                 (mouseleave)="hideExpandedSubmenu(item)">
+                                <div class="nav-item-submenu-header">
+                                    @if (item.icon) {
+                                    <i [class]="item.icon" class="nav-item-icon"></i>
+                                    } @else {
+                                    <i class="pi pi-circle nav-item-icon"></i>
+                                    }
                                     <span class="nav-item-text">{{ translateLabel(item) }}</span>
-                                    <i class="pi pi-chevron-right submenu-arrow"></i>
+                                    <i class="pi pi-chevron-right submenu-arrow" 
+                                       [class.rotated]="item.isSubmenuVisible"
+                                       (click)="toggleExpandedSubmenu(item, $event)"></i>
                                 </div>
                                 @if (item.isSubmenuVisible) {
-                                <div class="submenu-container" [@slideInOut]="'expanded'">
+                                <div class="submenu-container expanded" 
+                                     [@slideInOut]="'expanded'"
+                                     (mouseenter)="showExpandedSubmenu(item, $event)"
+                                     (mouseleave)="hideExpandedSubmenu(item)">
                                     @for (subItem of item.submenuItems; track $index) {
                                     <a [routerLink]="subItem.routerLink" 
                                        [state]="{ bypassGuard: true }" 
@@ -60,7 +69,6 @@
                                         <i [class]="subItem.icon" class="submenu-item-icon"></i>
                                         }
                                         <span class="submenu-item-text">{{ translateSubmenuLabel(subItem) }}</span>
-                                        <div class="submenu-item-indicator"></div>
                                     </a>
                                     }
                                 </div>
@@ -134,7 +142,9 @@
                        class="compact-submenu-item"
                        routerLinkActive="active">
                         @if (item.icon) {
-                        <i [class]="item.icon" class="compact-submenu-item-icon"></i>
+                        <i [class]="item.icon" class="compact-submenu-item-icon pi" [attr.aria-hidden]="true"></i>
+                        } @else {
+                        <i class="pi pi-circle compact-submenu-item-icon" [attr.aria-hidden]="true"></i>
                         }
                         <span> {{ translateLabel(item) }}</span>
                     </a>
@@ -143,6 +153,11 @@
                         <div class="compact-submenu-header-item" 
                              (mouseenter)="showNestedSubmenu(item, $event)"
                              (mouseleave)="hideNestedSubmenu(item)">
+                            @if (item.icon) {
+                            <i [class]="item.icon" class="compact-submenu-item-icon pi" [attr.aria-hidden]="true"></i>
+                            } @else {
+                            <i class="pi pi-circle compact-submenu-item-icon" [attr.aria-hidden]="true"></i>
+                            }
                             <span>{{ translateLabel(item) }}</span>
                             <i class="pi pi-chevron-right submenu-arrow"></i>
                         </div>
@@ -176,7 +191,9 @@
                        class="compact-submenu-item"
                        routerLinkActive="active">
                         @if (subItem.icon) {
-                        <i [class]="subItem.icon" class="compact-submenu-item-icon"></i>
+                        <i [class]="subItem.icon" class="compact-submenu-item-icon pi" [attr.aria-hidden]="true"></i>
+                        } @else {
+                        <i class="pi pi-circle compact-submenu-item-icon" [attr.aria-hidden]="true"></i>
                         }
                         <span>{{ translateSubmenuLabel(subItem) }}</span>
                     </a>
